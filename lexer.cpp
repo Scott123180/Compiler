@@ -6,6 +6,10 @@ using namespace std;
 
 token genToken(string type, string data, int line);
 
+bool addToBuffer(char c);
+
+string buffer;
+
 int main()
 {
   bool eof = false; //end of file
@@ -19,10 +23,11 @@ int main()
     //loop through string
     for(int i = 0; i < curLine.length(); i++)
     {
-      //create buffer to recognize regex patterns
-      
+      //add to buffer to recognize regex patterns 
 
       //craft token from buffer
+
+      //clear buffer
     } 
   }
   return 0;
