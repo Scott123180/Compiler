@@ -64,7 +64,8 @@ bool addToBuffer(char c, int line, int pos)
     {
       if(buffer.back() == '=') //double ==
       {
-         stream.push_back(Token::Token("boolop", "==", line, pos));
+         //TODO; figure out token crafting
+         Token::Token("boolop", "==", line, pos);
          buffer = "";
       }
       else //don't know yet 
@@ -75,7 +76,12 @@ bool addToBuffer(char c, int line, int pos)
     else if(c == '$') //end of file
     {
       cout << "End of file character reached. Lex completed." << endl;
+      printTokens();
       return 0;
+    }
+    else if(c == ' ') //space
+    {
+      
     }
   }
   //symbol not in alphabet
@@ -84,4 +90,9 @@ bool addToBuffer(char c, int line, int pos)
     cout << "The symbol " << c << " was not found. Aborting lex.";
     return false;
   }
+}
+
+void printTokens()
+{
+
 }
