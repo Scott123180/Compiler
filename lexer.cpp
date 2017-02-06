@@ -7,8 +7,6 @@
 
 using namespace std;
 
-token genToken(string type, string data, int line, int position);
-
 bool addToBuffer(char c);
 
 string buffer;
@@ -23,6 +21,8 @@ vector<char> acceptedChars = {
 '=', ' ', '!', '+', '$', '{',
 '}', '(', ')', '"'
 };
+
+vector<Token> stream;
 
 int main()
 {
@@ -41,22 +41,20 @@ int main()
     for(int i = 0; i < curLine.length(); i++)
     {
       //add to buffer to recognize regex patterns 
-      if(!addToBuffer(curLine[i])) //try, if fails
+      if(!addToBuffer(curLine[i], lineNum, i)) //try, if fails
       {
         //addToBuffer will print error message
         cout << "Error at line " << lineNum << endl;
         cout << "Error at position " << i << endl;
         return 1; //exit program 
       }
-      
-      //clear buffer
-      string buffer = "";
     } 
   }
   return 0;
 }
 
-bool addToBuffer(char c)
+//returns false if error, adds token to buffer otherwise
+bool addToBuffer(char c, int line, int pos)
 { 
   //ensure symbol is in alphabet
   if(find(acceptedChars.begin(), acceptedChars.end(), c) != vector.end())
@@ -64,8 +62,21 @@ bool addToBuffer(char c)
     //separator processing
     if(c == '=')
     {
-
-    } 
+      if(buffer.back() == '=') //double ==
+      {
+         stream.push_back(Token::Token("boolop", "==", line, pos));
+         buffer = "";
+      }
+      else //don't know yet 
+      {
+        buffer.push_back(c);
+      }
+    }
+    else if(c == '$') //end of file
+    {
+      cout << "End of file character reached. Lex completed." << endl;
+      return 0;
+    }
   }
   //symbol not in alphabet
   else
