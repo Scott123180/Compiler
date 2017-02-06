@@ -1,5 +1,9 @@
 #ifindef LEX_TOKEN
 #define LEX_TOKEN
+
+#include <string>
+#include <vector>
+
 class Token
 {
   public:
@@ -9,6 +13,7 @@ class Token
     string data;
     int line;
     int position;
-}
+    
+};
 
 #endif
