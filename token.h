@@ -2,7 +2,13 @@
 #define LEX_TOKEN
 class Token
 {
-  token 
+  public:
+    token genToken(string t, string d, int l, int p);
+  private:
+    string type;
+    string data;
+    int line;
+    int position;
 }
 
 #endif

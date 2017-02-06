@@ -4,7 +4,7 @@
 
 using namespace std;
 
-token genToken(string type, string data, int line);
+token genToken(string type, string data, int line, int position);
 
 bool addToBuffer(char c);
 
