@@ -1,6 +1,3 @@
-#include <iostream>
-#include <map>
-
 #include "disease.h"
 
 using namespace std;
@@ -18,18 +15,17 @@ class Token
   //type unknown
   Token::Token(string d, int l, int p) : data(d), line(l), position(p)
   {
-    //map str to str
-    map textToType<string, string> = {
-      {"print", "print"
     //based on type, do conversions / checking 
 
     //id's | if length one and is a-z, then set type as id
-  
+    if(d.length == 1)
+    {
+      //search through letters
+      if(find(letters.begin(), letters.end(), d) != vector.end()) //if in recognizes list id's
+      {
+      
+      }
+    }
     //call function to look through map without adding to it if it doesn't find anything
-  }
-
-  Token::error(string errorType, int line, int pos)
-  {
-
   }
 }

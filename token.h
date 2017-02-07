@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 class Token
 {
@@ -32,6 +33,26 @@ class Token
       {"}", "rightBrace"},
       {"(", "leftParen"},
       {")", "rightParen"}
+    };
+    vector letters<string> = {
+    "a", "b", "c", "d", "e", "f",
+    "g", "h", "i", "j", "k", "l",
+    "m", "n", "o", "p", "q", "r",
+    "s", "t", "u", "v", "w", "x",
+    "y", "z"};
+    
+    string findType()
+    {
+      auto it = textToType.find(data);
+      if(it != textToType.end()) //if recognized in the map
+      {
+        type = textToType[data];
+      }
+      else
+      {
+        //Error
+      }
+    } 
 };
 
 
