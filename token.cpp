@@ -23,7 +23,11 @@ class Token
       //search through letters
       if(find(letters.begin(), letters.end(), d) != vector.end()) //if in recognizes list id's
       {
-      
+        
+      }
+      else //error 
+      {
+
       }
     }
     //call function to look through map without adding to it if it doesn't find anything

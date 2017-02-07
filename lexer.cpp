@@ -9,7 +9,7 @@ using namespace std;
 
 bool addToBuffer(char c);
 
-string buffer;
+string buffer = "";
 
 vector<char> acceptedChars = {
 'a', 'b', 'c', 'd', 'e', 'f',
@@ -24,19 +24,21 @@ vector<char> acceptedChars = {
 
 vector<Token> stream;
 
+bool eop = false; //end of program
+
 int main()
 {
-  bool eof = false; //end of file
   
   int lineNum = 0;
 
-  while(!eof) //loop until end of file
+  while(!eop) //loop until end of file
   {
     ++lineNum;
     string curLine;
     getline(cin, curLine); 
    
-    buffer = ""; 
+    buffer = "";
+     
     //loop through string
     for(int i = 0; i < curLine.length(); i++)
     {
@@ -50,6 +52,11 @@ int main()
       }
     } 
   }
+  
+  cout << "End of program reached. Printing tokens" << endl;
+  
+  printTokens();
+  
   return 0;
 }
 
@@ -64,25 +71,35 @@ bool addToBuffer(char c, int line, int pos)
     {
       if(buffer.back() == '=') //double ==
       {
-         stream.push_back(Token::genToken("boolop", "==", line, pos));
+         stream.push_back(Token::genToken("==", line, pos));
          buffer = "";
       }
+
       else //don't know yet 
       {
         buffer.push_back(c);
       }
+
     }
+
     else if(c == '$') //end of file
     {
-      cout << "End of file character reached. Lex completed." << endl;
-      printTokens();
-      return 0;
+      eop = true;
+      return true;
     }
+
     else if(c == ' ') //space
     {
       stream.push_back(Token::genToken(buffer, line, pos));
       buffer = "";
     }
+    //TODO: see if tab '\t\' is works in input
+    
+    //regular character processing
+    buffer.push_back(c);
+    
+
+ 
   }
   //symbol not in alphabet
   else
