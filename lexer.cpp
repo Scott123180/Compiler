@@ -9,8 +9,13 @@ using namespace std;
 
 bool addToBuffer(char c);
 
+bool previousWasEq = false; //for "==" checking
+
+bool inString = false; //for string expressions
+
 string buffer = "";
 
+//defined characters
 vector<char> acceptedChars = {
 'a', 'b', 'c', 'd', 'e', 'f',
 'g', 'h', 'i', 'j', 'k', 'l',
@@ -19,7 +24,16 @@ vector<char> acceptedChars = {
 'y', 'z', '0', '1', '2', '3',
 '4', '5', '6', '7', '8', '9',
 '=', ' ', '!', '+', '$', '{',
-'}', '(', ')', '"'
+'}', '(', ')', '"', ' '
+};
+
+//accepted string literal characters:any characters a...z and spaces
+vector<char> acceptedString = {
+'a', 'b', 'c', 'd', 'e', 'f',
+'g', 'h', 'i', 'j', 'k', 'l',
+'m', 'n', 'o', 'p', 'q', 'r',
+'s', 't', 'u', 'v', 'w', 'x',
+'y', 'z', ' '
 };
 
 vector<Token> stream;
@@ -62,22 +76,63 @@ int main()
 
 //returns false if error, adds token to buffer otherwise
 bool addToBuffer(char c, int line, int pos)
-{ 
+{
+  //reset equal condition
+  if(c != '=') previousWasEq = false;
+
   //ensure symbol is in alphabet
   if(find(acceptedChars.begin(), acceptedChars.end(), c) != vector.end())
   {
-    //separator processing
-    if(c == '=')
+    //string expression processiong
+    if(c == '"')
     {
-      if(buffer.back() == '=') //double ==
+      if(!(inString)) //left quote
       {
-         stream.push_back(Token::genToken("==", line, pos));
+        inString = true;
+        stream.push_back(Token::Token("leftQuote", c, line, pos));
+        return true;
+      }
+      else //right quote
+      {
+        inString = false;
+        stream.push_back(Token::Token("charList", buffer, line, pos)); //tokenize buffer
+        buffer = "";
+        stream.push_back(Token::Token("rightQuote", c, line, pos));
+        return true;
+      }
+    }
+   
+ 
+    if(inString) //if in a string expression
+    {
+      //search for valid char: true if is valid
+      if(find(acceptedString.begin(), acceptedString.end(), c) != vector.end()) 
+      {
+        buffer.push_back(c);
+        return true;
+      }
+   
+      else //ERROR:invalid character
+      {
+        cout << "Lex error: character: " << c 
+        << " is not a valid character in a string expression." << endl;
+        return false;
+      }
+    }
+    //separator processing
+    else if(c == '=')
+    {
+      if(buffer.back() == "=") //double ==
+      {
+         stream.push_back(Token::Token("==", line, pos));
          buffer = "";
+         previousWasEq = false;
       }
 
       else //don't know yet 
       {
         buffer.push_back(c);
+        previousWasEq = true;
       }
 
     }
@@ -87,13 +142,21 @@ bool addToBuffer(char c, int line, int pos)
       eop = true;
       return true;
     }
-
-    else if(c == ' ') //space
+    
+    else if(c == ' ') //space (doesn't get tokenized)
     {
-      stream.push_back(Token::genToken(buffer, line, pos));
+      stream.push_back(Token::Token(buffer, line, pos));
       buffer = "";
     }
-    //TODO: see if tab '\t\' is works in input
+    //regular separators
+    else if(c == '{' || '}' || '(' || ')')
+    {
+      stream.push_back(Token::genToken(buffer, line, pos)); //push back buffer
+      buffer = "";
+    }
+
+    //TODO: see if tab '\t' is works in input
+    
     
     //regular character processing
     buffer.push_back(c);
@@ -111,5 +174,5 @@ bool addToBuffer(char c, int line, int pos)
 
 void printTokens()
 {
-
+   
 }

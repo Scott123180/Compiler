@@ -16,7 +16,7 @@ class Token
   Token::Token(string d, int l, int p) : data(d), line(l), position(p)
   {
     //based on type, do conversions / checking 
-
+    
     //id's | if length one and is a-z, then set type as id
     if(d.length == 1)
     {
