@@ -7,7 +7,8 @@
 class Token
 {
   public:
-    Token::Token(string t, string d, int l, int p);
+    Token::genToken(string t, string d, int l, int p);
+    Token::genToken(string d,int l, int p);
   private:
     string type;
     string data;

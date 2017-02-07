@@ -64,8 +64,7 @@ bool addToBuffer(char c, int line, int pos)
     {
       if(buffer.back() == '=') //double ==
       {
-         //TODO; figure out token crafting
-         Token::Token("boolop", "==", line, pos);
+         stream.push_back(Token::genToken("boolop", "==", line, pos));
          buffer = "";
       }
       else //don't know yet 
@@ -81,7 +80,8 @@ bool addToBuffer(char c, int line, int pos)
     }
     else if(c == ' ') //space
     {
-      
+      stream.push_back(Token::genToken(buffer, line, pos));
+      buffer = "";
     }
   }
   //symbol not in alphabet
