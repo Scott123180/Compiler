@@ -63,6 +63,11 @@ int main()
       //add to buffer to recognize regex patterns 
       if(!addToBuffer(curLine[i], lineNum, i)) //try, if fails
       {
+        //TODO: needs to be removed after testing
+        printTokens();
+        cout << buffer << endl;
+        //end TODO
+
         //addToBuffer will print error message
         cout << "Error at line " << lineNum << endl;
         cout << "Error at position " << i << endl;
