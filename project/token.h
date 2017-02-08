@@ -14,6 +14,7 @@ class Token
   public:
     Token(string t, string d, int l, int p);
     Token(string d,int l, int p);
+
     string getType();
     string getData();
     int getLine();
