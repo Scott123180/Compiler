@@ -86,15 +86,15 @@ int main()
 //returns false if error, adds token to buffer otherwise
 bool addToBuffer(char c, int line, int pos)
 {
-  //reset equal condition
-  if(c != '=') previousWasEq = false;
 
   //ensure symbol is in alphabet
   if(find(acceptedChars.begin(), acceptedChars.end(), c) != acceptedChars.end())
   {
+
     //string expression processing
     if(c == '"')
     {
+
       if(!(inString)) //left quote
       {
         inString = true;
@@ -110,8 +110,8 @@ bool addToBuffer(char c, int line, int pos)
         return true;
       }
     }
-   
- 
+
+
     if(inString) //if in a string expression
     {
       //search for valid char: true if is valid
@@ -128,7 +128,16 @@ bool addToBuffer(char c, int line, int pos)
         return false;
       }
     }
+
     //separator processing
+
+    //"==" processing
+    else if(c != '=' && previousWasEq)
+    {
+      previousWasEq = false;
+      stream.push_back(Token("=", line, (pos - 1)));
+    } //resume current character processing
+
     else if(c == '=')
     {
       if(buffer.back() == '=') //double ==
@@ -138,7 +147,7 @@ bool addToBuffer(char c, int line, int pos)
          previousWasEq = false;
       }
 
-      else //don't know yet 
+      else //don't know yet
       {
         buffer.push_back(c);
         previousWasEq = true;
@@ -154,20 +163,26 @@ bool addToBuffer(char c, int line, int pos)
     
     else if(c == ' ') //space (doesn't get tokenized)
     {
-      stream.push_back(Token(buffer, line, pos));
-      buffer = "";
+      if(!(buffer.empty())) //if the buffer has item
+      {
+        stream.push_back(Token(buffer, line, pos));
+        buffer = "";
+      }
+      return true;
     }
     //regular separators
-    else if(c == '{' || '}' || '(' || ')')
+    else if((c == '{') || (c =='}') || (c == '(') || (c == ')'))
     {
       stream.push_back(Token(buffer, line, pos)); //push back buffer
       buffer = "";
+      return true;
     }
     
     
     else//regular character processing
     {
         buffer.push_back(c);
+        return true;
     }
 
       //TODO: see if tab '\t' is works in input
