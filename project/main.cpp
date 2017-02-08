@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <string>
 #include <algorithm>
 
 #include "token.h"
@@ -19,7 +18,7 @@ string buffer = "";
 
 bool eop = false; //end of program
 
-vector<Token> stream;
+vector<Token> stream = {};
 
 
 //defined characters
@@ -181,7 +180,7 @@ void printTokens()
 {
   for(int i = 0; i < stream.size(); i++)
   {
-    cout << i << ". Data: " << stream.at(i).getData() << " Type: " << stream.at(i).getType()
-    << " Line: " << stream.at(i).getLine() << endl;
+    cout << i << ". Data: " << stream[i].getData() << " Type: " << stream[i].getType()
+    << " Line: " << stream[i].getLine() << endl;
   }
 }

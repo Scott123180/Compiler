@@ -19,7 +19,6 @@ class Token
     string getData();
     int getLine();
     int getPos();
-
     string findType();
 
   private:
