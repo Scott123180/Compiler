@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
+
 
 #include "token.h"
 
@@ -74,7 +77,7 @@ int main()
     } 
   }
   
-  cout << "End of program reached. Printing tokens" << endl;
+  cout << "End of program reached. Printing tokens to \"lexer.html\"." << endl;
   
   printTokens();
   
@@ -196,10 +199,40 @@ bool addToBuffer(char c, int line, int pos)
 
 void printTokens()
 {
+  //filestream
+  ofstream outputHTML;
+  outputHTML.open("lexer.html", ios::out | ios::trunc); //open and clear file
+
+  //html header
+  outputHTML << "<!DOCTYPE html> \n"
+       << "<html>\n"
+       << "<head>\n"
+       << "<title>Lex Output</title>\n"
+       << "<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap/css/bootstrap.css\">"
+       << "</head>\n"
+       << "<body>\n";
+
+  //table
+  outputHTML <<"<table class = \"table\" style=\"width: 30%;\">\n"
+       << "<tr>\n"
+       << "<th>Data</th>\n"
+       << "<th>Type</th>\n"
+       << "<th>Line</th>\n"
+       << "</tr>\n";
+  //table data
   for(int i = 0; i < stream.size(); i++)
   {
-
-    cout << i << ". Data: " << stream[i].getData() << " Type: T_" << stream[i].getType()
-    << " Line: " << stream[i].getLine() << endl;
+    string blank = ""; //gotta love that left association
+    outputHTML << blank << "<tr>\n"
+         << "<th>" << stream[i].getData() << "</th>\n"
+         << "<th>" << "T_" << stream[i].getType() << "</th>\n"
+         << "<th>" << stream[i].getLine() << "</th>\n"
+         << "</tr>\n";
   }
+  //html footer
+  outputHTML << "</table>\n"
+       << "</body>\n"
+       << "</html>";
+
+  outputHTML.close();
 }
