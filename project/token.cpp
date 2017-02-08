@@ -25,17 +25,17 @@ string Token::findType() //line num and position for errors
   }
   else //not a map character and because of conditions, cannot have a len > 1
   {
-    if(d.length > 1) //ERROR: Invalid character
+    if(data.length() > 1) //ERROR: Invalid character
     {
       //TODO: Deal with error 
     } 
     else
     {
-      if(find(letters.begin(), letters.end(), data != letters.end()) //true if char
+      if(find(letters.begin(), letters.end(), data) != letters.end()) //true if char
       {
         return "id"; 
       }
-      else if(find(digits.begin(), digits.end() data != digits.end()) //true if digit
+      else if(find(digits.begin(), digits.end(), data) != digits.end()) //true if digit
       {
         return "digit";
       }

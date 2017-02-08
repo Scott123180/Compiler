@@ -4,10 +4,10 @@ project(Compiler)
 set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCE_FILES
-        lexer.cpp
-        main.cpp
-        README.md
-        token.cpp
-        token.h)
+        project/lexer.cpp
+        project/main.cpp
+        project/README.md
+        project/token.cpp
+        project/token.h project/lexer.h)
 
 add_executable(Compiler ${SOURCE_FILES})

@@ -7,7 +7,9 @@
 
 using namespace std;
 
-bool addToBuffer(char c);
+bool addToBuffer(char c, int line, int pos);
+
+void printTokens();
 
 bool previousWasEq = false; //for "==" checking
 
@@ -81,15 +83,15 @@ bool addToBuffer(char c, int line, int pos)
   if(c != '=') previousWasEq = false;
 
   //ensure symbol is in alphabet
-  if(find(acceptedChars.begin(), acceptedChars.end(), c) != vector.end())
+  if(find(acceptedChars.begin(), acceptedChars.end(), c) != acceptedChars.end())
   {
-    //string expression processiong
+    //string expression processing
     if(c == '"')
     {
       if(!(inString)) //left quote
       {
         inString = true;
-        stream.push_back(Token::Token("leftQuote", c, line, pos));
+        stream.push_back(Token::Token("leftQuote", string(1,c), line, pos));
         return true;
       }
       else //right quote
@@ -97,7 +99,7 @@ bool addToBuffer(char c, int line, int pos)
         inString = false;
         stream.push_back(Token::Token("charList", buffer, line, pos)); //tokenize buffer
         buffer = "";
-        stream.push_back(Token::Token("rightQuote", c, line, pos));
+        stream.push_back(Token::Token("rightQuote", string(1,c), line, pos));
         return true;
       }
     }
@@ -106,7 +108,7 @@ bool addToBuffer(char c, int line, int pos)
     if(inString) //if in a string expression
     {
       //search for valid char: true if is valid
-      if(find(acceptedString.begin(), acceptedString.end(), c) != vector.end()) 
+      if(find(acceptedString.begin(), acceptedString.end(), c) != acceptedString.end())
       {
         buffer.push_back(c);
         return true;
@@ -122,7 +124,7 @@ bool addToBuffer(char c, int line, int pos)
     //separator processing
     else if(c == '=')
     {
-      if(buffer.back() == "=") //double ==
+      if(buffer.back() == '=') //double ==
       {
          stream.push_back(Token::Token("==", line, pos));
          buffer = "";
@@ -154,14 +156,14 @@ bool addToBuffer(char c, int line, int pos)
       stream.push_back(Token::Token(buffer, line, pos)); //push back buffer
       buffer = "";
     }
+    
+    
+    else//regular character processing
+    {
+        buffer.push_back(c);
+    }
 
-    //TODO: see if tab '\t' is works in input
-    
-    
-    //regular character processing
-    buffer.push_back(c);
-    
-
+      //TODO: see if tab '\t' is works in input
  
   }
   //symbol not in alphabet
