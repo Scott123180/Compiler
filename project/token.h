@@ -19,7 +19,7 @@ class Token
     string getData();
     int getLine();
     int getPos();
-    string findType();
+    string findType(string tContent);
 
   private:
     string type;
@@ -42,7 +42,8 @@ class Token
       {"{", "leftBrace"},
       {"}", "rightBrace"},
       {"(", "leftParen"},
-      {")", "rightParen"}
+      {")", "rightParen"},
+      {"$", "EOP"}
     };
     vector<string> letters= {
     "a", "b", "c", "d", "e", "f",

@@ -158,6 +158,8 @@ bool addToBuffer(char c, int line, int pos)
     else if(c == '$') //end of file
     {
       eop = true;
+      buffer.push_back(c);
+      stream.push_back(Token(buffer, line, pos));
       return true;
     }
     
@@ -173,6 +175,7 @@ bool addToBuffer(char c, int line, int pos)
     //regular separators
     else if((c == '{') || (c =='}') || (c == '(') || (c == ')'))
     {
+      buffer.push_back(c);
       stream.push_back(Token(buffer, line, pos)); //push back buffer
       buffer = "";
       return true;
