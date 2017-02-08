@@ -151,7 +151,7 @@ bool addToBuffer(char c, int line, int pos)
     //regular separators
     else if(c == '{' || '}' || '(' || ')')
     {
-      stream.push_back(Token::genToken(buffer, line, pos)); //push back buffer
+      stream.push_back(Token::Token(buffer, line, pos)); //push back buffer
       buffer = "";
     }
 
@@ -174,5 +174,9 @@ bool addToBuffer(char c, int line, int pos)
 
 void printTokens()
 {
-   
+  for(int i : stream)
+  {
+    cout << i << ". Data: " << Token::getData() << " Type: " << Token::getType()
+    << " Line: " << Token::getLine() << endl;
+  }
 }

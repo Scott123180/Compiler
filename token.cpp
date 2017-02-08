@@ -1,35 +1,50 @@
-#include "disease.h"
+#include "token.h"
 
 using namespace std;
 
-class Token
-{
-  //type known
-  Token::Token(string t, string d, int l, int p) : type(t), data(d), line(l), position(p) {
+//type known
+Token::Token(string t, string d, int l, int p) : type(t), data(d), line(l), position(p) {
   if(t == "leftQuote") {}
   else if(t == "rightQuote") {}
   else if(t == "charList") {}
- 
+ }
+//type unknown
+Token::Token(string d, int l, int p) : data(d), line(l), position(p)
+{
+  //based on type, do conversions / checking 
+  type = Token::findType();
+}
 
-  }
-  //type unknown
-  Token::Token(string d, int l, int p) : data(d), line(l), position(p)
+string Token::findType() //line num and position for errors
+{
+  //check the map
+  auto it = textToType.find(data);
+  if(it != textToType.end()) //if recognized in the map
   {
-    //based on type, do conversions / checking 
-    
-    //id's | if length one and is a-z, then set type as id
-    if(d.length == 1)
+    type = textToType[data];
+  }
+  else //not a map character and because of conditions, cannot have a len > 1
+  {
+    if(d.length > 1) //ERROR: Invalid character
     {
-      //search through letters
-      if(find(letters.begin(), letters.end(), d) != vector.end()) //if in recognizes list id's
+      //TODO: Deal with error 
+    } 
+    else
+    {
+      if(find(letters.begin(), letters.end(), data != letters.end()) //true if char
       {
-        
+        return "id"; 
       }
-      else //error 
+      else if(find(digits.begin(), digits.end() data != digits.end()) //true if digit
       {
-
+        return "digit";
+      }
+      else //ERROR: Invalid id
+      {
+        //TODO: Deal with error
       }
     }
-    //call function to look through map without adding to it if it doesn't find anything
   }
-}
+} 
+
+

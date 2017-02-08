@@ -5,12 +5,18 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <iostream>
 
 class Token
 {
   public:
     Token(string t, string d, int l, int p);
     Token(string d,int l, int p);
+
+    string getType();
+    string getData();
+    int getLine();
+    int getPos();
   private:
     string type;
     string data;
@@ -40,19 +46,13 @@ class Token
     "m", "n", "o", "p", "q", "r",
     "s", "t", "u", "v", "w", "x",
     "y", "z"};
-    
-    string findType()
-    {
-      auto it = textToType.find(data);
-      if(it != textToType.end()) //if recognized in the map
-      {
-        type = textToType[data];
-      }
-      else
-      {
-        //Error
-      }
-    } 
+    vector digits<string> = {
+    "0", "1", "2", "3", "4",
+    "5", "6", "7", "8", "9"
+    }
+   
+ 
+    string findType() {};
 };
 
 
