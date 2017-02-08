@@ -56,7 +56,7 @@ int main()
     getline(cin, curLine); 
    
     buffer = "";
-     
+
     //loop through string
     for(int i = 0; i < curLine.length(); i++)
     {
@@ -110,8 +110,15 @@ bool addToBuffer(char c, int line, int pos)
         return true;
       }
     }
-
-
+/*
+    //"=" processing
+    if((c != '=') && previousWasEq && !(inString))
+    {
+      previousWasEq = false;
+      cout << "pushing extra = " << endl;
+      stream.push_back(Token(buffer, line, (pos - 1)));
+    } //resume current character processing
+*/
     if(inString) //if in a string expression
     {
       //search for valid char: true if is valid
@@ -131,26 +138,21 @@ bool addToBuffer(char c, int line, int pos)
 
     //separator processing
 
-    //"==" processing
-    else if(c != '=' && previousWasEq)
-    {
-      previousWasEq = false;
-      stream.push_back(Token("=", line, (pos - 1)));
-    } //resume current character processing
-
     else if(c == '=')
     {
-      if(buffer.back() == '=') //double ==
+      if(previousWasEq) //double ==
       {
          stream.push_back(Token("==", line, pos));
          buffer = "";
          previousWasEq = false;
+         return true;
       }
 
       else //don't know yet
       {
         buffer.push_back(c);
         previousWasEq = true;
+        return true;
       }
 
     }
@@ -175,27 +177,32 @@ bool addToBuffer(char c, int line, int pos)
     //regular separators
     else if((c == '{') || (c =='}') || (c == '(') || (c == ')'))
     {
-      buffer.push_back(c);
-      stream.push_back(Token(buffer, line, pos)); //push back buffer
-      buffer = "";
+      if(!(buffer.empty())) //buffer has contents
+      {
+        stream.push_back(Token(buffer, line, pos)); //push back buffer
+        stream.push_back(Token(string(1,c), line, pos)); //push back separator
+        buffer = ""; //clear buffer
+      }
+      else //buffer clear
+      {
+        stream.push_back(Token(string(1,c), line, pos)); //push back separator
+      }
       return true;
     }
-    
-    
+
     else//regular character processing
     {
         buffer.push_back(c);
         return true;
     }
 
-      //TODO: see if tab '\t' is works in input
- 
   }
   //symbol not in alphabet
   else
   {
-    cout << "The symbol " << c << " was not found. Aborting lex.";
-    return false;
+    cout << "The symbol \"" << c <<"\" was not found. Aborting lex." << endl <<
+         "Line: " << line << " position: " << pos << endl;
+    exit(1);
   }
 }
 
@@ -203,7 +210,7 @@ void printTokens()
 {
   for(int i = 0; i < stream.size(); i++)
   {
-    cout << i << ". Data: " << stream[i].getData() << " Type: " << stream[i].getType()
+    cout << i << ". Data: " << stream[i].getData() << " Type: T_" << stream[i].getType()
     << " Line: " << stream[i].getLine() << endl;
   }
 }

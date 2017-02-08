@@ -11,39 +11,41 @@ Token::Token(string t, string d, int l, int p) : type(t), data(d), line(l), posi
 //type unknown
 Token::Token(string d, int l, int p) : data(d), line(l), position(p)
 {
-  //based on type, do conversions / checking 
-  type = Token::findType(data);
+  //based on type, do conversions / checking
+  type = Token::findType();
 }
 
-string Token::findType(string tContent) //line num and position for errors
+string Token::findType() //line num and position for errors
 {
   //check the map
-  auto it = textToType.find(tContent);
+  auto it = textToType.find(data);
   if(it != textToType.end()) //if recognized in the map
   {
-    return textToType[tContent];
+    return textToType[data];
   }
   else //not a map character and because of conditions, cannot have a len > 1
   {
-    if(tContent.length() > 1) //ERROR: Invalid character
+    if(data.length() > 1) //ERROR: Invalid character
     {
-      //TODO: Deal with error
-      return "bologna data.length";
+      //Exit execution if character invalid
+      cout << "Invalid input \"" << data << "\" at line " << line << "::_" << position << endl;
+      exit(1);
     } 
     else
     {
-      if(find(letters.begin(), letters.end(), tContent) != letters.end()) //true if char
+      if(find(letters.begin(), letters.end(), data) != letters.end()) //true if char
       {
         return "id"; 
       }
-      else if(find(digits.begin(), digits.end(), tContent) != digits.end()) //true if digit
+      else if(find(digits.begin(), digits.end(), data) != digits.end()) //true if digit
       {
         return "digit";
       }
       else //ERROR: Invalid id
       {
-        //TODO: Deal with error
-        return "bologna invalid id";
+        //Exit execution if character invalid
+        cout << "Invalid id \"" << data << "\" at line " << line << "::_" << position << endl;
+        exit(1);
       }
     }
   }

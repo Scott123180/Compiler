@@ -19,7 +19,7 @@ class Token
     string getData();
     int getLine();
     int getPos();
-    string findType(string tContent);
+    string findType();
 
   private:
     string type;
