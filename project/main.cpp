@@ -10,8 +10,6 @@ bool addToBuffer(char c, int line, int pos);
 
 void printTokens();
 
-bool previousWasEq = false; //for "==" checking
-
 bool inString = false; //for string expressions
 
 string buffer = "";
@@ -110,15 +108,7 @@ bool addToBuffer(char c, int line, int pos)
         return true;
       }
     }
-/*
-    //"=" processing
-    if((c != '=') && previousWasEq && !(inString))
-    {
-      previousWasEq = false;
-      cout << "pushing extra = " << endl;
-      stream.push_back(Token(buffer, line, (pos - 1)));
-    } //resume current character processing
-*/
+
     if(inString) //if in a string expression
     {
       //search for valid char: true if is valid
@@ -140,18 +130,16 @@ bool addToBuffer(char c, int line, int pos)
 
     else if(c == '=')
     {
-      if(previousWasEq) //double ==
+      if(buffer.back() == '=') //double ==
       {
          stream.push_back(Token("==", line, pos));
          buffer = "";
-         previousWasEq = false;
          return true;
       }
 
       else //don't know yet
       {
         buffer.push_back(c);
-        previousWasEq = true;
         return true;
       }
 
@@ -210,6 +198,7 @@ void printTokens()
 {
   for(int i = 0; i < stream.size(); i++)
   {
+
     cout << i << ". Data: " << stream[i].getData() << " Type: T_" << stream[i].getType()
     << " Line: " << stream[i].getLine() << endl;
   }
