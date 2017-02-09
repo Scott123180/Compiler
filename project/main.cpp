@@ -138,7 +138,7 @@ bool addToBuffer(char c, int line, int pos, int curLineLen)
       //got to end of line without end quote
       if ((curLineLen - 1) == pos)
       {
-        cout << "Lex error: run on quote. Ensure string literals start and end on the same line" << endl;
+        cout << "Lex error: run-on quote. Ensure string literals start and end on the same line" << endl;
         return false;
       }
       return true;
