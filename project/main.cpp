@@ -64,10 +64,8 @@ int main()
       //add to buffer to recognize regex patterns 
       if(!addToBuffer(curLine[i], lineNum, i, static_cast<int>(curLine.length()))) //try, if fails
       {
-        //TODO: needs to be removed after testing
-        cout << "Error: " << buffer << endl;
-        //end TODO
 
+        cout << "Error: " << buffer << endl;
         //addToBuffer will print error message
         cout << "Error at line " << lineNum << " at position " << i << endl;
         return 1; //exit program 
@@ -130,15 +128,20 @@ bool addToBuffer(char c, int line, int pos, int curLineLen)
       if(find(acceptedString.begin(), acceptedString.end(), c) != acceptedString.end())
       {
         buffer.push_back(c);
-        return true;
       }
-   
       else //ERROR:invalid character
       {
         cout << "Lex error: character: " << c 
         << " is not a valid character in a string expression." << endl;
         return false;
       }
+      //got to end of line without end quote
+      if ((curLineLen - 1) == pos)
+      {
+        cout << "Lex error: run on quote. Ensure string literals start and end on the same line" << endl;
+        return false;
+      }
+      return true;
     }
 
     //separator processing
