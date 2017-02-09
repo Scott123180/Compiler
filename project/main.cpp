@@ -236,18 +236,18 @@ void printTokens()
   //table
   outputHTML <<"<table class = \"table\" style=\"width: 30%;\">\n"
        << "<tr>\n"
-       << "<th>Data</th>\n"
-       << "<th>Type</th>\n"
        << "<th>Line</th>\n"
+       << "<th>Type</th>\n"
+       << "<th>Data</th>\n"
        << "</tr>\n";
   //table data
   for(int i = 0; i < stream.size(); i++)
   {
     string blank = ""; //gotta love that left association
     outputHTML << blank << "<tr>\n"
-         << "<th style=\"white-space: pre;\">" << stream[i].getData() << "</th>\n" //preserve white space with "pre"
-         << "<th>" << "T_" << stream[i].getType() << "</th>\n"
          << "<th>" << stream[i].getLine() << "</th>\n"
+         << "<th>" << "T_" << stream[i].getType() << "</th>\n"
+         << "<th style=\"white-space: pre;\">" << stream[i].getData() << "</th>\n" //preserve white space with "pre"
          << "</tr>\n";
   }
   //html footer
