@@ -35,6 +35,7 @@ class Token
       {"=", "assignOp"},
       {"==", "boolOp"},
       {"!=", "boolOp"},
+      {"+", "intOp"},
       {"true", "boolVal"},
       {"false", "boolVal"},
       {"while", "whileStatement"},
