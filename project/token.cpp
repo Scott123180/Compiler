@@ -4,10 +4,9 @@ using namespace std;
 
 //type known
 Token::Token(string t, string d, int l, int p) : type(t), data(d), line(l), position(p) {
-  if(t == "leftQuote") {}
-  else if(t == "rightQuote") {}
-  else if(t == "charList") {}
-  //TODO: manual token generation
+  if(t == "leftQuote") type = "leftQuote";
+  else if(t == "rightQuote") type = "rightQuote";
+  else if(t == "charList") type = "charList";
  }
 //type unknown
 Token::Token(string d, int l, int p) : data(d), line(l), position(p)

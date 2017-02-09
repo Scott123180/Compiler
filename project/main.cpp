@@ -1,9 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <iostream>
 #include <fstream>
-
 
 #include "token.h"
 
@@ -40,7 +38,9 @@ vector<char> acceptedString = {
 'g', 'h', 'i', 'j', 'k', 'l',
 'm', 'n', 'o', 'p', 'q', 'r',
 's', 't', 'u', 'v', 'w', 'x',
-'y', 'z', ' '
+'y', 'z', '0', '1', '2', '3',
+'4', '5', '6', '7', '8', '9',
+' '
 };
 
 
@@ -245,7 +245,7 @@ void printTokens()
   {
     string blank = ""; //gotta love that left association
     outputHTML << blank << "<tr>\n"
-         << "<th>" << stream[i].getData() << "</th>\n"
+         << "<th style=\"white-space: pre;\">" << stream[i].getData() << "</th>\n" //preserve white space with "pre"
          << "<th>" << "T_" << stream[i].getType() << "</th>\n"
          << "<th>" << stream[i].getLine() << "</th>\n"
          << "</tr>\n";
