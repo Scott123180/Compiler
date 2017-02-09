@@ -29,7 +29,8 @@ string Token::findType() //line num and position for errors
     if(data.length() > 1) //ERROR: Invalid character
     {
       //Exit execution if character invalid
-      cout << "Invalid input \"" << data << "\" at line " << line << "::_" << position << endl;
+      cout << "Error in token creation." << endl;
+      cout << "Invalid input \"" << data << "\" at line " << line << " position: " << position << endl;
       exit(1);
     } 
     else
@@ -45,7 +46,8 @@ string Token::findType() //line num and position for errors
       else //ERROR: Invalid id
       {
         //Exit execution if character invalid
-        cout << "Invalid id \"" << data << "\" at line " << line << "::_" << position << endl;
+        cout << "Error in token creation." << endl;
+        cout << "Invalid id \"" << data << "\" at line " << line << " position: " << position << endl;
         exit(1);
       }
     }
