@@ -1,0 +1,9 @@
+So I've borrowed and moddified a few test cases from the all star projects and here are the results.
+
+Saving any lapses in judgement, the lexer should be fully functional. I've tested it with many use cases
+and have found that it does not accept symbols that are not defined in their respective scopes. The program 
+does not accept erronious symbols in general, but also checks for invalid symbols in character arrays.
+
+I have also tested the program for run on quotation marks and returns an error if there are any. The files that
+are in the diretory labeled "testcases" contain a few programs which I've been modifying to fit a variety of
+tests.

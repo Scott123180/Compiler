@@ -163,11 +163,12 @@ bool addToBuffer(char c, int line, int pos, int curLineLen)
 
     }
 
-    else if(c == '$') //end of file
+    else if(c == '$') //end of program
     {
       eop = true;
       buffer.push_back(c);
       stream.push_back(Token(buffer, line, pos));
+      buffer="";
       return true;
     }
     

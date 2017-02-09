@@ -1,4 +1,5 @@
 {
   string s
-  s = "   $      abcde  1234 "
+  s = "   A      abcde  1234 "
+  
 } $
