@@ -9,7 +9,7 @@
 
 using namespace std;
 
-bool addToBuffer(char c, int line, int pos);
+bool addToBuffer(char c, int line, int pos, int curLineLen);
 
 void printTokens();
 
@@ -62,16 +62,14 @@ int main()
     for(int i = 0; i < curLine.length(); i++)
     {
       //add to buffer to recognize regex patterns 
-      if(!addToBuffer(curLine[i], lineNum, i)) //try, if fails
+      if(!addToBuffer(curLine[i], lineNum, i, static_cast<int>(curLine.length()))) //try, if fails
       {
         //TODO: needs to be removed after testing
-        printTokens();
-        cout << buffer << endl;
+        cout << "Error: " << buffer << endl;
         //end TODO
 
         //addToBuffer will print error message
-        cout << "Error at line " << lineNum << endl;
-        cout << "Error at position " << i << endl;
+        cout << "Error at line " << lineNum << " at position " << i << endl;
         return 1; //exit program 
       }
     } 
@@ -85,7 +83,7 @@ int main()
 }
 
 //returns false if error, adds token to buffer otherwise
-bool addToBuffer(char c, int line, int pos)
+bool addToBuffer(char c, int line, int pos, int curLineLen)
 {
 
   //ensure symbol is in alphabet
@@ -111,6 +109,20 @@ bool addToBuffer(char c, int line, int pos)
         return true;
       }
     }
+
+    //push separator if not "=="
+    if(!(buffer.empty()))
+    {
+      if(buffer.back() == '=')
+      {
+        if(c != '=')
+        {
+          stream.push_back(Token(buffer, line, pos));
+          buffer = "";
+        }
+
+      }
+    } //continue processing
 
     if(inString) //if in a string expression
     {
@@ -180,7 +192,14 @@ bool addToBuffer(char c, int line, int pos)
       }
       return true;
     }
-
+    //end of line
+    else if ((curLineLen - 1) == pos)
+    {
+      buffer.push_back(c); //push remainder of line
+      stream.push_back(Token(buffer, line, pos));
+      buffer = "";
+      return true;
+    }
     else//regular character processing
     {
         buffer.push_back(c);
@@ -196,6 +215,8 @@ bool addToBuffer(char c, int line, int pos)
     exit(1);
   }
 }
+
+
 
 void printTokens()
 {

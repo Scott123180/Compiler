@@ -7,6 +7,7 @@ Token::Token(string t, string d, int l, int p) : type(t), data(d), line(l), posi
   if(t == "leftQuote") {}
   else if(t == "rightQuote") {}
   else if(t == "charList") {}
+  //TODO: manual token generation
  }
 //type unknown
 Token::Token(string d, int l, int p) : data(d), line(l), position(p)
