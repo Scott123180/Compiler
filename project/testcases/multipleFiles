@@ -1,0 +1,22 @@
+{
+  boolean b
+  if(b==true)
+  b=false
+}$
+
+{
+  string s
+  s = "         abcde  1234 "
+} $
+
+{
+  boolean b
+  if (b === true)
+  b = false
+} $
+
+{
+  boolean b
+  if (b === true)
+  b = false
+} $int i

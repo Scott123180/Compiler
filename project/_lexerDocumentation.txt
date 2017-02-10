@@ -5,14 +5,15 @@ Use the command "make all" to build the project in it's entirety. The output wil
 called "test1"
 
 Running the project:
-./test1 < [file of your choice as input]
+./test1  [file of your choice as input]
 
 Flow of control:
+1. When the program is invoked via the CLI, an input file name must be specified for the lexer so that testcases 
+   can be run. 
 
-1.A few initialization variables and data structures are defined in the main file, which are mostly used
-for stopping the program input and determining valid input.
+2.A few initialization variables and data structures are defined in the main file for determining input.
 
-2. After this, a line is taken in as a whole, then looped through, character by character. During this
+3. After this, a line is taken in as a whole, then looped through, character by character. During this
 process of looping, 
 	a. each character is checked as a valid symbol
 	b. conditionals are checked on the symbol to determine if it is a symbol that separates tokens and/or
@@ -20,11 +21,11 @@ process of looping,
         c. If it cannot be immediately determined, the symbol will be added to a buffer, which iself can
 	   later be flushed and turned into a token.
 
-3. If a token's type is unknown, the token is crafted using the token class and an overloaded method which
+4. If a token's type is unknown, the token is crafted using the token class and an overloaded method which
    determines what type it is and/or any errors in it. Tokens are added to a vector of token objects.
 
-4. Once the symbol for the end of the file is reached, the lexer generates list of tokens and prints out
-   any respective meta-information to an html file called "lexer.html". In this way it is easy to ensure neat
+5. Once the end of the file is reached, the lexer generates list of tokens and prints out
+   any respective meta-information to an html file called "lexer.html". In this way it is easy to ensure neat-ish
    output formatting that is not just in the command prompt.
 
 E. Any errors output will be written to the command line and additional information will be given to the

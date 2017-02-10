@@ -7,3 +7,6 @@ does not accept erronious symbols in general, but also checks for invalid symbol
 I have also tested the program for run on quotation marks and returns an error if there are any. The files that
 are in the diretory labeled "testcases" contain a few programs which I've been modifying to fit a variety of
 tests.
+
+The program works with sequential programs as specified in the requirements, but this can easily be changed
+if need be.

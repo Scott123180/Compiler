@@ -15,8 +15,6 @@ bool inString = false; //for string expressions
 
 string buffer = "";
 
-bool eop = false; //end of program
-
 vector<Token> stream = {};
 
 
@@ -45,16 +43,31 @@ vector<char> acceptedString = {
 
 
 
-int main()
+int main(int argc, char** argv)
 {
-  
+  if(argc != 2)//make sure input file is specified
+  {
+    cout << "Must have the name of a text file for input with no spaces as only argument" << endl;
+    return 1;
+  }
+  string fileName = argv[1];
+
+  ifstream input;
+  input.open(fileName); //open file
+
+  if (input.fail()) //check for error in file reading
+  {
+    cerr << "Error opening parameter file for simulation" << endl;
+    exit(1); //exit the program
+  }
+
   int lineNum = 0;
 
-  while(!eop) //loop until end of file
+  while(!(input.eof())) //loop until end of file
   {
     ++lineNum;
     string curLine;
-    getline(cin, curLine); 
+    getline(input, curLine);
    
     buffer = "";
 
@@ -157,7 +170,12 @@ bool addToBuffer(char c, int line, int pos, int curLineLen)
 
       else //don't know yet
       {
-        buffer.push_back(c);
+        if(!(buffer.empty())) //create token from buffer
+        {
+          stream.push_back(Token(buffer, line, pos));
+          buffer = "";
+        }
+        buffer.push_back(c); //put '=' in buffer
         return true;
       }
 
@@ -165,7 +183,6 @@ bool addToBuffer(char c, int line, int pos, int curLineLen)
 
     else if(c == '$') //end of program
     {
-      eop = true;
       buffer.push_back(c);
       stream.push_back(Token(buffer, line, pos));
       buffer="";
