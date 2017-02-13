@@ -36,9 +36,7 @@ vector<char> acceptedString = {
 'g', 'h', 'i', 'j', 'k', 'l',
 'm', 'n', 'o', 'p', 'q', 'r',
 's', 't', 'u', 'v', 'w', 'x',
-'y', 'z', '0', '1', '2', '3',
-'4', '5', '6', '7', '8', '9',
-' '
+'y', 'z',' '
 };
 
 
@@ -114,7 +112,10 @@ bool addToBuffer(char c, int line, int pos, int curLineLen)
       else //right quote
       {
         inString = false;
+        if(!(buffer.empty())) //don't make empty charlist
+        {
         stream.push_back(Token("charList", buffer, line, pos)); //tokenize buffer
+        }
         buffer = "";
         stream.push_back(Token("rightQuote", string(1,c), line, pos));
         return true;
@@ -199,7 +200,7 @@ bool addToBuffer(char c, int line, int pos, int curLineLen)
       return true;
     }
     //regular separators
-    else if((c == '{') || (c =='}') || (c == '(') || (c == ')'))
+    else if((c == '{') || (c =='}') || (c == '(') || (c == ')' || c == '+'))
     {
       if(!(buffer.empty())) //buffer has contents
       {

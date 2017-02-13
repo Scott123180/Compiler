@@ -6,7 +6,7 @@
 
 {
   string s
-  s = "         abcde  1234 "
+  s = "         abcde "
 } $
 
 {
