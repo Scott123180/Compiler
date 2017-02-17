@@ -5,11 +5,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES
     project/testcases/minimal
-    project/main.cpp
-    project/main.h
+        project/lexer.cpp
+        project/lexer.h
     project/makefile
     project/not_main.cpp
     project/token.cpp
-    project/token.h)
+    project/token.h project/main.cpp project/main.h)
 
 add_executable(Compiler ${SOURCE_FILES})
