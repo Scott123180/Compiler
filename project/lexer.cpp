@@ -8,16 +8,8 @@
 
 using namespace std;
 
-
-int main(int argc, char** argv)
+void Lex(fileName)
 {
-  if(argc != 2)//make sure input file is specified
-  {
-    cout << "Must have the name of a text file for input with no spaces as only argument" << endl;
-    return 1;
-  }
-  string fileName = argv[1];
-
   ifstream input;
   input.open(fileName); //open file
 
@@ -208,42 +200,41 @@ bool addToBuffer(char c, int line, int pos, int curLineLen)
 
 
 
-void printTokens()
-{
-  //filestream
-  ofstream outputHTML;
-  outputHTML.open("lexer.html", ios::out | ios::trunc); //open and clear file
+void printTokens() {
+    //filestream
+    ofstream outputHTML;
+    outputHTML.open("lexer.html", ios::out | ios::trunc); //open and clear file
 
-  //html header
-  outputHTML << "<!DOCTYPE html> \n"
-       << "<html>\n"
-       << "<head>\n"
-       << "<title>Lex Output</title>\n"
-       << "<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap/css/bootstrap.css\">"
-       << "</head>\n"
-       << "<body>\n";
+    //html header
+    outputHTML << "<!DOCTYPE html> \n"
+               << "<html>\n"
+               << "<head>\n"
+               << "<title>Lex Output</title>\n"
+               << "<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap/css/bootstrap.css\">"
+               << "</head>\n"
+               << "<body>\n";
 
-  //table
-  outputHTML <<"<table class = \"table\" style=\"width: 30%;\">\n"
-       << "<tr>\n"
-       << "<th>Line</th>\n"
-       << "<th>Type</th>\n"
-       << "<th>Data</th>\n"
-       << "</tr>\n";
-  //table data
-  for(int i = 0; i < stream.size(); i++)
-  {
-    string blank = ""; //gotta love that left association
-    outputHTML << blank << "<tr>\n"
-         << "<th>" << stream[i].getLine() << "</th>\n"
-         << "<th>" << "T_" << stream[i].getType() << "</th>\n"
-         << "<th style=\"white-space: pre;\">" << stream[i].getData() << "</th>\n" //preserve white space with "pre"
-         << "</tr>\n";
-  }
-  //html footer
-  outputHTML << "</table>\n"
-       << "</body>\n"
-       << "</html>";
+    //table
+    outputHTML << "<table class = \"table\" style=\"width: 30%;\">\n"
+               << "<tr>\n"
+               << "<th>Line</th>\n"
+               << "<th>Type</th>\n"
+               << "<th>Data</th>\n"
+               << "</tr>\n";
+    //table data
+    for (int i = 0; i < stream.size(); i++) {
+        string blank = ""; //gotta love that left association
+        outputHTML << blank << "<tr>\n"
+                   << "<th>" << stream[i].getLine() << "</th>\n"
+                   << "<th>" << "T_" << stream[i].getType() << "</th>\n"
+                   << "<th style=\"white-space: pre;\">" << stream[i].getData()
+                   << "</th>\n" //preserve white space with "pre"
+                   << "</tr>\n";
+    }
+    //html footer
+    outputHTML << "</table>\n"
+               << "</body>\n"
+               << "</html>";
 
-  outputHTML.close();
+    outputHTML.close();
 }
