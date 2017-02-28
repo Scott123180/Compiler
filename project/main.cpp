@@ -13,4 +13,7 @@ int main(int argc, char** argv)
     string fileName = argv[1];
 
     Lex(fileName);
+
+    //TODO: parse and CST functions
+
 }

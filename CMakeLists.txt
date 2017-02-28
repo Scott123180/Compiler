@@ -8,7 +8,6 @@ set(SOURCE_FILES
         project/lexer.h
         project/main.cpp
         project/main.h
-        project/not_main.cpp
         project/token.cpp
         project/token.h)
 

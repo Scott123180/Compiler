@@ -44,7 +44,7 @@ void Lex(fileName)
     } 
   }
   
-  cout << "End of program reached. Printing tokens to \"lexer.html\"." << endl;
+  cout << "End of program reached. Printing tokens to \"output.html\"." << endl;
   
   printTokens();
   
@@ -203,7 +203,7 @@ bool addToBuffer(char c, int line, int pos, int curLineLen)
 void printTokens() {
     //filestream
     ofstream outputHTML;
-    outputHTML.open("lexer.html", ios::out | ios::trunc); //open and clear file
+    outputHTML.open("output.html", ios::out | ios::trunc); //open and clear file
 
     //html header
     outputHTML << "<!DOCTYPE html> \n"
