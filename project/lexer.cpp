@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void Lex(fileName)
+void Lexer::Lex(string fileName)
 {
   ifstream input;
   input.open(fileName); //open file
@@ -27,7 +27,7 @@ void Lex(fileName)
     string curLine;
     getline(input, curLine);
    
-    buffer = "";
+    Lexer::buffer = "";
 
     //loop through string
     for(int i = 0; i < curLine.length(); i++)
@@ -45,14 +45,12 @@ void Lex(fileName)
   }
   
   cout << "End of program reached. Printing tokens to \"output.html\"." << endl;
-  
-  printTokens();
-  
-  return 0;
+
+  return;
 }
 
 //returns false if error, adds token to buffer otherwise
-bool addToBuffer(char c, int line, int pos, int curLineLen)
+bool Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
 {
 
   //ensure symbol is in alphabet

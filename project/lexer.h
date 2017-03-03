@@ -8,9 +8,13 @@
 
 class Lexer
 {
+  public:
+
+    void Lexer::Lex(string fileName){};
+
   private:
 
-//accepted string literal characters:any characters a...z and spaces
+  //accepted string literal characters:any characters a...z and spaces
   vector<char> acceptedString = {
     'a', 'b', 'c', 'd', 'e', 'f',
     'g', 'h', 'i', 'j', 'k', 'l',
@@ -31,8 +35,6 @@ class Lexer
     '}', '(', ')', '"', ' '
   };
 
-  public:
-
   bool addToBuffer(char c, int line, int pos, int curLineLen);
 
   bool inString = false; //for string expressions
@@ -40,6 +42,8 @@ class Lexer
   string buffer = "";
 
   vector<Token> stream = {};
+
+
 
 };
 
