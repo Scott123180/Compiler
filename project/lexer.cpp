@@ -5,6 +5,7 @@
 
 #include "token.h"
 #include "lexer.h"
+#include "error.h"
 
 using namespace std;
 
@@ -15,8 +16,7 @@ void Lexer::Lex(string fileName)
 
   if (input.fail()) //check for error in file reading
   {
-    cerr << "Error opening parameter file for simulation" << endl;
-    exit(1); //exit the program
+    Error::genError(Error::fileInput, 0, 0, fileName, "Error opening the filename specified: ");
   }
 
   int lineNum = 0;
@@ -27,7 +27,7 @@ void Lexer::Lex(string fileName)
     string curLine;
     getline(input, curLine);
    
-    Lexer::buffer = "";
+    buffer = "";
 
     //loop through string
     for(int i = 0; i < curLine.length(); i++)
@@ -36,6 +36,7 @@ void Lexer::Lex(string fileName)
       if(!addToBuffer(curLine[i], lineNum, i, static_cast<int>(curLine.length()))) //try, if fails
       {
 
+        Error::genError(Error::lex, i, lineNum, buffer, "");
         cout << "Error: " << buffer << endl;
         //addToBuffer will print error message
         cout << "Error at line " << lineNum << " at position " << i << endl;

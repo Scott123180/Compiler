@@ -10,7 +10,7 @@ class Lexer
 {
   public:
 
-    void Lexer::Lex(string fileName){};
+    void Lexer::Lex(string fileName);
 
   private:
 

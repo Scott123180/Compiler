@@ -5,11 +5,13 @@
 
 class Error
 {
-  public:
-    void Error::Error(errorStage e, int line, int pos, string message){};
 
   private:
-    enum errorStage {fileInput, lex, parse, semantic, other};
+  public:
+    static void genError(errorStage e, int line, int pos, string data, string message);
+
+    static enum errorStage {fileInput, lex, parse, semantic};
+
 
 };
 #endif

@@ -13,13 +13,24 @@ class Output {
 
     void printHTMLFooter();
 
+    void printError();
+
   public:
     void printOutput()
     {
+      clearHTML();
       printHTMLHeader();
       printTokens();
-      printCST();
+      //printCST();
+      printHTMLFooter();
+    }
 
+    void printErrors()
+    {
+      clearHTML();
+      printHTMLHeader();
+      printError();
+      printHTMLFooter();
     }
 
 };

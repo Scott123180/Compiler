@@ -1,18 +1,21 @@
 #include <iostream>
-#include <fstream>
+#include <string>
 
-#include "main.h"
+#include "lexer.h"
+#include "error.h"
 
 int main(int argc, char** argv)
 {
+
     if(argc != 2)//make sure input file is specified
     {
-        cout << "Must have the name of a text file for input with no spaces as only argument" << endl;
-        return 1;
+      Error::genError(fileInput, 0, 0, "", "Must have the name of a text file"
+        " for input with no spaces as only argument.");
     }
+
     string fileName = argv[1];
 
-    Lex(fileName);
+    Lexer::Lex(fileName);
 
     //TODO: parse and CST functions
 

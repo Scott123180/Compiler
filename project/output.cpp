@@ -27,6 +27,10 @@ void printHTMLHeader()
 
 void printTokens() {
 
+  //filestream
+  ofstream outputHTML;
+  outputHTML.open("output.html", std::ios_base::app); //open and append to file
+
   //table
   outputHTML << "<table class = \"table col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n"
              << "<tr>\n"
@@ -57,10 +61,31 @@ void printTokens() {
 
 void printCST()
 {
+  //filestream
+  ofstream outputHTML;
+  outputHTML.open("output.html", std::ios_base::app); //open and append to file
+
+
+  outputHTML.close();
+  return;
+}
+
+void printError()
+{
+  //filestream
+  ofstream outputHTML;
+  outputHTML.open("output.html", std::ios_base::app); //open and append to file
+
+  outputHTML.close();
   return;
 }
 
 void printHTMLFooter()
 {
+  //filestream
+  ofstream outputHTML;
+  outputHTML.open("output.html", std::ios_base::app); //open and append to file
+
+  outputHTML.close();
   return;
 }

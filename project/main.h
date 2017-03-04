@@ -1,4 +1,0 @@
-#ifndef COMPILER_MAIN_H
-#define COMPILER_MAIN_H
-
-#endif //COMPILER_MAIN_H
