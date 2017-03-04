@@ -3,15 +3,22 @@
 
 #include <string>
 
+using namespace std;
+
 class Error
 {
 
   private:
+    bool quit;
+    int state;
+    int line, pos;
+    string data, message;
+
   public:
-    static void genError(errorStage e, int line, int pos, string data, string message);
+    enum errorStage {fileInput, lex, parse, semantic, token};
 
-    static enum errorStage {fileInput, lex, parse, semantic};
-
+    //create and assign error object
+    Error(bool q, int e, int l, int p, string d, string m);
 
 };
 #endif

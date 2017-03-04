@@ -1,3 +1,12 @@
+#include <string>
+#include <fstream>
+#include <vector>
+
+#include "token.h"
+#include "lexer.h"
+
+using namespace std;
+
 void clearHTML()
 {
   //filestream
@@ -25,7 +34,7 @@ void printHTMLHeader()
   return;
 }
 
-void printTokens() {
+void printTokens(vector<Token> stream) {
 
   //filestream
   ofstream outputHTML;

@@ -9,14 +9,15 @@
 
 using namespace std;
 
-void Lexer::Lex(string fileName)
+Lexer::Lexer(string fileName)
 {
+
   ifstream input;
   input.open(fileName); //open file
 
   if (input.fail()) //check for error in file reading
   {
-    Error::genError(Error::fileInput, 0, 0, fileName, "Error opening the filename specified: ");
+    Error newError(true, newError.fileInput, 0, 0, fileName, "Error opening the filename specified: ");
   }
 
   int lineNum = 0;
@@ -26,8 +27,8 @@ void Lexer::Lex(string fileName)
     ++lineNum;
     string curLine;
     getline(input, curLine);
-   
-    buffer = "";
+
+    Lexer::buffer = "";
 
     //loop through string
     for(int i = 0; i < curLine.length(); i++)
@@ -47,64 +48,64 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
 {
 
   //ensure symbol is in alphabet
-  if(find(acceptedChars.begin(), acceptedChars.end(), c) != acceptedChars.end())
+  if(find(Lexer::acceptedChars.begin(), Lexer::acceptedChars.end(), c) != Lexer::acceptedChars.end())
   {
 
     //string expression processing
     if(c == '"')
     {
 
-      if(!(inString)) //left quote
+      if(!(Lexer::inString)) //left quote
       {
-        inString = true;
-        stream.push_back(Token("leftQuote", string(1,c), line, pos));
+        Lexer::inString = true;
+        Lexer::stream.push_back(Token("leftQuote", string(1,c), line, pos));
         return;
       }
       else //right quote
       {
-        inString = false;
-        if(!(buffer.empty())) //don't make empty charlist
+        Lexer::inString = false;
+        if(!(Lexer::buffer.empty())) //don't make empty charlist
         {
-        stream.push_back(Token("charList", buffer, line, pos)); //tokenize buffer
+          Lexer::stream.push_back(Token("charList", Lexer::buffer, line, pos)); //tokenize buffer
         }
-        buffer = "";
-        stream.push_back(Token("rightQuote", string(1,c), line, pos));
+        Lexer::buffer = "";
+        Lexer::stream.push_back(Token("rightQuote", string(1,c), line, pos));
         return;
       }
     }
 
     //push separator if not "=="
-    if(!(buffer.empty()))
+    if(!(Lexer::buffer.empty()))
     {
-      if(buffer.back() == '=')
+      if(Lexer::buffer.back() == '=')
       {
         if(c != '=')
         {
-          stream.push_back(Token(buffer, line, pos));
-          buffer = "";
+          Lexer::stream.push_back(Token(Lexer::buffer, line, pos));
+          Lexer::buffer = "";
         }
 
       }
     } //continue processing
 
-    if(inString) //if in a string expression
+    if(Lexer::inString) //if in a string expression
     {
       //search for valid char: true if is valid
-      if(find(acceptedString.begin(), acceptedString.end(), c) != acceptedString.end())
+      if(find(Lexer::acceptedString.begin(), Lexer::acceptedString.end(), c) != Lexer::acceptedString.end())
       {
-        buffer.push_back(c);
+        Lexer::buffer.push_back(c);
       }
       else //ERROR:invalid character
       {
         string castChar(1, c);
-        Error::genError(Error::lex, line, pos, castChar, "Invalid character in string expression: ");
+        Error newError(true, newError.lex, line, pos, castChar, "Invalid character in string expression: ");
         return;
       }
       //got to end of line without end quote
       if ((curLineLen - 1) == pos)
       {
         cout << "Lex error: run-on quote. Ensure string literals start and end on the same line" << endl;
-        Error::genError(Error::lex, line, pos, "", "Ensure string literals start and end on the same line");
+        Error newError(true, newError.lex, line, pos, "", "Ensure string literals start and end on the same line");
         return;
       }
       return;
@@ -114,21 +115,21 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
 
     else if(c == '=')
     {
-      if(buffer.back() == '=') //double ==
+      if(Lexer::buffer.back() == '=') //double ==
       {
-         stream.push_back(Token("==", line, pos));
-         buffer = "";
-         return;
+        Lexer::stream.push_back(Token("==", line, pos));
+        Lexer::buffer = "";
+        return;
       }
 
       else //don't know yet
       {
-        if(!(buffer.empty())) //create token from buffer
+        if(!(Lexer::buffer.empty())) //create token from buffer
         {
-          stream.push_back(Token(buffer, line, pos));
-          buffer = "";
+          Lexer::stream.push_back(Token(Lexer::buffer, line, pos));
+          Lexer::buffer = "";
         }
-        buffer.push_back(c); //put '=' in buffer
+        Lexer::buffer.push_back(c); //put '=' in buffer
         return;
       }
 
@@ -136,47 +137,47 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
 
     else if(c == '$') //end of program
     {
-      buffer.push_back(c);
-      stream.push_back(Token(buffer, line, pos));
-      buffer="";
+      Lexer::buffer.push_back(c);
+      Lexer::stream.push_back(Token(Lexer::buffer, line, pos));
+      Lexer::buffer="";
       return;
     }
     
     else if(c == ' ') //space (doesn't get tokenized)
     {
-      if(!(buffer.empty())) //if the buffer has item
+      if(!(Lexer::buffer.empty())) //if the buffer has item
       {
-        stream.push_back(Token(buffer, line, pos));
-        buffer = "";
+        Lexer::stream.push_back(Token(Lexer::buffer, line, pos));
+        Lexer::buffer = "";
       }
       return;
     }
     //regular separators
     else if((c == '{') || (c =='}') || (c == '(') || (c == ')' || c == '+'))
     {
-      if(!(buffer.empty())) //buffer has contents
+      if(!(Lexer::buffer.empty())) //buffer has contents
       {
-        stream.push_back(Token(buffer, line, pos)); //push back buffer
-        stream.push_back(Token(string(1,c), line, pos)); //push back separator
-        buffer = ""; //clear buffer
+        Lexer::stream.push_back(Token(Lexer::buffer, line, pos)); //push back buffer
+        Lexer::stream.push_back(Token(string(1,c), line, pos)); //push back separator
+        Lexer::buffer = ""; //clear buffer
       }
       else //buffer clear
       {
-        stream.push_back(Token(string(1,c), line, pos)); //push back separator
+        Lexer::stream.push_back(Token(string(1,c), line, pos)); //push back separator
       }
       return;
     }
     //end of line
     else if ((curLineLen - 1) == pos)
     {
-      buffer.push_back(c); //push remainder of line
-      stream.push_back(Token(buffer, line, pos));
-      buffer = "";
+      Lexer::buffer.push_back(c); //push remainder of line
+      Lexer::stream.push_back(Token(Lexer::buffer, line, pos));
+      Lexer::buffer = "";
       return;
     }
     else//regular character processing
     {
-        buffer.push_back(c);
+      Lexer::buffer.push_back(c);
         return;
     }
 
@@ -185,7 +186,7 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
   else
   {
     string castChar(1, c);
-    Error::genError(Error::lex, line, pos, castChar, "This symbol was not found: ");
+    Error newError(true, newError.lex, line, pos, castChar, "This symbol was not found: ");
     return;
   }
 }

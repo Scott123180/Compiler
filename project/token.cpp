@@ -1,4 +1,5 @@
 #include "token.h"
+#include "error.h"
 
 using namespace std;
 
@@ -27,10 +28,7 @@ string Token::findType() //line num and position for errors
   {
     if(data.length() > 1) //ERROR: Invalid character
     {
-      //Exit execution if character invalid
-      cout << "Error in token creation." << endl;
-      cout << "Invalid input \"" << data << "\" at line " << line << " position: " << position << endl;
-      exit(1);
+      Error newError(true, newError.token, line, position, data, "Error in token creation: ");
     } 
     else
     {
@@ -45,9 +43,7 @@ string Token::findType() //line num and position for errors
       else //ERROR: Invalid id
       {
         //Exit execution if character invalid
-        cout << "Error in token creation." << endl;
-        cout << "Invalid id \"" << data << "\" at line " << line << " position: " << position << endl;
-        exit(1);
+        Error newError(true, newError.token, line, position, data, "Error in token creation: ");
       }
     }
   }

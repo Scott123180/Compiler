@@ -5,18 +5,17 @@
 
 using namespace std;
 
-void Error::genError(errorStage e, int line, int pos,string data, string message)
+Error::Error(bool q, int e, int l, int p, string d, string m)
+  : quit(q), state(e), line(l), pos(p), data(d), message(m)
 {
-  string errorStmt;
-
-  switch(errorStage) {
+  switch(state) {
     case fileInput:
       cerr << message << data << endl
            << "Aborting Compilation." << endl;
       break;
 
     case lex:
-      cerr << "Lex Error at line " << line << " position " << pos << endl
+      cerr << "Lex Error at " << line << ":" << pos << endl
            << message << data << endl
            << "Aborting Lex." << endl;
       break;
@@ -30,12 +29,21 @@ void Error::genError(errorStage e, int line, int pos,string data, string message
       break;
 
     default:
-      cerr << "Unknown error at line " << line << " position " << pos << endl
+      cerr << "Unknown error at " << line << ":" << pos << endl
            << message << data << endl
            << "Aborting compilation." << endl;
       break;
   }
 
-  //exit program with unique error type code (shifted up one to avoid exit(0)
-  exit((errorStage+1));
+  if(quit)
+  {
+    //exit program with unique error type code (shifted up one to avoid exit(0)
+    int typeErr = state + 1;
+    exit(typeErr);
+  }
+  else
+  {
+    //exit program either way, can change later if needed
+    exit((99));
+  }
 }

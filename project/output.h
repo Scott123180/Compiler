@@ -1,31 +1,38 @@
 #ifndef COMPILER_OUTPUT_H
 #define COMPILER_OUTPUT_H
 
+#include <vector>
+
+#include "token.h"
+#include "lexer.h"
+
+using namespace std;
+
 class Output {
   private:
-    void clearHTML();
+    static void clearHTML();
 
-    void printHTMLHeader();
+    static void printHTMLHeader();
 
-    void printTokens();
+    static void printTokens(vector<Token> s);
 
-    void printCST();
+    static void printCST();
 
-    void printHTMLFooter();
+    static void printHTMLFooter();
 
-    void printError();
+    static void printError();
 
   public:
-    void printOutput()
+    static void printOutput(vector<Token> stream)
     {
       clearHTML();
       printHTMLHeader();
-      printTokens();
+      printTokens(stream);
       //printCST();
       printHTMLFooter();
     }
 
-    void printErrors()
+    static void printErrors()
     {
       clearHTML();
       printHTMLHeader();

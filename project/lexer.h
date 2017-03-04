@@ -6,14 +6,18 @@
 
 #include "token.h"
 
+using namespace std;
+
 class Lexer
 {
   public:
 
-    void Lexer::Lex(string fileName);
+  Lexer(string fileName);
+  vector<Token> stream;
 
   private:
 
+  void addToBuffer(char c, int line, int pos, int curLineLen);
   //accepted string literal characters:any characters a...z and spaces
   vector<char> acceptedString = {
     'a', 'b', 'c', 'd', 'e', 'f',
@@ -35,14 +39,9 @@ class Lexer
     '}', '(', ')', '"', ' '
   };
 
-  void addToBuffer(char c, int line, int pos, int curLineLen);
-
   bool inString = false; //for string expressions
 
   string buffer = "";
-
-  vector<Token> stream = {};
-
 
 
 };
