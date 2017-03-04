@@ -11,11 +11,14 @@ void Error::genError(errorStage e, int line, int pos,string data, string message
 
   switch(errorStage) {
     case fileInput:
-      cerr << message << data << endl;
+      cerr << message << data << endl
+           << "Aborting Compilation." << endl;
       break;
 
     case lex:
-
+      cerr << "Lex Error at line " << line << " position " << pos << endl
+           << message << data << endl
+           << "Aborting Lex." << endl;
       break;
 
     case parse:
@@ -27,11 +30,12 @@ void Error::genError(errorStage e, int line, int pos,string data, string message
       break;
 
     default:
-
+      cerr << "Unknown error at line " << line << " position " << pos << endl
+           << message << data << endl
+           << "Aborting compilation." << endl;
       break;
   }
 
   //exit program with unique error type code (shifted up one to avoid exit(0)
   exit((errorStage+1));
-
 }

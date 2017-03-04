@@ -35,7 +35,7 @@ class Lexer
     '}', '(', ')', '"', ' '
   };
 
-  bool addToBuffer(char c, int line, int pos, int curLineLen);
+  void addToBuffer(char c, int line, int pos, int curLineLen);
 
   bool inString = false; //for string expressions
 

@@ -32,16 +32,8 @@ void Lexer::Lex(string fileName)
     //loop through string
     for(int i = 0; i < curLine.length(); i++)
     {
-      //add to buffer to recognize regex patterns 
-      if(!addToBuffer(curLine[i], lineNum, i, static_cast<int>(curLine.length()))) //try, if fails
-      {
-
-        Error::genError(Error::lex, i, lineNum, buffer, "");
-        cout << "Error: " << buffer << endl;
-        //addToBuffer will print error message
-        cout << "Error at line " << lineNum << " at position " << i << endl;
-        return 1; //exit program 
-      }
+      //attempt to add to buffer
+      addToBuffer(curLine[i], lineNum, i, static_cast<int>(curLine.length()));
     } 
   }
   
@@ -51,7 +43,7 @@ void Lexer::Lex(string fileName)
 }
 
 //returns false if error, adds token to buffer otherwise
-bool Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
+void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
 {
 
   //ensure symbol is in alphabet
@@ -66,7 +58,7 @@ bool Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
       {
         inString = true;
         stream.push_back(Token("leftQuote", string(1,c), line, pos));
-        return true;
+        return;
       }
       else //right quote
       {
@@ -77,7 +69,7 @@ bool Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
         }
         buffer = "";
         stream.push_back(Token("rightQuote", string(1,c), line, pos));
-        return true;
+        return;
       }
     }
 
@@ -104,17 +96,18 @@ bool Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
       }
       else //ERROR:invalid character
       {
-        cout << "Lex error: character: " << c 
-        << " is not a valid character in a string expression." << endl;
-        return false;
+        string castChar(1, c);
+        Error::genError(Error::lex, line, pos, castChar, "Invalid character in string expression: ");
+        return;
       }
       //got to end of line without end quote
       if ((curLineLen - 1) == pos)
       {
         cout << "Lex error: run-on quote. Ensure string literals start and end on the same line" << endl;
-        return false;
+        Error::genError(Error::lex, line, pos, "", "Ensure string literals start and end on the same line");
+        return;
       }
-      return true;
+      return;
     }
 
     //separator processing
@@ -125,7 +118,7 @@ bool Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
       {
          stream.push_back(Token("==", line, pos));
          buffer = "";
-         return true;
+         return;
       }
 
       else //don't know yet
@@ -136,7 +129,7 @@ bool Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
           buffer = "";
         }
         buffer.push_back(c); //put '=' in buffer
-        return true;
+        return;
       }
 
     }
@@ -146,7 +139,7 @@ bool Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
       buffer.push_back(c);
       stream.push_back(Token(buffer, line, pos));
       buffer="";
-      return true;
+      return;
     }
     
     else if(c == ' ') //space (doesn't get tokenized)
@@ -156,7 +149,7 @@ bool Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
         stream.push_back(Token(buffer, line, pos));
         buffer = "";
       }
-      return true;
+      return;
     }
     //regular separators
     else if((c == '{') || (c =='}') || (c == '(') || (c == ')' || c == '+'))
@@ -171,7 +164,7 @@ bool Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
       {
         stream.push_back(Token(string(1,c), line, pos)); //push back separator
       }
-      return true;
+      return;
     }
     //end of line
     else if ((curLineLen - 1) == pos)
@@ -179,20 +172,20 @@ bool Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
       buffer.push_back(c); //push remainder of line
       stream.push_back(Token(buffer, line, pos));
       buffer = "";
-      return true;
+      return;
     }
     else//regular character processing
     {
         buffer.push_back(c);
-        return true;
+        return;
     }
 
   }
   //symbol not in alphabet
   else
   {
-    cout << "The symbol \"" << c <<"\" was not found. Aborting lex." << endl <<
-         "Line: " << line << " position: " << pos << endl;
-    exit(1);
+    string castChar(1, c);
+    Error::genError(Error::lex, line, pos, castChar, "This symbol was not found: ");
+    return;
   }
 }
