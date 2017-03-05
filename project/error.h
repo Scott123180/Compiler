@@ -21,4 +21,4 @@ class Error
     Error(bool q, int e, int l, int p, string d, string m);
 
 };
-#endif
+#endif //COMPILER_ERROR_H

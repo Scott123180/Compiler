@@ -28,7 +28,7 @@ Lexer::Lexer(string fileName)
     string curLine;
     getline(input, curLine);
 
-    Lexer::buffer = "";
+    buffer = "";
 
     //loop through string
     for(int i = 0; i < curLine.length(); i++)
@@ -48,52 +48,52 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
 {
 
   //ensure symbol is in alphabet
-  if(find(Lexer::acceptedChars.begin(), Lexer::acceptedChars.end(), c) != Lexer::acceptedChars.end())
+  if(find(acceptedChars.begin(), acceptedChars.end(), c) != acceptedChars.end())
   {
 
     //string expression processing
     if(c == '"')
     {
 
-      if(!(Lexer::inString)) //left quote
+      if(!(inString)) //left quote
       {
-        Lexer::inString = true;
-        Lexer::stream.push_back(Token("leftQuote", string(1,c), line, pos));
+        inString = true;
+        stream.push_back(Token("leftQuote", string(1,c), line, pos));
         return;
       }
       else //right quote
       {
-        Lexer::inString = false;
-        if(!(Lexer::buffer.empty())) //don't make empty charlist
+        inString = false;
+        if(!(buffer.empty())) //don't make empty charlist
         {
-          Lexer::stream.push_back(Token("charList", Lexer::buffer, line, pos)); //tokenize buffer
+          stream.push_back(Token("charList", buffer, line, pos)); //tokenize buffer
         }
-        Lexer::buffer = "";
-        Lexer::stream.push_back(Token("rightQuote", string(1,c), line, pos));
+        buffer = "";
+        stream.push_back(Token("rightQuote", string(1,c), line, pos));
         return;
       }
     }
 
     //push separator if not "=="
-    if(!(Lexer::buffer.empty()))
+    if(!(buffer.empty()))
     {
-      if(Lexer::buffer.back() == '=')
+      if(buffer.back() == '=')
       {
         if(c != '=')
         {
-          Lexer::stream.push_back(Token(Lexer::buffer, line, pos));
-          Lexer::buffer = "";
+          stream.push_back(Token(buffer, line, pos));
+          buffer = "";
         }
 
       }
     } //continue processing
 
-    if(Lexer::inString) //if in a string expression
+    if(inString) //if in a string expression
     {
       //search for valid char: true if is valid
-      if(find(Lexer::acceptedString.begin(), Lexer::acceptedString.end(), c) != Lexer::acceptedString.end())
+      if(find(acceptedString.begin(), acceptedString.end(), c) != acceptedString.end())
       {
-        Lexer::buffer.push_back(c);
+        buffer.push_back(c);
       }
       else //ERROR:invalid character
       {
@@ -115,21 +115,21 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
 
     else if(c == '=')
     {
-      if(Lexer::buffer.back() == '=') //double ==
+      if(buffer.back() == '=') //double ==
       {
-        Lexer::stream.push_back(Token("==", line, pos));
-        Lexer::buffer = "";
+        stream.push_back(Token("==", line, pos));
+        buffer = "";
         return;
       }
 
       else //don't know yet
       {
-        if(!(Lexer::buffer.empty())) //create token from buffer
+        if(!(buffer.empty())) //create token from buffer
         {
-          Lexer::stream.push_back(Token(Lexer::buffer, line, pos));
-          Lexer::buffer = "";
+          stream.push_back(Token(buffer, line, pos));
+          buffer = "";
         }
-        Lexer::buffer.push_back(c); //put '=' in buffer
+        buffer.push_back(c); //put '=' in buffer
         return;
       }
 
@@ -137,47 +137,47 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
 
     else if(c == '$') //end of program
     {
-      Lexer::buffer.push_back(c);
-      Lexer::stream.push_back(Token(Lexer::buffer, line, pos));
-      Lexer::buffer="";
+      buffer.push_back(c);
+      stream.push_back(Token(buffer, line, pos));
+      buffer="";
       return;
     }
     
     else if(c == ' ') //space (doesn't get tokenized)
     {
-      if(!(Lexer::buffer.empty())) //if the buffer has item
+      if(!(buffer.empty())) //if the buffer has item
       {
-        Lexer::stream.push_back(Token(Lexer::buffer, line, pos));
-        Lexer::buffer = "";
+        stream.push_back(Token(buffer, line, pos));
+        buffer = "";
       }
       return;
     }
     //regular separators
     else if((c == '{') || (c =='}') || (c == '(') || (c == ')' || c == '+'))
     {
-      if(!(Lexer::buffer.empty())) //buffer has contents
+      if(!(buffer.empty())) //buffer has contents
       {
-        Lexer::stream.push_back(Token(Lexer::buffer, line, pos)); //push back buffer
-        Lexer::stream.push_back(Token(string(1,c), line, pos)); //push back separator
-        Lexer::buffer = ""; //clear buffer
+        stream.push_back(Token(buffer, line, pos)); //push back buffer
+        stream.push_back(Token(string(1,c), line, pos)); //push back separator
+        buffer = ""; //clear buffer
       }
       else //buffer clear
       {
-        Lexer::stream.push_back(Token(string(1,c), line, pos)); //push back separator
+        stream.push_back(Token(string(1,c), line, pos)); //push back separator
       }
       return;
     }
     //end of line
     else if ((curLineLen - 1) == pos)
     {
-      Lexer::buffer.push_back(c); //push remainder of line
-      Lexer::stream.push_back(Token(Lexer::buffer, line, pos));
-      Lexer::buffer = "";
+      buffer.push_back(c); //push remainder of line
+      stream.push_back(Token(buffer, line, pos));
+      buffer = "";
       return;
     }
     else//regular character processing
     {
-      Lexer::buffer.push_back(c);
+      buffer.push_back(c);
         return;
     }
 

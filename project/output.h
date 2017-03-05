@@ -10,20 +10,20 @@ using namespace std;
 
 class Output {
   private:
-    static void clearHTML();
+    void clearHTML();
 
-    static void printHTMLHeader();
+    void printHTMLHeader();
 
-    static void printTokens(vector<Token> s);
+    void printTokens(vector<Token> s);
 
-    static void printCST();
+    void printCST();
 
-    static void printHTMLFooter();
+    void printHTMLFooter();
 
-    static void printError();
+    void printError();
 
   public:
-    static void printOutput(vector<Token> stream)
+    void printOutput(vector<Token> stream)
     {
       clearHTML();
       printHTMLHeader();
@@ -32,7 +32,7 @@ class Output {
       printHTMLFooter();
     }
 
-    static void printErrors()
+    void printErrors()
     {
       clearHTML();
       printHTMLHeader();
@@ -42,4 +42,4 @@ class Output {
 
 };
 
-#endif
+#endif //COMPILER_OUTPUT_H

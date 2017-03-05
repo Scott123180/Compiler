@@ -4,10 +4,11 @@
 
 #include "token.h"
 #include "lexer.h"
+#include "output.h"
 
 using namespace std;
 
-void clearHTML()
+void Output::clearHTML()
 {
   //filestream
   ofstream outputHTML;
@@ -16,7 +17,7 @@ void clearHTML()
   return;
 }
 
-void printHTMLHeader()
+void Output::printHTMLHeader()
 {
   //filestream
   ofstream outputHTML;
@@ -34,7 +35,7 @@ void printHTMLHeader()
   return;
 }
 
-void printTokens(vector<Token> stream) {
+void Output::printTokens(vector<Token> stream) {
 
   //filestream
   ofstream outputHTML;
@@ -68,7 +69,7 @@ void printTokens(vector<Token> stream) {
   return;
 }
 
-void printCST()
+void Output::printCST()
 {
   //filestream
   ofstream outputHTML;
@@ -79,7 +80,7 @@ void printCST()
   return;
 }
 
-void printError()
+void Output::printError()
 {
   //filestream
   ofstream outputHTML;
@@ -89,7 +90,7 @@ void printError()
   return;
 }
 
-void printHTMLFooter()
+void Output::printHTMLFooter()
 {
   //filestream
   ofstream outputHTML;

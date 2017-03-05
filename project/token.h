@@ -1,5 +1,5 @@
-#ifndef LEX_TOKEN
-#define LEX_TOKEN
+#ifndef LEX_TOKEN_H
+#define LEX_TOKEN_H
 
 #include <iostream>
 #include <vector>
@@ -63,4 +63,4 @@ class Token
 
 
 
-#endif
+#endif  //LEX_TOKEN_H

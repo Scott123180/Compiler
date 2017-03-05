@@ -1,3 +1,6 @@
+#include <map>
+#include <string>
+
 #include "token.h"
 #include "error.h"
 
