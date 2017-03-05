@@ -23,6 +23,9 @@ class Output {
     void printError();
 
   public:
+
+    Output();
+
     void printOutput(vector<Token> stream)
     {
       clearHTML();

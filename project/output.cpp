@@ -8,6 +8,8 @@
 
 using namespace std;
 
+Output::Output() {}
+
 void Output::clearHTML()
 {
   //filestream

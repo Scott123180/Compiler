@@ -35,7 +35,7 @@ Lexer::Lexer(string fileName)
     {
       //attempt to add to buffer
       addToBuffer(curLine[i], lineNum, i, static_cast<int>(curLine.length()));
-    } 
+    }
   }
   
   cout << "End of program reached. Printing tokens to \"output.html\"." << endl;

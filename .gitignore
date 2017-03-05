@@ -4,5 +4,5 @@ cmake-build-debug/
 project/test1
 *.swp
 
-project/output.html
+*project/output.html
 
