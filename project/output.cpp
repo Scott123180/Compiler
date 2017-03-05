@@ -27,12 +27,29 @@ void Output::printHTMLHeader()
 
   //html header
   outputHTML << "<!DOCTYPE html> \n"
-             << "<html>\n"
-             << "<head>\n"
-             << "<title>Lex Output</title>\n"
-             << "<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap/css/bootstrap.css\">"
-             << "</head>\n"
-             << "<body>\n";
+              "<html>\n"
+              "<head>\n"
+              "<title>Lex Output</title>\n"
+              "<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap/css/bootstrap.css\">"
+              "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js\"></script>\n"
+              "<script src=\"js/pics.js\"></script> \n"
+              "</head>\n"
+              "<body>\n";
+  outputHTML.close();
+
+
+  return;
+}
+
+void Output::printTitle()
+{
+  ofstream outputHTML;
+  outputHTML.open("output.html", std::ios_base::app); //open and append to file
+
+  outputHTML << "<div class=\"page-header\"> \n"
+                "<h1>Scott's Dank Compiler <small>Scott Hansen</small></h1>\n"
+                "</div>\n";
+
   outputHTML.close();
   return;
 }
@@ -61,10 +78,7 @@ void Output::printTokens(vector<Token> stream) {
                << "</th>\n" //preserve white space with "pre"
                << "</tr>\n";
   }
-  //html footer
-  outputHTML << "</table>\n"
-             << "</body>\n"
-             << "</html>";
+  outputHTML << "</table>\n";
 
   outputHTML.close();
 
@@ -97,6 +111,10 @@ void Output::printHTMLFooter()
   //filestream
   ofstream outputHTML;
   outputHTML.open("output.html", std::ios_base::app); //open and append to file
+
+  outputHTML << "</body>\n"
+                "<footer></footer> \n"
+                "</html>\n";
 
   outputHTML.close();
   return;

@@ -14,6 +14,8 @@ class Output {
 
     void printHTMLHeader();
 
+    void printTitle();
+
     void printTokens(vector<Token> s);
 
     void printCST();
@@ -26,16 +28,17 @@ class Output {
 
     Output();
 
-    void printOutput(vector<Token> stream)
-    {
-      clearHTML();
-      printHTMLHeader();
-      printTokens(stream);
-      //printCST();
-      printHTMLFooter();
-    }
+  void printOutput(vector<Token> stream)
+  {
+    clearHTML();
+    printHTMLHeader();
+    printTitle();
+    printTokens(stream);
+    //printCST();
+    printHTMLFooter();
+  }
 
-    void printErrors()
+  void printErrors()
     {
       clearHTML();
       printHTMLHeader();
