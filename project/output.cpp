@@ -32,7 +32,9 @@ void Output::printHTMLHeader()
               "<title>Lex Output</title>\n"
               "<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap/css/bootstrap.css\">"
               "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js\"></script>\n"
-              "<script src=\"js/pics.js\"></script> \n"
+              //"<script src=\"js/pic1.js\"></script> \n"
+              //"<script src=\"js/pic2.js\"></script> \n"
+              //"<script src=\"js/pic3.js\"></script> \n"
               "</head>\n"
               "<body>\n";
   outputHTML.close();
@@ -48,7 +50,31 @@ void Output::printTitle()
 
   outputHTML << "<div class=\"page-header\"> \n"
                 "<h1>Scott's Dank Compiler <small>Scott Hansen</small></h1>\n"
-                "</div>\n";
+                "</div>\n"
+
+    /*
+                //random pictures
+                "<div class=\"row\"> \n"
+                "<div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\"> \n"
+                "<a href=\"#\" class=\"thumbnail\"> \n"
+                "<img src=\"...\" alt=\"...\" id=\"pic1\"> \n"
+                "</a> \n"
+                "</div>\n"
+
+                "<div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\"> \n"
+                "<a href=\"#\" class=\"thumbnail\"> \n"
+                "<img src=\"...\" alt=\"...\" id=\"pic2\"> \n"
+                "</a> \n"
+                "</div>\n"
+
+                "<div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\"> \n"
+                "<a href=\"#\" class=\"thumbnail\"> \n"
+                "<img src=\"...\" alt=\"...\" id=\"pic3\"> \n"
+                "</a> \n"
+                "</div>\n"
+*/
+
+                "</div> \n";
 
   outputHTML.close();
   return;

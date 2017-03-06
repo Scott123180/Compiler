@@ -6755,3 +6755,10 @@ button.close {
   }
 }
 /*# sourceMappingURL=bootstrap.css.map */
+
+.container {
+  margin-top: 10px;
+}
+.panel {
+  box-shadow: none !important;
+}

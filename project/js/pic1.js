@@ -29,7 +29,7 @@ function(data) {
 
     var image_src = data.items[rnd]['media']['m'].replace("_m", "_b");
 
-    $('body').css('background-image', "url('" + image_src + "')");
+    document.getElementById("pic1").src = image_src;
 
 });
 
