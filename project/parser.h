@@ -10,9 +10,10 @@ class Parser
 
 public:
   //parser object
-  Parser(vector<token> stream);
+  Parser(vector<Token> stream);
 private:
-
+  int i = 0; //points to which token we're on
+  vector<Token> tokens;
 
 };
 

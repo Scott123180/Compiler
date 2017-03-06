@@ -4,8 +4,9 @@
 #include "token.h"
 
 Parser::Parser(vector<Token> stream)
+  : tokens(stream)
 {
-  int i = 0;
+
   /*
    * next is the current token we're working with, we increment it every time just
    * in case we find a match, but then set it back if we have to check again if a term
@@ -15,13 +16,23 @@ Parser::Parser(vector<Token> stream)
    */
   //initialize next to point to the first token
   //invoke E()
-  static Token next = stream[i].returnToken();
 
   Program();
 
 
 
 }
+/*
+
+ bool term(TOKEN tok) {return *next++ == tok; }
+   returns true if the token we passed in matches the input or no it doesn't
+ */
+
+  bool term(string type) //terminal
+  {
+    return Token::tokens[(i++)].getType() == type;
+  }
+
   bool Program1() { return Block() && term("$"); }
 
   bool Program()
