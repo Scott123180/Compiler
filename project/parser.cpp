@@ -155,7 +155,7 @@ Parser::Parser(vector<Token> stream)
     {
       //if(alphabet[i] ==  /* TODO: match with current token */);
       //  {term(alphabet[i]; return true;}
-    } 
+    }
   }
   bool Char()
   {
