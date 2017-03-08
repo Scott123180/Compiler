@@ -7,3 +7,7 @@ project/test1
 project/output.html
 
 CMakeLists.txt
+
+cmake-build-debug/*
+
+/cmake-build-debug

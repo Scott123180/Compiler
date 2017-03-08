@@ -15,7 +15,7 @@ CST::CST()
 void addChild(Token* t)
 {
   //add reference to parent's children
-  CST::getcurNode().curNode->children.push_back(t);
+  CST::getcurNode()->children.push_back(t);
   
   //change curNode reference to child node
 }
