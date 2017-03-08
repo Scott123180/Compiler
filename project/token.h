@@ -15,6 +15,10 @@ class Token
     Token(string t, string d, int l, int p);
     Token(string d,int l, int p);
 
+    //branch token, just type
+    Token(string t);
+
+
     string getType();
     string getData();
     int getLine();
@@ -29,18 +33,17 @@ class Token
     int position;
     
     map<string, string> textToType = {
-      {"print", "typePrint"},
-      {"int", "typeInt"},
-      {"string", "typeString"}, 
-      {"boolean", "typeBoolean"},
-      {"=", "assignOp"},
+      {"print", "type"},
+      {"int", "type"},
+      {"string", "type"},
+      {"=", "assign"},  //special terminal
       {"==", "boolOp"},
       {"!=", "boolOp"},
       {"+", "intOp"},
       {"true", "boolVal"},
       {"false", "boolVal"},
-      {"while", "whileStatement"},
-      {"if", "ifStatement"},
+      {"while", "while"}, //special terminal
+      {"if", "if"}, //special terminal
       {"{", "leftBrace"},
       {"}", "rightBrace"},
       {"(", "leftParen"},

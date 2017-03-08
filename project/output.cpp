@@ -57,19 +57,19 @@ void Output::printTitle()
                 "<div class=\"row\"> \n"
                 "<div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\"> \n"
                 "<a href=\"#\" class=\"thumbnail\"> \n"
-                "<img src=\"...\" alt=\"...\" id=\"pic1\"> \n"
+                "<img src=\"...\" alt=\"...\" id=\"pic1\" style=\"{width:200px; height:200px;}\"> \n"
                 "</a> \n"
                 "</div>\n"
 
                 "<div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\"> \n"
                 "<a href=\"#\" class=\"thumbnail\"> \n"
-                "<img src=\"...\" alt=\"...\" id=\"pic2\"> \n"
+                "<img src=\"...\" alt=\"...\" id=\"pic2\" style=\"{width:200px; height:200px;}\"> \n"
                 "</a> \n"
                 "</div>\n"
 
                 "<div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\"> \n"
                 "<a href=\"#\" class=\"thumbnail\"> \n"
-                "<img src=\"...\" alt=\"...\" id=\"pic3\"> \n"
+                "<img src=\"...\" alt=\"...\" id=\"pic3\ style=\"{width:200px; height:200px;}\"> \n"
                 "</a> \n"
                 "</div>\n"
 */

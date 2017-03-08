@@ -19,6 +19,9 @@ Token::Token(string d, int l, int p) : data(d), line(l), position(p)
   type = Token::findType();
 }
 
+//branch token, just type
+Token::Token(string t) : type(t) {}
+
 string Token::findType() //line num and position for errors
 {
   //check the map
@@ -37,7 +40,7 @@ string Token::findType() //line num and position for errors
     {
       if(find(letters.begin(), letters.end(), data) != letters.end()) //true if char
       {
-        return "id"; 
+        return "char";
       }
       else if(find(digits.begin(), digits.end(), data) != digits.end()) //true if digit
       {

@@ -15,6 +15,7 @@ private:
   int i = 0; //points to which token we're on
   vector<Token> tokens;
 
+  //tree object
 };
 
 #endif //COMPILER_PARSER_H

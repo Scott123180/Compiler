@@ -30,21 +30,17 @@ Parser::Parser(vector<Token> stream)
 
   bool term(string tt) //terminal
   {
-    bool validTypeOrTerminal;
-    validTypeOrTerminal = ((Token::tokens[(i)].getType() == tt)
-                        ||((Token::tokens[(i)]).getValue() == tt));
-    ++i;
-    return validTypeOrTerminal;
+    return (Token::tokens[(i++)].getType() == tt);
   }
 
-  bool Program1() { return Block() && term("$"); }
+  bool Program1() { return Block() && term("EOP"); }
 
   bool Program()
   {
     int save = i; return (i = save, Program1());
   }
 
-  bool Block1() { return term("{") && StatementList() && term("}"); }
+  bool Block1() { return term("leftBrace") && StatementList() && term("rightBrace"); }
   bool Block2() { return true; }//epsilon
 
   bool Block()
@@ -70,7 +66,7 @@ Parser::Parser(vector<Token> stream)
                        ||(i = save, Statement6());
   }
 
-  bool PrintStatement1(){ return term("print") && term("(") && Expr() && term(")"); }
+  bool PrintStatement1(){ return term("print") && term("leftParen") && Expr() && term("rightParen"); }
 
   bool PrintStatement()
   {
@@ -125,13 +121,13 @@ Parser::Parser(vector<Token> stream)
                        ||( i = save, IntExpr2());
   }
 
-  bool StringExpr1() { return term("\"") && CharList() && term("\""); }
+  bool StringExpr1() { return term("leftQuote") && CharList() && term("rightQuote"); }
   bool StringExpr()
   {
     int save = i; return ( i = save, StringExpr1());
   }
 
-  bool BooleanExpr1() { return term("(") && Expr() && boolop() && Expr(); }
+  bool BooleanExpr1() { return term("leftParen") && Expr() && boolop() && Expr() && term("rightParen"); }
   bool BooleanExpr2() { return boolval(); }
   bool BooleanExpr()
   {
@@ -155,27 +151,14 @@ Parser::Parser(vector<Token> stream)
                        ||( i = save, CharList3());
   }
 
-  bool type1() { term("int"); }
-  bool type2() { term("string"); }
-  bool type3() { term("boolean"); }
+  bool type1() { term("type"); }
   bool type()
   {
-    int save = i; return ( i = save, type1())
-                       ||( i = save, type2())
-                       ||( i = save, type3());
+    int save = i; return ( i = save, type1());
   }
 
   bool Char1()
-  {
-    char alphabet[] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
-                        'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-                        's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-    for(int i = 0; i < 26; i++)
-    {
-      //if(alphabet[i] ==  /* TODO: match with current token */);
-      //  {term(alphabet[i]; return true;}
-    }
-  }
+  { return term("Char");  }
   bool Char()
   {
     int save = i; return ( i = save, Char1());
@@ -187,37 +170,25 @@ Parser::Parser(vector<Token> stream)
     int save = i; return ( i = save, space1());
   }
 
-  bool digit1()
-  {
-    int nums[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    for(int i = 0; i < 10; i++)
-    {
-      //if(nums[i] == /* TODO: match with current token */);
-      //  {term(nums[i]; return true;
-    }
-  }
+  bool digit1() { return term("digit"); }
   bool digit()
   {
     int save = i; return ( i = save, digit1());
   }
 
-  bool boolop1() { return term("=="); }
-  bool boolop2() { return term("!="); }
+  bool boolop1() { return term("boolOp"); }
   bool boolop()
   {
-    int save = i; return ( i = save, boolop1())
-                       ||( i = save, boolop2());
+    int save = i; return ( i = save, boolop1());
   }
 
-  bool boolval1() { return term("false"); }
-  bool boolval2() { return term("true"); }
+  bool boolval1() { return term("boolVal"); }
   bool boolval()
   {
-    int save = i; return ( i = save, boolval1())
-                       ||( i = save, boolval2());
+    int save = i; return ( i = save, boolval1());
   }
 
-  bool intop1() { return term("+"); }
+  bool intop1() { return term("intOp"); }
   bool intop()
   {
     int save = i; return ( i = save, intop1());
