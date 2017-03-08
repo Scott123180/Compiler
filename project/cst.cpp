@@ -4,6 +4,8 @@
 #include "cst.h"
 #include "token.h"
 
+using namespace std;
+
 CST::CST()
 {
   //new root node
@@ -15,16 +17,26 @@ CST::CST()
 void addChild(Token* t)
 {
   //add reference to parent's children
-  CST::getcurNode()->children.push_back(t);
+  CST::curNode->children.push_back(t);
   
   //change curNode reference to child node
+  CST::curNode = t;  //change the current node to the pointer (child)
 }
 
-//returns the current token
-void curNode();
-
 //delete child
-void deleteChild();
+void deleteChild()
+{
+  //if it has children, don't allow
+  if(CST::curNode->children.empty())
+  {
+
+  }
+  else
+  {
+
+  }
+}
+
 //recursively delete all children
 void deleteAllChildren();
 

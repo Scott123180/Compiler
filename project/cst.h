@@ -29,8 +29,9 @@ class CST
     
     //return the parent node
     void parent();
-    
+
+    static Token* curNode = nullptr;
   private:
-    Token* curNode = nullptr;
+
 };
 #endif
