@@ -6,6 +6,7 @@
 #include "token.h"
 
 using namespace std;
+
 class CST
 {
   public:
