@@ -53,11 +53,10 @@ string Token::findType() //line num and position for errors
       }
     }
   }
+  return ""; //won't ever reach but will trigger error down the line
 }
 
 string Token::getType() {return type;}
 string Token::getData() {return data;}
 int Token::getLine() { return line;}
 int Token::getPos() { return position;}
-
-

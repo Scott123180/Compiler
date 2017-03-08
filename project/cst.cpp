@@ -1,9 +1,35 @@
 #include <string>
+#include <vector>
+
+#include "cst.h"
+#include "token.h"
 
 CST::CST()
 {
-  //
+  //new root node
+  Token* root = new Token("Program");
+  root->parent = nullptr;
+  CST::curNode = root; //ATTN: may be wrong way to set root
 }
+
+void addChild(Token* t)
+{
+  //add reference to parent's children
+  curNode->children.push_back(t);
+  
+  //change curNode reference to child node
+}
+
+//returns the current token
+void curNode();
+
+//delete child
+void deleteChild();
+//recursively delete all children
+void deleteAllChildren();
+
+//return the parent node
+void parent();
 
 /*
 TODO: methods to add nodes and delete nodes

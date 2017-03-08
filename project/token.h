@@ -25,6 +25,10 @@ class Token
     int getPos();
 
     string findType();
+    
+    //for use in trees
+    Token* parent;
+    vector<Token*> children;
 
   private:
     string type;
