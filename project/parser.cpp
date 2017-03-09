@@ -2,6 +2,7 @@
 
 #include "parser.h"
 #include "token.h"
+#include "cst.h"
 
 Parser::Parser(vector<Token> stream)
   : tokens(stream)
@@ -13,6 +14,10 @@ Parser::Parser(vector<Token> stream)
    * matches
    *
    * term checks if something matches a term
+   *
+   * if there is a match in the function term, then create a leaf, otherwise return
+   *
+   * in each branch check, we must add each branch and delete it if it does not work
    */
   //initialize next to point to the first token
   //invoke E()
@@ -28,16 +33,40 @@ Parser::Parser(vector<Token> stream)
    returns true if the token we passed in matches the input or no it doesn't
  */
 
-  bool Parser::term(string tt) //terminal
+  bool Parser::term(string tt) //terminal leaf creation
   {
     //TODO: CST and token functions here on match
 
-    return (Parser::tokens[(Parser::i++)].getType() == tt);
+    if (Parser::tokens[(Parser::i++)].getType() == tt)
+    {
+      //create leaf
+      CST::addChild(CST::curNode, false);
+      return true;
+    }
+    else //no match
+    {
+      return false;
+    }
   }
 
 
-
-  bool Parser::Program1() { return Block() && term("EOP"); }
+  //already added a program token as our root node
+  bool Parser::Program1()
+  {
+    //create block branch
+    Token* newBranch = new Token("Block");
+    CST::addChild(newBranch, true);
+    if(Block() && term("EOP"))
+    {
+      return true;
+      //kick pointer back to root
+    }
+    else
+    {
+      //TODO: add to error statements
+      return false;
+    }
+  }
 
   bool Parser::Program()
   {

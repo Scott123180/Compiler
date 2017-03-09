@@ -14,13 +14,16 @@ CST::CST()
   CST::curNode = root; //ATTN: may be wrong way to set root
 }
 
-void CST::addChild(Token* t)
+static void CST::addChild(Token* t, bool changeToChild)
 {
   //add reference to parent's children
   CST::curNode->children.push_back(t);
-  
-  //change curNode reference to child node
-  CST::curNode = t;  //change the current node to the pointer (child)
+
+  if(changeToChild) //good for nonterminals
+  {
+    //change curNode reference to child node
+    CST::curNode = t;  //change the current node to the pointer (child)
+  }
 }
 
 

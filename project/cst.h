@@ -17,7 +17,7 @@ class CST
     //construct new CST
     CST();
     
-    void addChild(Token* t);
+    static void addChild(Token* t, bool changeToChild);
     
     Token* getcurNode() { return curNode; }
     Token* upTree(Token* parentNode);
