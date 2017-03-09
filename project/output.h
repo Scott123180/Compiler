@@ -33,6 +33,7 @@ class Output {
   void printOutput(vector<Token> stream)
   {
     clearHTML();
+    //clearCST();
     printHTMLHeader();
     printTitle();
     printTokens(stream);
