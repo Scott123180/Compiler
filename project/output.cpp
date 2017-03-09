@@ -118,6 +118,7 @@ void Output::printCST()
   outputHTML.open("output.html", std::ios_base::app); //open and append to file
 
 
+
   outputHTML.close();
   return;
 }
