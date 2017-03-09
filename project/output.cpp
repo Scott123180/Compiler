@@ -19,6 +19,14 @@ void Output::clearHTML()
   return;
 }
 
+void Output::clearCST()
+{
+  ofstream cstJS;
+  cstJS.open("js/cst.js", ios::out | ios::trunc); //open and clear file
+  cstJS.close();
+  return;
+}
+
 void Output::printHTMLHeader()
 {
   //filestream
@@ -113,13 +121,19 @@ void Output::printTokens(vector<Token> stream) {
 
 void Output::printCST()
 {
-  //filestream
+  //modify the cst javascript
+  ofstream cstJS;
+  cstJS.open("js/cst.js", std::ios_base::app); //open and append
+  //TODO: code for CST tree
+  cstJS.close();
+
+
+  //modify the output html
   ofstream outputHTML;
   outputHTML.open("output.html", std::ios_base::app); //open and append to file
-
-
-
+  //TODO: code for appending to HTML
   outputHTML.close();
+
   return;
 }
 

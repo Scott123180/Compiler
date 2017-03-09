@@ -12,6 +12,8 @@ class Output {
   private:
     void clearHTML();
 
+    void clearCST();
+
     void printHTMLHeader();
 
     void printTitle();
