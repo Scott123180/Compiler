@@ -30,7 +30,9 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::term(string tt) //terminal
   {
-    return (Token::tokens[(Parser::i++)].getType() == tt);
+    //TODO: CST and token functions here on match
+
+    return (Parser::tokens[(Parser::i++)].getType() == tt);
   }
 
 

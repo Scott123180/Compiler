@@ -11,12 +11,15 @@ class Parser
 public:
   //parser object
   Parser(vector<Token> stream);
-  static int i = 0; //points to which token we're on
+
+
 private:
-
   static vector<Token> tokens;
+  static int i = 0; //points to which token we're on
 
-  bool term(string tt) {}//terminal
+
+  //recursive decent functions
+  bool term(string tt); //terminal
 
 
   bool Program1();
