@@ -28,168 +28,178 @@ Parser::Parser(vector<Token> stream)
    returns true if the token we passed in matches the input or no it doesn't
  */
 
-  bool term(string tt) //terminal
+  bool Parser::term(string tt) //terminal
   {
-    return (Token::tokens[(i++)].getType() == tt);
+    return (Token::tokens[(Parser::i++)].getType() == tt);
   }
 
-  bool Program1() { return Block() && term("EOP"); }
 
-  bool Program()
+
+  bool Parser::Program1() { return Block() && term("EOP"); }
+
+  bool Parser::Program()
   {
-    int save = i; return (i = save, Program1());
+    int save = Parser::i; return (Parser::i = save, Program1());
   }
 
-  bool Block1() { return term("leftBrace") && StatementList() && term("rightBrace"); }
-  bool Block2() { return true; }//epsilon
+  bool Parser::Block1() { return term("leftBrace") && StatementList() && term("rightBrace"); }
+  bool Parser::Block2() { return true; }//epsilon
 
-  bool Block()
+  bool Parser::Block()
   {
-    int save = i; return (i = save, Block1())
-                       ||(i = save, Block2());
+    int save = Parser::i; return (Parser::i = save, Block1())
+                       ||(Parser::i = save, Block2());
   }
 
-  bool Statement1() { return PrintStatement(); }
-  bool Statement2() { return AssignmentStatment(); }
-  bool Statement3() { return VarDecl(); }
-  bool Statement4() { return WhileStatement(); }
-  bool Statement5() { return IfStatement(); }
-  bool Statement6() { return Block(); }
+  bool Parser::StatementList1() { return Statement() && StatementList(); }
+  bool Parser::StatementList2() { return true; } //epsilon
 
-  bool Statement()
+  bool Parser::StatementList()
   {
-    int save = i; return (i = save, Statement1())
-                       ||(i = save, Statement2())
-                       ||(i = save, Statement3())
-                       ||(i = save, Statement4())
-                       ||(i = save, Statement5())
-                       ||(i = save, Statement6());
+    int save = Parser::i; return (Parser::i = save, StatementList1())
+                               ||(Parser::i = save, StatementList2());
   }
 
-  bool PrintStatement1(){ return term("print") && term("leftParen") && Expr() && term("rightParen"); }
+  bool Parser::Statement1() { return PrintStatement(); }
+  bool Parser::Statement2() { return AssignmentStatement(); }
+  bool Parser::Statement3() { return VarDecl(); }
+  bool Parser::Statement4() { return WhileStatement(); }
+  bool Parser::Statement5() { return IfStatement(); }
+  bool Parser::Statement6() { return Block(); }
 
-  bool PrintStatement()
+  bool Parser::Statement()
   {
-    int save = i; return (i = save, PrintStatement1());
+    int save = Parser::i; return (Parser::i = save, Statement1())
+                       ||(Parser::i = save, Statement2())
+                       ||(Parser::i = save, Statement3())
+                       ||(Parser::i = save, Statement4())
+                       ||(Parser::i = save, Statement5())
+                       ||(Parser::i = save, Statement6());
   }
 
-  bool AssignmentStatement1() { return Id() && term("=") && Expr(); }
+  bool Parser::PrintStatement1(){ return term("print") && term("leftParen") && Expr() && term("rightParen"); }
 
-  bool AssignmentStatement()
+  bool Parser::PrintStatement()
   {
-    int save = i; return (i = save, AssignmentStatement1());
+    int save = Parser::i; return (Parser::i = save, PrintStatement1());
   }
 
-  bool VarDecl1() { return type() && Id(); }
-  bool VarDecl()
+  bool Parser::AssignmentStatement1() { return Id() && term("=") && Expr(); }
+
+  bool Parser::AssignmentStatement()
   {
-    int save = i; return (i = save, VarDecl1());
+    int save = Parser::i; return (Parser::i = save, AssignmentStatement1());
   }
 
-  bool WhileStatement1() { return term("while") && BooleanExpr() && Block(); }
-
-  bool WhileStatement()
+  bool Parser::VarDecl1() { return type() && Id(); }
+  bool Parser::VarDecl()
   {
-    int save = i; return (i = save, WhileStatement1());
+    int save = Parser::i; return (Parser::i = save, VarDecl1());
   }
 
-  bool IfStatement1() { return term("if") && BooleanExpr() && Block(); }
-  bool IfStatement()
+  bool Parser::WhileStatement1() { return term("while") && BooleanExpr() && Block(); }
+
+  bool Parser::WhileStatement()
   {
-    int save = i; return ( i = save, IfStatement1());
+    int save = Parser::i; return (Parser::i = save, WhileStatement1());
   }
 
-  bool Expr1() { return IntExpr(); }
-  bool Expr2() { return StringExpr(); }
-  bool Expr3() { return BooleanExpr(); }
-  bool Expr4() { return Id(); }
-
-  bool Expr()
+  bool Parser::IfStatement1() { return term("if") && BooleanExpr() && Block(); }
+  bool Parser::IfStatement()
   {
-   int save = i; return ( i = save, Expr1())
-                      ||( i = save, Expr2())
-                      ||( i = save, Expr3())
-                      ||( i = save, Expr4());
+    int save = Parser::i; return ( Parser::i = save, IfStatement1());
   }
 
-  bool IntExpr1() { return digit() && intop && Expr(); }
-  bool IntExpr2() { return digit(); }
+  bool Parser::Expr1() { return IntExpr(); }
+  bool Parser::Expr2() { return StringExpr(); }
+  bool Parser::Expr3() { return BooleanExpr(); }
+  bool Parser::Expr4() { return Id(); }
 
-  bool IntExpr()
+  bool Parser::Expr()
   {
-    int save = i; return ( i = save, IntExpr1())
-                       ||( i = save, IntExpr2());
+   int save = Parser::i; return ( Parser::i = save, Expr1())
+                      ||( Parser::i = save, Expr2())
+                      ||( Parser::i = save, Expr3())
+                      ||( Parser::i = save, Expr4());
   }
 
-  bool StringExpr1() { return term("leftQuote") && CharList() && term("rightQuote"); }
-  bool StringExpr()
+  bool Parser::IntExpr1() { return digit() && intop && Expr(); }
+  bool Parser::IntExpr2() { return digit(); }
+
+  bool Parser::IntExpr()
   {
-    int save = i; return ( i = save, StringExpr1());
+    int save = Parser::i; return ( Parser::i = save, IntExpr1())
+                       ||( Parser::i = save, IntExpr2());
   }
 
-  bool BooleanExpr1() { return term("leftParen") && Expr() && boolop() && Expr() && term("rightParen"); }
-  bool BooleanExpr2() { return boolval(); }
-  bool BooleanExpr()
+  bool Parser::StringExpr1() { return term("leftQuote") && CharList() && term("rightQuote"); }
+  bool Parser::StringExpr()
   {
-    int save = i; return ( i = save, BooleanExpr1())
-                       ||( i = save, BooleanExpr2());
+    int save = Parser::i; return ( Parser::i = save, StringExpr1());
   }
 
-  bool Id1() { return Char(); }
-  bool Id()
+  bool Parser::BooleanExpr1() { return term("leftParen") && Expr() && boolop() && Expr() && term("rightParen"); }
+  bool Parser::BooleanExpr2() { return boolval(); }
+  bool Parser::BooleanExpr()
   {
-    int save = i; return ( i = save, Id1());
+    int save = Parser::i; return ( Parser::i = save, BooleanExpr1())
+                       ||( Parser::i = save, BooleanExpr2());
   }
 
-  bool CharList1() { return Char() && CharList(); }
-  bool CharList2() { return space() && CharList(); }
-  bool CharList3() { return true; }
-  bool CharList()
+  bool Parser::Id1() { return Char(); }
+  bool Parser::Id()
   {
-    int save = i; return ( i = save, CharList1())
-                       ||( i = save, CharList2())
-                       ||( i = save, CharList3());
+    int save = Parser::i; return ( Parser::i = save, Id1());
   }
 
-  bool type1() { term("type"); }
-  bool type()
+  bool Parser::CharList1() { return Char() && CharList(); }
+  bool Parser::CharList2() { return space() && CharList(); }
+  bool Parser::CharList3() { return true; }
+  bool Parser::CharList()
   {
-    int save = i; return ( i = save, type1());
+    int save = Parser::i; return ( Parser::i = save, CharList1())
+                       ||( Parser::i = save, CharList2())
+                       ||( Parser::i = save, CharList3());
   }
 
-  bool Char1()
-  { return term("Char");  }
-  bool Char()
+  bool Parser::type1() { term("type"); }
+  bool Parser::type()
   {
-    int save = i; return ( i = save, Char1());
+    int save = Parser::i; return ( Parser::i = save, type1());
   }
 
-  bool space1() { return term(" "); }
-  bool space()
+  bool Parser::Char1() { return term("Char");  }
+  bool Parser::Char()
   {
-    int save = i; return ( i = save, space1());
+    int save = Parser::i; return ( Parser::i = save, Char1());
   }
 
-  bool digit1() { return term("digit"); }
-  bool digit()
+  bool Parser::space1() { return term(" "); }
+  bool Parser::space()
   {
-    int save = i; return ( i = save, digit1());
+    int save = Parser::i; return ( Parser::i = save, space1());
   }
 
-  bool boolop1() { return term("boolOp"); }
-  bool boolop()
+  bool Parser::digit1() { return term("digit"); }
+  bool Parser::digit()
   {
-    int save = i; return ( i = save, boolop1());
+    int save = Parser::i; return ( Parser::i = save, digit1());
   }
 
-  bool boolval1() { return term("boolVal"); }
-  bool boolval()
+  bool Parser::boolop1() { return term("boolOp"); }
+  bool Parser::boolop()
   {
-    int save = i; return ( i = save, boolval1());
+    int save = Parser::i; return ( Parser::i = save, boolop1());
   }
 
-  bool intop1() { return term("intOp"); }
-  bool intop()
+  bool Parser::boolval1() { return term("boolVal"); }
+  bool Parser::boolval()
   {
-    int save = i; return ( i = save, intop1());
+    int save = Parser::i; return ( Parser::i = save, boolval1());
+  }
+
+  bool Parser::intop1() { return term("intOp"); }
+  bool Parser::intop()
+  {
+    int save = Parser::i; return ( Parser::i = save, intop1());
   }

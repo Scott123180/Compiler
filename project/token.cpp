@@ -22,6 +22,8 @@ Token::Token(string d, int l, int p) : data(d), line(l), position(p)
 //branch token, just type
 Token::Token(string t) : type(t) {}
 
+Token::~Token(){}
+
 string Token::findType() //line num and position for errors
 {
   //check the map

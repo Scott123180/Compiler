@@ -81,10 +81,12 @@ static void CST::deleteRecur(Token* a)
 //recursively delete all children
 static bool deleteAllChildren()
 {
+
   //starts at the current node
   while(!CST::curNode->children.empty())
   {
-
+    //keep on deleting the first child until none left
+    CST::deleteRecur(CST::curNode->children.at(0));
   }
 }
 
