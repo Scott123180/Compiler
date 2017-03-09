@@ -14,7 +14,7 @@ CST::CST()
   CST::curNode = root; //ATTN: may be wrong way to set root
 }
 
-void addChild(Token* t)
+void CST::addChild(Token* t)
 {
   //add reference to parent's children
   CST::curNode->children.push_back(t);
@@ -23,8 +23,9 @@ void addChild(Token* t)
   CST::curNode = t;  //change the current node to the pointer (child)
 }
 
+
 //delete child
-static bool deleteLastChild()
+static bool CST::deleteLastChild()
 {
   //if it has children, don't allow
   if(CST::curNode->children.empty())
@@ -35,8 +36,7 @@ static bool deleteLastChild()
   {
     unsigned long len = CST::curNode->children.size(); //size of vector
     len--; //number of last element
-    Token* deleteThis = CST::curNode->children.at(len);
-    if(deleteNode(deleteThis))
+    if(CST::deleteNode(CST::curNode->children.at(len), false))
     {
       return true;
     }
@@ -47,12 +47,19 @@ static bool deleteLastChild()
   }
 }
 
-static bool deleteNode(Token* a)
+static bool CST::deleteNode(Token* a, bool recursive)
 {
   //if it has children, don't allow
   if(a->children.empty())
   {
-    return false;
+    if(recursive)
+    {
+      CST::deleteRecur(a);
+    }
+    else
+    {
+      return false;
+    }
   }
   else
   {
@@ -60,7 +67,7 @@ static bool deleteNode(Token* a)
     return true;
   }
 }
-static void deleteRecur(Token* a)
+static void CST::deleteRecur(Token* a)
 {
   while(!(a->children.empty())) //has children
   {
@@ -69,7 +76,7 @@ static void deleteRecur(Token* a)
     deleteRecur(a->children[len]);
   }
   //after get to a node with no children, delete it
-  deleteNode(a);
+  CST::deleteNode(a, false);
 }
 //recursively delete all children
 static bool deleteAllChildren()
