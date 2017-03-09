@@ -24,24 +24,62 @@ void addChild(Token* t)
 }
 
 //delete child
-void deleteChild()
+static bool deleteLastChild()
 {
   //if it has children, don't allow
   if(CST::curNode->children.empty())
   {
-
+    return false;
   }
   else
+  {
+    unsigned long len = CST::curNode->children.size(); //size of vector
+    len--; //number of last element
+    Token* deleteThis = CST::curNode->children.at(len);
+    if(deleteNode(deleteThis))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+}
+
+static bool deleteNode(Token* a)
+{
+  //if it has children, don't allow
+  if(a->children.empty())
+  {
+    return false;
+  }
+  else
+  {
+    delete a;
+    return true;
+  }
+}
+static void deleteRecur(Token* a)
+{
+  while(!(a->children.empty())) //has children
+  {
+    unsigned long len = CST::curNode->children.size(); //size of vector
+    len--; //number of last element
+    deleteRecur(a->children[len]);
+  }
+  //after get to a node with no children, delete it
+  deleteNode(a);
+}
+//recursively delete all children
+static bool deleteAllChildren()
+{
+  //starts at the current node
+  while(!CST::curNode->children.empty())
   {
 
   }
 }
-
-//recursively delete all children
-void deleteAllChildren();
-
-//return the parent node
-void parent();
 
 /*
 TODO: methods to add nodes and delete nodes

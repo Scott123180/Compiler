@@ -21,14 +21,15 @@ class CST
     
     Token* getcurNode() { return curNode; }
     Token* upTree(Token* parentNode);
-    
+
+    //delete the node
+    static bool deleteNode(Token* a);
+
     //delete child
-    void deleteChild();
+    static bool deleteLastChild();
     //recursively delete all children
-    void deleteAllChildren();
-    
-    //return the parent node
-    void parent();
+    static bool deleteAllChildren();
+
 
     static Token* curNode = nullptr;
   private:
