@@ -175,6 +175,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(PrintStatement())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //PrintStatement()
@@ -188,6 +190,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(AssignmentStatement())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //AssignmentStatement()
@@ -201,6 +205,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(VarDecl())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //VarDecl()
@@ -214,6 +220,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(WhileStatement())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //WhileStatement()
@@ -227,6 +235,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(IfStatement())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //IfStatement()
@@ -240,6 +250,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(Block())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //Block()
@@ -272,6 +284,8 @@ Parser::Parser(vector<Token> stream)
         {
           if (term("rightParen"))
           {
+            expecting.clear();
+            CST::curNode = newBranch->parent; //kick back pointer
             return true;
           }
           else //rightParen
@@ -314,6 +328,8 @@ Parser::Parser(vector<Token> stream)
         CST::addChild(newBranchE, true);
         if(Expr())
         {
+          expecting.clear();
+          CST::curNode = newBranchE->parent; //kick back pointer
           return true;
         }
         else //Expr()
@@ -350,6 +366,8 @@ Parser::Parser(vector<Token> stream)
       CST::addChild(newBranchI, true);
       if(Id())
       {
+        expecting.clear();
+        CST::curNode = newBranchI->parent; //kick back pointer
         return true;
       }
       else //Id()
@@ -381,6 +399,8 @@ Parser::Parser(vector<Token> stream)
         CST::addChild(newBranchBlock, true);
         if(Block())
         {
+          expecting.clear();
+          CST::curNode = newBranchBlock->parent; //kick back pointer
           return true;
         }
         else //Block()
@@ -418,6 +438,8 @@ Parser::Parser(vector<Token> stream)
         CST::addChild(newBranchBlock, true);
         if(Block())
         {
+          expecting.clear();
+          CST::curNode = newBranchBlock->parent; //kick back pointer
           return true;
         }
         else //Block()
@@ -427,7 +449,7 @@ Parser::Parser(vector<Token> stream)
       }
       else //BooleanExpr()
       {
-        
+        return false;
       }
     }
     else //if
@@ -448,6 +470,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(IntExpr())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //IntExpr()
@@ -461,6 +485,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(StringExpr())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //StringExpr()
@@ -474,6 +500,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(BooleanExpr())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //BooleanExpr()
@@ -487,6 +515,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(Id())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else//Id()
@@ -517,6 +547,8 @@ Parser::Parser(vector<Token> stream)
         CST::addChild(newBranchExpr, true);
          if(Expr())
          {
+           expecting.clear();
+           CST::curNode = newBranchExpr->parent; //kick back pointer
            return true;
          }
          else //Expr()
@@ -540,6 +572,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(digit())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //digit()
@@ -566,6 +600,8 @@ Parser::Parser(vector<Token> stream)
       {
         if(term("rightQuote"))
         {
+          expecting.clear();
+          CST::curNode = newBranch->parent; //kick back pointer
           return true;
         }
         else //rightQuote
@@ -608,6 +644,8 @@ Parser::Parser(vector<Token> stream)
           {
             if(term("rightParen"))
             {
+              expecting.clear();
+              CST::curNode = newBranchExpr2->parent; //kick back pointer
               return true;
             }
             else //rightParen
@@ -641,6 +679,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(boolval())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //boolval()
@@ -662,6 +702,8 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranch, true);
     if(Char())
     {
+      expecting.clear();
+      CST::curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //Char()
@@ -686,6 +728,8 @@ Parser::Parser(vector<Token> stream)
       CST::addChild(newBranchCharL, true);
       if(CharList())
       {
+        expecting.clear();
+        CST::curNode = newBranchCharL->parent; //kick back pointer
         return true;
       }
       else //CharList()
@@ -708,6 +752,8 @@ Parser::Parser(vector<Token> stream)
       CST::addChild(newBranchCharL, true);
       if(CharList())
       {
+        expecting.clear();
+        CST::curNode = newBranchCharL->parent; //kick back pointer
         return true;
       }
       else //CharList()
@@ -734,6 +780,8 @@ Parser::Parser(vector<Token> stream)
   {
     if(term("type"))
     {
+      expecting.clear();
+      CST::curNode = CST::curNode->parent; //kick back pointer
       return true;
     }
     else //type
@@ -752,6 +800,8 @@ Parser::Parser(vector<Token> stream)
   {
     if(term("Char"))
     {
+      expecting.clear();
+      CST::curNode = CST::curNode->parent; //kick back pointer
       return true;
     }
     else //Char
@@ -770,6 +820,8 @@ Parser::Parser(vector<Token> stream)
   {
     if(term(" "))
     {
+      expecting.clear();
+      CST::curNode = CST::curNode->parent; //kick back pointer
       return true;
     }
     else //space
@@ -788,6 +840,8 @@ Parser::Parser(vector<Token> stream)
   {
     if(term("digit"))
     {
+      expecting.clear();
+      CST::curNode = CST::curNode->parent; //kick back pointer
       return true;
     }
     else //digit
@@ -806,6 +860,8 @@ Parser::Parser(vector<Token> stream)
   {
     if(term("boolOp"))
     {
+      expecting.clear();
+      CST::curNode = CST::curNode->parent; //kick back pointer
       return true;
     }
     else //boolop
@@ -824,6 +880,8 @@ Parser::Parser(vector<Token> stream)
   {
     if(term("boolVal"))
     {
+      expecting.clear();
+      CST::curNode = CST::curNode->parent; //kick back pointer
       return true;
     }
     else //boolval
@@ -841,6 +899,8 @@ Parser::Parser(vector<Token> stream)
   bool Parser::intop1() {
     if(term("intOp"))
     {
+      expecting.clear();
+      CST::curNode = CST::curNode->parent; //kick back pointer
       return true;
     }
     else //intop
