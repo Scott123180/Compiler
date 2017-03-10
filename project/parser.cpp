@@ -35,8 +35,6 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::term(string tt) //terminal leaf creation
   {
-    //TODO: CST and token functions here on match
-
     if (Parser::tokens[(Parser::i++)].getType() == tt)
     {
       //create leaf
@@ -50,20 +48,31 @@ Parser::Parser(vector<Token> stream)
   }
 
 
+  //PROGRAM===============================================================
   //already added a program token as our root node
   bool Parser::Program1()
   {
     //create block branch
     Token* newBranch = new Token("Block");
     CST::addChild(newBranch, true);
-    if(Block() && term("EOP"))
+    if(Block())
     {
-      return true;
-      //kick pointer back to root
+      if(term("EOP"))
+      {
+        CST::curNode = CST::curNode->parent; //kick back pointer
+        expecting.clear();
+        return true;
+      }
+      else
+      {
+        expecting.push_back("$");
+        return false;
+      }
     }
     else
     {
-      //TODO: add to error statements
+      expecting.push_back("Block()");
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -73,7 +82,41 @@ Parser::Parser(vector<Token> stream)
     int save = Parser::i; return (Parser::i = save, Program1());
   }
 
-  bool Parser::Block1() { return term("leftBrace") && StatementList() && term("rightBrace"); }
+  //BLOCK=================================================================
+
+  bool Parser::Block1()  //leftBrace, StatementList(), rightBrace
+  {
+    if(term("leftBrace"))
+    {
+      Token* newBranch = new Token("StatementList"); //add token preemtively
+      CST::addChild(newBranch, true);
+      if(StatementList())
+      {
+        if(term("rightBrace"))
+        {
+          CST::curNode = CST::curNode->parent; //kick back pointer
+          expecting.clear();
+          return true;
+        }
+        else
+        {
+          expecting.push_back("}");
+          return false;
+        }
+      }
+      else //fail StatementList
+      {
+        expecting.push_back("StatementList()");
+        CST::deleteNode(newBranch, false);
+        return false;
+      }
+    }
+    else
+    {
+      expecting.push_back("{");
+      return false;
+    }
+  }
   bool Parser::Block2() { return true; }//epsilon
 
   bool Parser::Block()
@@ -82,7 +125,25 @@ Parser::Parser(vector<Token> stream)
                        ||(Parser::i = save, Block2());
   }
 
-  bool Parser::StatementList1() { return Statement() && StatementList(); }
+  //STATEMENTLIST=========================================================
+
+  bool Parser::StatementList1() {
+    if (Statement())
+    {
+      if (StatementList())
+      {
+        
+      }
+      else
+      {
+        
+      }
+    }
+    else
+    {
+      
+    }
+  }
   bool Parser::StatementList2() { return true; } //epsilon
 
   bool Parser::StatementList()
@@ -90,6 +151,8 @@ Parser::Parser(vector<Token> stream)
     int save = Parser::i; return (Parser::i = save, StatementList1())
                                ||(Parser::i = save, StatementList2());
   }
+
+  //STATEMENT=============================================================
 
   bool Parser::Statement1() { return PrintStatement(); }
   bool Parser::Statement2() { return AssignmentStatement(); }
@@ -108,12 +171,16 @@ Parser::Parser(vector<Token> stream)
                        ||(Parser::i = save, Statement6());
   }
 
+  //PRINTSTATEMENT========================================================
+
   bool Parser::PrintStatement1(){ return term("print") && term("leftParen") && Expr() && term("rightParen"); }
 
   bool Parser::PrintStatement()
   {
     int save = Parser::i; return (Parser::i = save, PrintStatement1());
   }
+
+  //ASSIGNMENTSTATEMENT====================================================
 
   bool Parser::AssignmentStatement1() { return Id() && term("=") && Expr(); }
 
@@ -122,11 +189,15 @@ Parser::Parser(vector<Token> stream)
     int save = Parser::i; return (Parser::i = save, AssignmentStatement1());
   }
 
+  //VARDECL===============================================================
+
   bool Parser::VarDecl1() { return type() && Id(); }
   bool Parser::VarDecl()
   {
     int save = Parser::i; return (Parser::i = save, VarDecl1());
   }
+
+  //WHILESTATEMENT========================================================
 
   bool Parser::WhileStatement1() { return term("while") && BooleanExpr() && Block(); }
 
@@ -135,11 +206,15 @@ Parser::Parser(vector<Token> stream)
     int save = Parser::i; return (Parser::i = save, WhileStatement1());
   }
 
+  //IFSTATEMENT===========================================================
+
   bool Parser::IfStatement1() { return term("if") && BooleanExpr() && Block(); }
   bool Parser::IfStatement()
   {
     int save = Parser::i; return ( Parser::i = save, IfStatement1());
   }
+
+  //EXPR==================================================================
 
   bool Parser::Expr1() { return IntExpr(); }
   bool Parser::Expr2() { return StringExpr(); }
@@ -154,6 +229,8 @@ Parser::Parser(vector<Token> stream)
                       ||( Parser::i = save, Expr4());
   }
 
+  //INTEXPR===============================================================
+
   bool Parser::IntExpr1() { return digit() && intop && Expr(); }
   bool Parser::IntExpr2() { return digit(); }
 
@@ -163,11 +240,15 @@ Parser::Parser(vector<Token> stream)
                        ||( Parser::i = save, IntExpr2());
   }
 
+  //STRINGEXPR============================================================
+
   bool Parser::StringExpr1() { return term("leftQuote") && CharList() && term("rightQuote"); }
   bool Parser::StringExpr()
   {
     int save = Parser::i; return ( Parser::i = save, StringExpr1());
   }
+
+  //BOOLEANEXPR===========================================================
 
   bool Parser::BooleanExpr1() { return term("leftParen") && Expr() && boolop() && Expr() && term("rightParen"); }
   bool Parser::BooleanExpr2() { return boolval(); }
@@ -177,11 +258,15 @@ Parser::Parser(vector<Token> stream)
                        ||( Parser::i = save, BooleanExpr2());
   }
 
+  //ID====================================================================
+
   bool Parser::Id1() { return Char(); }
   bool Parser::Id()
   {
     int save = Parser::i; return ( Parser::i = save, Id1());
   }
+
+  //CHARLIST==============================================================
 
   bool Parser::CharList1() { return Char() && CharList(); }
   bool Parser::CharList2() { return space() && CharList(); }
@@ -193,11 +278,15 @@ Parser::Parser(vector<Token> stream)
                        ||( Parser::i = save, CharList3());
   }
 
+  //TYPE==================================================================
+
   bool Parser::type1() { term("type"); }
   bool Parser::type()
   {
     int save = Parser::i; return ( Parser::i = save, type1());
   }
+
+  //CHAR==================================================================
 
   bool Parser::Char1() { return term("Char");  }
   bool Parser::Char()
@@ -205,11 +294,15 @@ Parser::Parser(vector<Token> stream)
     int save = Parser::i; return ( Parser::i = save, Char1());
   }
 
+  //SPACE=================================================================
+
   bool Parser::space1() { return term(" "); }
   bool Parser::space()
   {
     int save = Parser::i; return ( Parser::i = save, space1());
   }
+
+  //DIGIT=================================================================
 
   bool Parser::digit1() { return term("digit"); }
   bool Parser::digit()
@@ -217,17 +310,23 @@ Parser::Parser(vector<Token> stream)
     int save = Parser::i; return ( Parser::i = save, digit1());
   }
 
+  //BOOLOP================================================================
+
   bool Parser::boolop1() { return term("boolOp"); }
   bool Parser::boolop()
   {
     int save = Parser::i; return ( Parser::i = save, boolop1());
   }
 
+  //BOOLVAL===============================================================
+
   bool Parser::boolval1() { return term("boolVal"); }
   bool Parser::boolval()
   {
     int save = Parser::i; return ( Parser::i = save, boolval1());
   }
+
+  //INTOP=================================================================
 
   bool Parser::intop1() { return term("intOp"); }
   bool Parser::intop()

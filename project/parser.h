@@ -16,7 +16,8 @@ public:
 private:
   static vector<Token> tokens;
   static int i = 0; //points to which token we're on
-
+  
+  static vector<string> expecting;
 
   //recursive decent functions
   bool term(string tt); //terminal
