@@ -18,9 +18,6 @@ class CST
     CST();
     
     static void addChild(Token* t, bool changeToChild);
-    
-    Token* getcurNode() { return curNode; }
-    Token* upTree(Token* parentNode);
 
     //delete just the last child of current node
     static bool deleteLastChild();
@@ -36,7 +33,7 @@ class CST
     static bool deleteAllChildren();
 
 
-    static Token* curNode = nullptr;
+    static Token* curNode;
   private:
 
 };

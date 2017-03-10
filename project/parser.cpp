@@ -5,9 +5,7 @@
 #include "cst.h"
 
 Parser::Parser(vector<Token> stream)
-  : tokens(stream)
 {
-
   /*
    * next is the current token we're working with, we increment it every time just
    * in case we find a match, but then set it back if we have to check again if a term
@@ -23,6 +21,7 @@ Parser::Parser(vector<Token> stream)
   //invoke E()
 
   //remember, if a process fails, we need to delete all of the children
+  Parser::tokens = stream;
   
   Program();
 
@@ -619,7 +618,7 @@ Parser::Parser(vector<Token> stream)
     CST::addChild(newBranchDigit, true);
     if(digit())
     {
-      if(intop)
+      if(term("intop"))
       {
         Token* newBranchExpr = new Token("Expr");
         CST::addChild(newBranchExpr, true);

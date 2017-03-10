@@ -15,8 +15,6 @@ class Token
     Token(string t, string d, int l, int p);
     Token(string d,int l, int p);
 
-    Token::~Token();
-
     //branch token, just type
     Token(string t);
 

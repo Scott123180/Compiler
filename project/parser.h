@@ -11,11 +11,11 @@ class Parser
 public:
   //parser object
   Parser(vector<Token> stream);
-
+  int i = 0; //points to which token we're on
 
 private:
   static vector<Token> tokens;
-  static int i = 0; //points to which token we're on
+  
   
   static vector<string> expecting;
 
