@@ -22,6 +22,8 @@ Parser::Parser(vector<Token> stream)
   //initialize next to point to the first token
   //invoke E()
 
+  //remember, if a process fails, we need to delete all of the children
+  
   Program();
 
 
@@ -72,6 +74,7 @@ Parser::Parser(vector<Token> stream)
     else
     {
       expecting.push_back("Block()");
+      CST::curNode = newBranch->parent; //kick back pointer
       CST::deleteNode(newBranch, false);
       return false;
     }
@@ -94,11 +97,10 @@ Parser::Parser(vector<Token> stream)
       {
         if(term("rightBrace"))
         {
-          CST::curNode = CST::curNode->parent; //kick back pointer
           expecting.clear();
           return true;
         }
-        else
+        else //fail rightBrace
         {
           expecting.push_back("}");
           return false;
@@ -107,11 +109,12 @@ Parser::Parser(vector<Token> stream)
       else //fail StatementList
       {
         expecting.push_back("StatementList()");
+        CST::curNode = newBranch->parent; //kick back pointer
         CST::deleteNode(newBranch, false);
         return false;
       }
     }
-    else
+    else //fail leftBrace
     {
       expecting.push_back("{");
       return false;
@@ -128,20 +131,32 @@ Parser::Parser(vector<Token> stream)
   //STATEMENTLIST=========================================================
 
   bool Parser::StatementList1() {
+    Token* newBranchS = new Token("Statement");
+    CST::addChild(newBranchS, true);
     if (Statement())
     {
+      Token* newBranchSL = new Token ("StatementList");
+      CST::addChild(newBranchSL,true);
       if (StatementList())
       {
-        
+        expecting.clear();
+        CST::curNode = newBranchSL->parent; //kick back pointer
+        return true;
       }
       else
       {
-        
+        expecting.push_back("StatementList()");
+        CST::curNode = newBranchSL->parent; //kick back pointer
+        CST::deleteNode(newBranchS, false);
+        return false;
       }
     }
     else
     {
-      
+      expecting.push_back("Statement()");
+      CST::curNode = newBranchS->parent; //kick back pointer
+      CST::deleteNode(newBranchS, false);
+      return false;
     }
   }
   bool Parser::StatementList2() { return true; } //epsilon

@@ -78,6 +78,9 @@ static void CST::deleteRecur(Token* a)
     len--; //number of last element
     deleteRecur(a->children[len]);
   }
+  
+  CST::curNode = CST::curNode->parent; //change current node to parent
+  //TODO: dereference node in parent
   //after get to a node with no children, delete it
   CST::deleteNode(a, false);
 }
