@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "token.h"
+#include "cst.h"
 
 class Parser
 {
@@ -12,9 +13,13 @@ public:
   //parser object
   Parser(vector<Token> stream);
   int i = 0; //points to which token we're on
-
+  vector<Token> tokens;
+  
+  //new CST object
+  static CST newCST();
+  
 private:
-  static vector<Token> tokens;
+  
   
   
   static vector<string> expecting;

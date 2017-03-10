@@ -4,6 +4,8 @@
 #include "lexer.h"
 #include "error.h"
 #include "output.h"
+#include "parser.h"
+#include "cst.h"
 
 using namespace std;
 
@@ -18,10 +20,12 @@ int main(int argc, char** argv)
   string fileName = argv[1];
 
   Lexer newLex(fileName);
-
+  
+  Parser newParser(newLex.stream);
+  
   Output newOutput;
   newOutput.printOutput(newLex.stream);
 
-  //TODO: parse and CST functions
+
 
 }

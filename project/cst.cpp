@@ -6,6 +6,8 @@
 
 using namespace std;
 
+CST::curNode = nullptr;
+
 CST::CST()
 {
   //new root node
@@ -17,7 +19,7 @@ CST::CST()
 void CST::addChild(Token* t, bool changeToChild)
 {
   //add reference to parent's children
-  CST::curNode->children.push_back(t);
+  curNode->children.push_back(t);
 
   if(changeToChild) //good for nonterminals
   {
