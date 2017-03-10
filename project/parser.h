@@ -16,13 +16,13 @@ public:
   vector<Token> tokens;
   
   //new CST object
-  static CST newCST();
+  CST newCST;
   
 private:
   
   
   
-  static vector<string> expecting;
+  vector<string> expecting;
 
   //recursive decent functions
   bool term(string tt); //terminal

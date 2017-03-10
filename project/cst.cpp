@@ -6,8 +6,6 @@
 
 using namespace std;
 
-CST::curNode = nullptr;
-
 CST::CST()
 {
   //new root node
