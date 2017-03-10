@@ -65,13 +65,13 @@ Parser::Parser(vector<Token> stream)
         expecting.clear();
         return true;
       }
-      else
+      else //EOP
       {
         expecting.push_back("$");
         return false;
       }
     }
-    else
+    else //Block()
     {
       expecting.push_back("Block()");
       CST::curNode = newBranch->parent; //kick back pointer
@@ -169,46 +169,82 @@ Parser::Parser(vector<Token> stream)
 
   //STATEMENT=============================================================
 
-  bool Parser::Statement1()
+  bool Parser::Statement1() //PrintStatement()
   {
+    Token* newBranch = new Token("PrintStatement");
+    CST::addChild(newBranch, true);
     if(PrintStatement())
     {
       return true;
     }
+    else //PrintStatement()
+    {
+      return false;
+    }
   }
-  bool Parser::Statement2()
+  bool Parser::Statement2() //AssignStatement()
   {
+    Token* newBranch = new Token("AssignStatement");
+    CST::addChild(newBranch, true);
     if(AssignmentStatement())
     {
       return true;
     }
+    else //AssignmentStatement()
+    {
+      return false;
+    }
   }
-  bool Parser::Statement3()
+  bool Parser::Statement3() //VarDecl()
   {
+    Token* newBranch = new Token("VarDecl");
+    CST::addChild(newBranch, true);
     if(VarDecl())
     {
       return true;
     }
+    else //VarDecl()
+    {
+      return false;
+    }
   }
-  bool Parser::Statement4()
+  bool Parser::Statement4() //WhileStatement()
   {
+    Token* newBranch = new Token("WhileStatement");
+    CST::addChild(newBranch, true);
     if(WhileStatement())
     {
-      
+      return true;
+    }
+    else //WhileStatement()
+    {
+      return false;
     }
   }
-  bool Parser::Statement5()
+  bool Parser::Statement5() //IfStatement()
   {
+    Token* newBranch = new Token("IfStatement");
+    CST::addChild(newBranch, true);
     if(IfStatement())
     {
-      
+      return true;
+    }
+    else //IfStatement()
+    {
+      return false;
     }
   }
-  bool Parser::Statement6()
+  bool Parser::Statement6() //Block()
   {
+    Token* newBranch = new Token("Block");
+    CST::addChild(newBranch, true);
     if(Block())
     {
-      
+      return true;
+    }
+    else //Block()
+    {
+      return false;
     }
   }
 
@@ -224,10 +260,16 @@ Parser::Parser(vector<Token> stream)
 
   //PRINTSTATEMENT========================================================
 
-  bool Parser::PrintStatement1(){
-    if (term("print")) {
-      if (term("leftParen")){
-        if (Expr()) {
+  bool Parser::PrintStatement1() //print leftParen Expr() rightParen
+  {
+    if (term("print"))
+    {
+      if (term("leftParen"))
+      {
+        Token* newBranch = new Token("Expr");
+        CST::addChild(newBranch, true);
+        if (Expr())
+        {
           if (term("rightParen"))
           {
             return true;
@@ -260,12 +302,16 @@ Parser::Parser(vector<Token> stream)
 
   //ASSIGNMENTSTATEMENT====================================================
 
-  bool Parser::AssignmentStatement1()
+  bool Parser::AssignmentStatement1()  //Id = Expr()
   {
+    Token* newBranchI = new Token("Id");
+    CST::addChild(newBranchI, true);
     if(Id())
     {
       if(term("="))
       {
+        Token* newBranchE = new Token("Expr");
+        CST::addChild(newBranchE, true);
         if(Expr())
         {
           return true;
@@ -296,8 +342,12 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::VarDecl1()
   {
+    Token* newBranchT = new Token("VarDecl");
+    CST::addChild(newBranchT, true);
     if(type())
     {
+      Token* newBranchI = new Token("Id");
+      CST::addChild(newBranchI, true);
       if(Id())
       {
         return true;
@@ -311,7 +361,6 @@ Parser::Parser(vector<Token> stream)
     {
       return false;
     }
-    return false;
   }
   bool Parser::VarDecl()
   {
@@ -320,12 +369,16 @@ Parser::Parser(vector<Token> stream)
 
   //WHILESTATEMENT========================================================
 
-  bool Parser::WhileStatement1()
+  bool Parser::WhileStatement1()  //while BoolExpr() Block()
   {
     if(term("while"))
     {
+      Token* newBranchBool = new Token("BooleanExpr");
+      CST::addChild(newBranchBool, true);
       if(BooleanExpr())
       {
+        Token* newBranchBlock = new Token("Block");
+        CST::addChild(newBranchBlock, true);
         if(Block())
         {
           return true;
@@ -357,8 +410,12 @@ Parser::Parser(vector<Token> stream)
   {
     if(term("if"))
     {
+      Token* newBranchBool = new Token("BooleanExpr");
+      CST::addChild(newBranchBool, true);
       if(BooleanExpr())
       {
+        Token* newBranchBlock = new Token("Block");
+        CST::addChild(newBranchBlock, true);
         if(Block())
         {
           return true;
@@ -385,8 +442,10 @@ Parser::Parser(vector<Token> stream)
 
   //EXPR==================================================================
 
-  bool Parser::Expr1()
+  bool Parser::Expr1()  //IntExpr()
   {
+    Token* newBranch = new Token("IntExpr");
+    CST::addChild(newBranch, true);
     if(IntExpr())
     {
       return true;
@@ -396,8 +455,10 @@ Parser::Parser(vector<Token> stream)
       return false;
     }
   }
-  bool Parser::Expr2()
+  bool Parser::Expr2() //StringExpr()
   {
+    Token* newBranch = new Token("StringExpr");
+    CST::addChild(newBranch, true);
     if(StringExpr())
     {
       return true;
@@ -407,8 +468,10 @@ Parser::Parser(vector<Token> stream)
       return false;
     }
   }
-  bool Parser::Expr3()
+  bool Parser::Expr3() //BooleanExpr()
   {
+    Token* newBranch = new Token("BooleanExpr");
+    CST::addChild(newBranch, true);
     if(BooleanExpr())
     {
       return true;
@@ -418,7 +481,10 @@ Parser::Parser(vector<Token> stream)
       return false;
     }
   }
-  bool Parser::Expr4() {
+  bool Parser::Expr4() //Id()
+  {
+    Token* newBranch = new Token("Id");
+    CST::addChild(newBranch, true);
     if(Id())
     {
       return true;
@@ -439,11 +505,16 @@ Parser::Parser(vector<Token> stream)
 
   //INTEXPR===============================================================
 
-  bool Parser::IntExpr1() {
+  bool Parser::IntExpr1() //digit() intop Expr()
+  {
+    Token* newBranchDigit = new Token("Digit");
+    CST::addChild(newBranchDigit, true);
     if(digit())
     {
       if(intop)
       {
+        Token* newBranchExpr = new Token("Expr");
+        CST::addChild(newBranchExpr, true);
          if(Expr())
          {
            return true;
@@ -463,8 +534,10 @@ Parser::Parser(vector<Token> stream)
       return false;
     }
   }
-  bool Parser::IntExpr2()
+  bool Parser::IntExpr2() //digit()
   {
+    Token* newBranch = new Token("Digit");
+    CST::addChild(newBranch, true);
     if(digit())
     {
       return true;
@@ -483,7 +556,33 @@ Parser::Parser(vector<Token> stream)
 
   //STRINGEXPR============================================================
 
-  bool Parser::StringExpr1() { return term("leftQuote") && CharList() && term("rightQuote"); }
+  bool Parser::StringExpr1() //leftQuote CharList() rightQuote
+  {
+    if(term("leftQuote"))
+    {
+      Token* newBranch = new Token("CharList");
+      CST::addChild(newBranch, true);
+      if(CharList())
+      {
+        if(term("rightQuote"))
+        {
+          return true;
+        }
+        else //rightQuote
+        {
+          return false;
+        }
+      }
+      else //CharList()
+      {
+        return false;
+      }
+    }
+    else //leftQuote
+    {
+      return false;
+    }
+  }
   bool Parser::StringExpr()
   {
     int save = Parser::i; return ( Parser::i = save, StringExpr1());
@@ -491,14 +590,20 @@ Parser::Parser(vector<Token> stream)
 
   //BOOLEANEXPR===========================================================
 
-  bool Parser::BooleanExpr1()
+  bool Parser::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
   {
     if(term("leftParen"))
     {
+      Token* newBranchExpr1 = new Token("Expr");
+      CST::addChild(newBranchExpr1, true);
       if(Expr())
       {
+        Token* newBranchBool = new Token("BoolOp");
+        CST::addChild(newBranchBool, true);
         if (boolop())
         {
+          Token* newBranchExpr2 = new Token("Expr");
+          CST::addChild(newBranchExpr2, true);
           if(Expr())
           {
             if(term("rightParen"))
@@ -530,8 +635,10 @@ Parser::Parser(vector<Token> stream)
       return false;
     }
   }
-  bool Parser::BooleanExpr2()
+  bool Parser::BooleanExpr2() //boolval()
   {
+    Token* newBranch = new Token("BoolVal");
+    CST::addChild(newBranch, true);
     if(boolval())
     {
       return true;
@@ -549,8 +656,10 @@ Parser::Parser(vector<Token> stream)
 
   //ID====================================================================
 
-  bool Parser::Id1()
+  bool Parser::Id1() //Char()
   {
+    Token* newBranch = new Token("Char");
+    CST::addChild(newBranch, true);
     if(Char())
     {
       return true;
@@ -567,10 +676,14 @@ Parser::Parser(vector<Token> stream)
 
   //CHARLIST==============================================================
 
-  bool Parser::CharList1()
+  bool Parser::CharList1() //Char() CharList()
   {
+    Token* newBranchChar = new Token("Char");
+    CST::addChild(newBranchChar, true);
     if(Char())
     {
+      Token* newBranchCharL = new Token("CharList");
+      CST::addChild(newBranchCharL, true);
       if(CharList())
       {
         return true;
@@ -585,10 +698,14 @@ Parser::Parser(vector<Token> stream)
       return false;
     }
   }
-  bool Parser::CharList2()
+  bool Parser::CharList2() //space() CharList()
   {
+    Token* newBranchS = new Token("Space");
+    CST::addChild(newBranchS, true);
     if(space())
     {
+      Token* newBranchCharL = new Token("CharList");
+      CST::addChild(newBranchCharL, true);
       if(CharList())
       {
         return true;
@@ -603,7 +720,7 @@ Parser::Parser(vector<Token> stream)
       return false;
     }
   }
-  bool Parser::CharList3() { return true; }
+  bool Parser::CharList3() { return true; } //epsilon
   bool Parser::CharList()
   {
     int save = Parser::i; return ( Parser::i = save, CharList1())
@@ -613,7 +730,7 @@ Parser::Parser(vector<Token> stream)
 
   //TYPE==================================================================
 
-  bool Parser::type1()
+  bool Parser::type1() //type
   {
     if(term("type"))
     {
