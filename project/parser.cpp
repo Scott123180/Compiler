@@ -106,7 +106,7 @@ Parser::Parser(vector<Token> stream)
           return false;
         }
       }
-      else //fail StatementList
+      else //fail StatementList()
       {
         expecting.push_back("StatementList()");
         CST::curNode = newBranch->parent; //kick back pointer
@@ -120,7 +120,11 @@ Parser::Parser(vector<Token> stream)
       return false;
     }
   }
-  bool Parser::Block2() { return true; }//epsilon
+  bool Parser::Block2()
+  {
+    expecting.clear();
+    return true;
+  }//epsilon
 
   bool Parser::Block()
   {
@@ -130,7 +134,8 @@ Parser::Parser(vector<Token> stream)
 
   //STATEMENTLIST=========================================================
 
-  bool Parser::StatementList1() {
+  bool Parser::StatementList1() //Statement() StatementList()
+  {
     Token* newBranchS = new Token("Statement");
     CST::addChild(newBranchS, true);
     if (Statement())
@@ -143,7 +148,7 @@ Parser::Parser(vector<Token> stream)
         CST::curNode = newBranchSL->parent; //kick back pointer
         return true;
       }
-      else
+      else //StatementList()
       {
         expecting.push_back("StatementList()");
         CST::curNode = newBranchSL->parent; //kick back pointer
@@ -151,7 +156,7 @@ Parser::Parser(vector<Token> stream)
         return false;
       }
     }
-    else
+    else //Statement()
     {
       expecting.push_back("Statement()");
       CST::curNode = newBranchS->parent; //kick back pointer
@@ -159,7 +164,11 @@ Parser::Parser(vector<Token> stream)
       return false;
     }
   }
-  bool Parser::StatementList2() { return true; } //epsilon
+  bool Parser::StatementList2() //epsilon
+  {
+    expecting.clear();
+    return true;
+  }
 
   bool Parser::StatementList()
   {
@@ -181,6 +190,9 @@ Parser::Parser(vector<Token> stream)
     }
     else //PrintStatement()
     {
+      expecting.push_back("PrintStatement()");
+      CST::curNode = newBranch->parent; //kick back pointer
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -196,6 +208,9 @@ Parser::Parser(vector<Token> stream)
     }
     else //AssignmentStatement()
     {
+      expecting.push_back("AssignmentStatement()");
+      CST::curNode = newBranch->parent; //kick back pointer
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -211,6 +226,9 @@ Parser::Parser(vector<Token> stream)
     }
     else //VarDecl()
     {
+      expecting.push_back("VarDecl()");
+      CST::curNode = newBranch->parent; //kick back pointer
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -226,6 +244,9 @@ Parser::Parser(vector<Token> stream)
     }
     else //WhileStatement()
     {
+      expecting.push_back("WhileStatement()");
+      CST::curNode = newBranch->parent; //kick back pointer
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -241,6 +262,9 @@ Parser::Parser(vector<Token> stream)
     }
     else //IfStatement()
     {
+      expecting.push_back("IfStatement()");
+      CST::curNode = newBranch->parent; //kick back pointer
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -256,6 +280,9 @@ Parser::Parser(vector<Token> stream)
     }
     else //Block()
     {
+      expecting.push_back("BlockStatement()");
+      CST::curNode = newBranch->parent; //kick back pointer
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -290,21 +317,30 @@ Parser::Parser(vector<Token> stream)
           }
           else //rightParen
           {
+            expecting.push_back("(");
+            CST::curNode = CST::curNode->parent; //kick back pointer
             return false;
           }
         }
         else  //Expr()
         {
+          expecting.push_back("Expr()");
+          CST::curNode = newBranch->parent; //kick back pointer
+          CST::deleteNode(newBranch, false);
           return false;
         }
       }
       else //leftParen
       {
+        expecting.push_back("(");
+        CST::curNode = CST::curNode->parent;
         return false;
       }
     }
     else //print
     {
+      expecting.push_back("print");
+      CST::curNode = CST::curNode->parent;
       return false;
     }
   }
@@ -334,16 +370,24 @@ Parser::Parser(vector<Token> stream)
         }
         else //Expr()
         {
+          expecting.push_back("Expr()");
+          CST::curNode = newBranchE->parent; //kick back pointer
+          CST::deleteNode(newBranchE, false);
           return false;
         }
       }
       else //=
       {
+        expecting.push_back("=");
+        CST::curNode = CST::curNode->parent; //kick back pointer
         return false;
       }
     }
     else //Id()
     {
+      expecting.push_back("Id()");
+      CST::curNode = newBranchI->parent; //kick back pointer
+      CST::deleteNode(newBranchI, false);
       return false;
     }
     
@@ -372,11 +416,17 @@ Parser::Parser(vector<Token> stream)
       }
       else //Id()
       {
+        expecting.push_back("Id()");
+        CST::curNode = newBranchI->parent; //kick back pointer
+        CST::deleteNode(newBranchI, false);
         return false;
       }
     }
     else //type()
     {
+      expecting.push_back("Type()");
+      CST::curNode = newBranchT->parent; //kick back pointer
+      CST::deleteNode(newBranchT, false);
       return false;
     }
   }
@@ -405,16 +455,24 @@ Parser::Parser(vector<Token> stream)
         }
         else //Block()
         {
+          expecting.push_back("Block()");
+          CST::curNode = newBranchBlock->parent; //kick back pointer
+          CST::deleteNode(newBranchBlock, false);
           return false;
         }
       }
       else //BooleanExpr()
       {
+        expecting.push_back("BooleanExpr()");
+        CST::curNode = newBranchBool->parent; //kick back pointer
+        CST::deleteNode(newBranchBool, false);
         return false;
       }
     }
     else //while
     {
+      expecting.push_back("while");
+      CST::curNode = CST::curNode->parent; //kick back pointer
       return false;
     }
   }
@@ -444,16 +502,24 @@ Parser::Parser(vector<Token> stream)
         }
         else //Block()
         {
+          expecting.push_back("Block()");
+          CST::curNode = newBranchBlock->parent; //kick back pointer
+          CST::deleteNode(newBranchBlock, false);
           return false;
         }
       }
       else //BooleanExpr()
       {
+        expecting.push_back("BooleanExpr()");
+        CST::curNode = newBranchBool->parent; //kick back pointer
+        CST::deleteNode(newBranchBool, false);
         return false;
       }
     }
     else //if
     {
+      expecting.push_back("if");
+      CST::curNode = CST::curNode->parent;
       return false;
     }
   }
@@ -476,6 +542,9 @@ Parser::Parser(vector<Token> stream)
     }
     else //IntExpr()
     {
+      expecting.push_back("IntExpr()");
+      CST::curNode = newBranch->parent;
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -491,6 +560,9 @@ Parser::Parser(vector<Token> stream)
     }
     else //StringExpr()
     {
+      expecting.push_back("StringExpr()");
+      CST::curNode = newBranch->parent; //kick back pointer
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -506,6 +578,9 @@ Parser::Parser(vector<Token> stream)
     }
     else //BooleanExpr()
     {
+      expecting.push_back("BooleanExpr()");
+      CST::curNode = newBranch->parent; //kick back pointer
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -521,6 +596,9 @@ Parser::Parser(vector<Token> stream)
     }
     else//Id()
     {
+      expecting.push_back("Id()");
+      CST::curNode = newBranch->parent; //kick back pointer
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -553,16 +631,24 @@ Parser::Parser(vector<Token> stream)
          }
          else //Expr()
          {
+           expecting.push_back("Expr()");
+           CST::curNode = newBranchExpr->parent; //kick back pointer
+           CST::deleteNode(newBranchExpr, false);
            return false;
          }
       }
       else //intop
       {
+        expecting.push_back("intop");
+        CST::curNode = CST::curNode->parent;
         return false;
       }
     }
     else //digit()
     {
+      expecting.push_back("Digit()");
+      CST::curNode = newBranchDigit->parent;
+      CST::deleteNode(newBranchDigit, false);
       return false;
     }
   }
@@ -578,6 +664,9 @@ Parser::Parser(vector<Token> stream)
     }
     else //digit()
     {
+      expecting.push_back("Digit()");
+      CST::curNode = newBranch->parent;
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -606,16 +695,23 @@ Parser::Parser(vector<Token> stream)
         }
         else //rightQuote
         {
+          expecting.push_back("\"");
+          CST::curNode = CST::curNode->parent;
           return false;
         }
       }
       else //CharList()
       {
+        expecting.push_back("CharList()");
+        CST::curNode = newBranch->parent;
+        CST::deleteNode(newBranch, false);
         return false;
       }
     }
     else //leftQuote
     {
+      expecting.push_back("\"");
+      CST::curNode = CST::curNode->parent;
       return false;
     }
   }
@@ -650,26 +746,39 @@ Parser::Parser(vector<Token> stream)
             }
             else //rightParen
             {
+              expecting.push_back(")");
+              CST::curNode = CST::curNode->parent;
               return false;
             }
           }
-          else //Expr()
+          else //Expr() #2
           {
+            expecting.push_back("Expr()");
+            CST::curNode = newBranchExpr2->parent;
+            CST::deleteNode(newBranchExpr2, false);
             return false;
           }
         }
         else //boolop()
         {
+          expecting.push_back("Boolop()");
+          CST::curNode = newBranchBool->parent;
+          CST::deleteNode(newBranchBool, false);
           return false;
         }
       }
       else //Expr()
       {
+        expecting.push_back("Expr()");
+        CST::curNode = newBranchExpr1->parent;
+        CST::deleteNode(newBranchExpr1, false);
         return false;
       }
     }
     else //leftParen
     {
+      expecting.push_back("(");
+      CST::curNode = CST::curNode->parent;
       return false;
     }
   }
@@ -685,6 +794,9 @@ Parser::Parser(vector<Token> stream)
     }
     else //boolval()
     {
+      expecting.push_back("Boolval()");
+      CST::curNode = newBranch->parent; //kick back pointer
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -708,6 +820,9 @@ Parser::Parser(vector<Token> stream)
     }
     else //Char()
     {
+      expecting.push_back("Char()");
+      CST::curNode = newBranch->parent; //kick back pointer
+      CST::deleteNode(newBranch, false);
       return false;
     }
   }
@@ -734,11 +849,17 @@ Parser::Parser(vector<Token> stream)
       }
       else //CharList()
       {
+        expecting.push_back("CharList()");
+        CST::curNode = newBranchCharL->parent; //kick back the pointer
+        CST::deleteNode(newBranchCharL, false);
         return false;
       }
     }
     else //Char()
     {
+      expecting.push_back("Char()");
+      CST::curNode = newBranchChar->parent; //kick back pointer
+      CST::deleteNode(newBranchChar,false);
       return false;
     }
   }
@@ -758,15 +879,25 @@ Parser::Parser(vector<Token> stream)
       }
       else //CharList()
       {
+        expecting.push_back("CharList()");
+        CST::curNode = newBranchCharL->parent;
+        CST::deleteNode(newBranchCharL, false);
         return false;
       }
     }
     else //space()
     {
+      expecting.push_back("space()");
+      CST::curNode = newBranchS->parent;
+      CST::deleteNode(newBranchS, false);
       return false;
     }
   }
-  bool Parser::CharList3() { return true; } //epsilon
+  bool Parser::CharList3() //epsilon
+  {
+    expecting.clear();
+    return true;
+  }
   bool Parser::CharList()
   {
     int save = Parser::i; return ( Parser::i = save, CharList1())
@@ -786,6 +917,8 @@ Parser::Parser(vector<Token> stream)
     }
     else //type
     {
+      expecting.push_back("type");
+      CST::curNode = CST::curNode->parent;
       return false;
     }
   }
@@ -806,6 +939,8 @@ Parser::Parser(vector<Token> stream)
     }
     else //Char
     {
+      expecting.push_back("Char");
+      CST::curNode = CST::curNode->parent; //kick back pointer
       return false;
     }
   }
@@ -826,6 +961,8 @@ Parser::Parser(vector<Token> stream)
     }
     else //space
     {
+      expecting.push_back("space_char");
+      CST::curNode = CST::curNode->parent;
       return false;
     }
   }
@@ -846,6 +983,8 @@ Parser::Parser(vector<Token> stream)
     }
     else //digit
     {
+      expecting.push_back("digit");
+      CST::curNode = CST::curNode->parent;
       return false;
     }
   }
@@ -866,6 +1005,8 @@ Parser::Parser(vector<Token> stream)
     }
     else //boolop
     {
+      expecting.push_back("boolop");
+      CST::curNode = CST::curNode->parent; //kick back pointer
       return false;
     }
   }
@@ -886,6 +1027,8 @@ Parser::Parser(vector<Token> stream)
     }
     else //boolval
     {
+      expecting.push_back("boolval");
+      CST::curNode = CST::curNode->parent;
       return false;
     }
   }
@@ -905,6 +1048,8 @@ Parser::Parser(vector<Token> stream)
     }
     else //intop
     {
+      expecting.push_back("intop");
+      CST::curNode = CST::curNode->parent; //kick back pointer
       return false;
     }
   }
