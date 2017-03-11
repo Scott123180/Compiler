@@ -11,3 +11,5 @@ CMakeLists.txt
 cmake-build-debug/*
 
 /cmake-build-debug
+
+project/testingoutput.txt

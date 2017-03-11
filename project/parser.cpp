@@ -62,11 +62,9 @@ Parser::Parser(vector<Token> stream)
   //already added a program token as our root node
   bool Parser::Program1()
   {
-    cout << "got to beginning of program 1"<<endl;
     //create block branch
     Token* newBranch = new Token("Block");
     newCST.addChild(newBranch, true);
-    cout << "hey we added a branch" <<endl;
     if(Block())
     {
       if(term("EOP"))
@@ -103,7 +101,6 @@ Parser::Parser(vector<Token> stream)
     {
       Token* newBranch = new Token("StatementList"); //add token preemtively
       newCST.addChild(newBranch, true);
-      cout << "adding statementlist <><" <<endl;
       if(StatementList())
       {
         if(term("rightBrace"))
@@ -139,7 +136,6 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::Block()
   {
-    cout << "Hey we're in block!" << endl;
     int save = Parser::i; return (Parser::i = save, Block1())
                        ||(Parser::i = save, Block2());
   }
@@ -192,6 +188,7 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::Statement1() //PrintStatement()
   {
+    cout << "0099090 Statement1" << endl;
     Token* newBranch = new Token("PrintStatement");
     newCST.addChild(newBranch, true);
     if(PrintStatement())
@@ -205,15 +202,20 @@ Parser::Parser(vector<Token> stream)
     {
       cout << "nope it didn't work, here comes the segment :O"<<endl;
       expecting.push_back("PrintStatement()");
+      cout << "error" << endl;
+      cout << newBranch->parent->getType() << endl;
+      cout << "error" << endl;
       newCST.curNode = newBranch->parent; //kick back pointer
+      cout << "----" << newCST.curNode->getType() <<endl;
       cout << "set cur node parent correctly" <<endl;
       newCST.deleteNode(newBranch);
-      cout << "i don't think we made it";
+      cout << "00i don't think we made it" << endl;
       return false;
     }
   }
   bool Parser::Statement2() //AssignStatement()
   {
+    cout << "statement 2 " << endl;
     Token* newBranch = new Token("AssignStatement");
     newCST.addChild(newBranch, true);
     if(AssignmentStatement())
@@ -232,6 +234,7 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::Statement3() //VarDecl()
   {
+    cout << "statement 3" << endl;
     Token* newBranch = new Token("VarDecl");
     newCST.addChild(newBranch, true);
     if(VarDecl())
@@ -250,6 +253,7 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::Statement4() //WhileStatement()
   {
+    cout << "statement 4" << endl;
     Token* newBranch = new Token("WhileStatement");
     newCST.addChild(newBranch, true);
     if(WhileStatement())
@@ -268,6 +272,7 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::Statement5() //IfStatement()
   {
+    cout << "statement 5" << endl;
     Token* newBranch = new Token("IfStatement");
     newCST.addChild(newBranch, true);
     if(IfStatement())
@@ -288,6 +293,7 @@ Parser::Parser(vector<Token> stream)
   {
     Token* newBranch = new Token("Block");
     newCST.addChild(newBranch, true);
+    cout << "INFINITY BLOCK MOTHER F'ER IM F'D" << endl;
     if(Block())
     {
       expecting.clear();
