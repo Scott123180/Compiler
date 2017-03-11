@@ -34,6 +34,7 @@ void CST::addChild(Token* t, bool changeToChild)
   //set the parent of the token
   t->parent = curNode;
   
+  
   if(changeToChild) //good for nonterminals
   {
     //change curNode reference to child node
@@ -60,12 +61,9 @@ bool CST::deleteNode(Token *a)
 
 void CST::returnToRoot()
 {
-  //cout << "made it to return root" << endl;
   //scale up tree
-  while(curNode->parent->getType() != "Program") //check for root
+  while(curNode->parent) //check for root (nullptr parent)
   {
-    //cout << curNode->getType() <<endl;
-    //cout << curNode->parent->getType() <<endl;
     curNode = curNode->parent;
   }
 }

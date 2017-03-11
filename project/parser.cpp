@@ -31,7 +31,7 @@ Parser::Parser(vector<Token> stream)
     
     
     //print out the cst in the command line
-    //newCST.returnToRoot();  //go back to the root
+    newCST.returnToRoot();  //go back to the root
     //newCST.dfio(newCST.curNode);
   }
   else
@@ -78,7 +78,7 @@ Parser::Parser(vector<Token> stream)
     {
       if(term("EOP"))
       {
-        newCST.curNode = newCST.curNode->parent; //kick back pointer to start
+        //newCST.curNode = newCST.curNode->parent; //kick back pointer to start
         expecting.clear();
         return true;
       }
