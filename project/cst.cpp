@@ -59,18 +59,12 @@ bool CST::deleteLastChild()
 
 bool CST::deleteNode(Token *a)
 {
-  cout << "enter function " << endl;
   //if it has children, don't allow
   if(a->children.empty())
   {
-    cout << "in the if" << endl;
-    cout << "did we make it?" << endl;
     //get rid of reference in parent to avoid null ptr
-    cout << a->getType() << endl;
-    cout << a->parent->getType() << endl;
     a->parent->children.pop_back();
     delete a;
-    cout << "can't do this" << endl;
     return true;
   }
   else

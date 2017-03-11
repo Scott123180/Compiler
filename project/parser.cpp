@@ -187,29 +187,20 @@ Parser::Parser(vector<Token> stream)
     newCST.addChild(newBranch, true);
     if(PrintStatement())
     {
-      cout << "Yo boi let's add this statement"<< endl;
       expecting.clear();
       newCST.curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //PrintStatement()
     {
-      cout << "nope it didn't work, here comes the segment :O"<<endl;
       expecting.push_back("PrintStatement()");
-      cout << "error" << endl;
-      cout << newBranch->parent->getType() << endl;
-      cout << "error" << endl;
       newCST.curNode = newBranch->parent; //kick back pointer
-      cout << "----" << newCST.curNode->getType() <<endl;
-      cout << "set cur node parent correctly" <<endl;
       newCST.deleteNode(newBranch);
-      cout << "00i don't think we made it" << endl;
       return false;
     }
   }
   bool Parser::Statement2() //AssignStatement()
   {
-    cout << "statement 2 " << endl;
     Token* newBranch = new Token("AssignStatement");
     newCST.addChild(newBranch, true);
     if(AssignmentStatement())
@@ -228,7 +219,6 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::Statement3() //VarDecl()
   {
-    cout << "statement 3" << endl;
     Token* newBranch = new Token("VarDecl");
     newCST.addChild(newBranch, true);
     if(VarDecl())
@@ -247,7 +237,6 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::Statement4() //WhileStatement()
   {
-    cout << "statement 4" << endl;
     Token* newBranch = new Token("WhileStatement");
     newCST.addChild(newBranch, true);
     if(WhileStatement())
@@ -266,7 +255,6 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::Statement5() //IfStatement()
   {
-    cout << "statement 5" << endl;
     Token* newBranch = new Token("IfStatement");
     newCST.addChild(newBranch, true);
     if(IfStatement())
@@ -287,7 +275,6 @@ Parser::Parser(vector<Token> stream)
   {
     Token* newBranch = new Token("Block");
     newCST.addChild(newBranch, true);
-    cout << "INFINITY BLOCK MOTHER F'ER IM F'D" << endl;
     if(Block())
     {
       expecting.clear();
