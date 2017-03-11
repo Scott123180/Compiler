@@ -32,7 +32,7 @@ Parser::Parser(vector<Token> stream)
     
     //print out the cst in the command line
     newCST.returnToRoot();  //go back to the root
-    //newCST.dfio(newCST.curNode);
+    newCST.dfio(newCST.curNode);
   }
   else
   {

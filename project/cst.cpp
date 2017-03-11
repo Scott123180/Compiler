@@ -70,13 +70,28 @@ void CST::returnToRoot()
 
 void CST::dfio(Token* a) //depth-first in order
 {
-  cout << "made it to dfio"<< endl;
+  string dashes = "";
+  for(unsigned int d = 0; d < depth; d++)
+  {
+    dashes.append("-");
+  }
+  if(a->getData() == "")  //branch non-terminal
+  {
+    cout << dashes << a->getType() << endl;
+  }
+  else //leaf terminal
+  {
+    --depth;
+    cout << dashes << a->getType() << endl;
+  }
+  ++depth;
   for(unsigned int i = 0; i < a->children.size(); i++)
   {
-    cout << "child " << i << endl;
+    //cout << "child " << i << endl;
     dfio(a->children[i]);
   }
-  cout << a->getType() << endl;
+
+  
 }
 
 /*
