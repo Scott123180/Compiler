@@ -128,16 +128,10 @@ Parser::Parser(vector<Token> stream)
       return false;
     }
   }
-  bool Parser::Block2()
-  {
-    expecting.clear();
-    return true;
-  }//epsilon
 
   bool Parser::Block()
   {
-    int save = Parser::i; return (Parser::i = save, Block1())
-                       ||(Parser::i = save, Block2());
+    int save = Parser::i; return (Parser::i = save, Block1());
   }
 
   //STATEMENTLIST=========================================================

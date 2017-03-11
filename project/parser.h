@@ -32,7 +32,6 @@ private:
   bool Program();
 
   bool Block1();
-  bool Block2();//epsilon
   bool Block();
 
   bool StatementList1();
