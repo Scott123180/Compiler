@@ -50,14 +50,18 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::term(string tt) //terminal leaf creation
   {
-    if (Parser::tokens[(Parser::i++)].getType() == tt)
+    if (Parser::tokens[(Parser::i)].getType() == tt)
     {
+      //put token on the heap
+      Token* newTerminal = new Token(Parser::tokens[Parser::i]);
       //create leaf
-      newCST.addChild(newCST.curNode, false);
+      newCST.addChild(newTerminal, false);
+      ++i; //increment i
       return true;
     }
     else //no match
     {
+      ++i; //increment i regardless
       return false;
     }
   }
@@ -159,7 +163,7 @@ Parser::Parser(vector<Token> stream)
       {
         expecting.push_back("StatementList()");
         newCST.curNode = newBranchSL->parent; //kick back pointer
-        newCST.deleteNode(newBranchS);
+        newCST.deleteNode(newBranchSL);
         return false;
       }
     }

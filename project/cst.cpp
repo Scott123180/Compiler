@@ -20,7 +20,14 @@ CST::CST()
 
 void CST::addChild(Token* t, bool changeToChild)
 {
-  cout << "trying: " << t->getType() << endl;
+  if(t->getData() == "")
+  {
+    cout << "trying: " << t->getType() << endl;
+  }
+  else
+  {
+    cout << "trying: " << t->getData() << endl;
+  }
   //add reference to parent's children
   curNode->children.push_back(t);
   
