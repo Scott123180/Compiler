@@ -630,7 +630,9 @@ Parser::Parser(vector<Token> stream)
     newCST.addChild(newBranchDigit, true);
     if(digit())
     {
-      if(term("intop"))
+      Token* newBranchIntOp = new Token("IntOp");
+      newCST.addChild(newBranchIntOp, true);
+      if(intop())
       {
         Token* newBranchExpr = new Token("Expr");
         newCST.addChild(newBranchExpr, true);
@@ -650,7 +652,9 @@ Parser::Parser(vector<Token> stream)
       }
       else //intop
       {
-        expecting.push_back("intop");
+        expecting.push_back("Intop()");
+        newCST.curNode = newBranchIntOp->parent; //kick back pointer
+        newCST.deleteNode(newBranchIntOp);
         newCST.curNode = newCST.curNode->parent;
         return false;
       }
@@ -914,4 +918,157 @@ Parser::Parser(vector<Token> stream)
     int save = Parser::i; return ( Parser::i = save, CharList1())
                        ||( Parser::i = save, CharList2())
                        ||( Parser::i = save, CharList3());
+  }
+
+  //TYPE==================================================================
+
+  bool Parser::type1() //type
+  {
+    if(term("type"))
+    {
+      expecting.clear();
+      newCST.curNode = newCST.curNode->parent; //kick back pointer
+      return true;
+    }
+    else //type
+    {
+      expecting.push_back("type");
+      newCST.curNode = newCST.curNode->parent;
+      return false;
+    }
+  }
+  bool Parser::type()
+  {
+    int save = Parser::i; return ( Parser::i = save, type1());
+  }
+
+  //CHAR==================================================================
+
+  bool Parser::Char1()
+  {
+    if(term("Char"))
+    {
+      expecting.clear();
+      newCST.curNode = newCST.curNode->parent; //kick back pointer
+      return true;
+    }
+    else //Char
+    {
+      expecting.push_back("Char");
+      newCST.curNode = newCST.curNode->parent; //kick back pointer
+      return false;
+    }
+  }
+  bool Parser::Char()
+  {
+    int save = Parser::i; return ( Parser::i = save, Char1());
+  }
+
+  //SPACE=================================================================
+
+  bool Parser::space1()
+  {
+    if(term(" "))
+    {
+      expecting.clear();
+      newCST.curNode = newCST.curNode->parent; //kick back pointer
+      return true;
+    }
+    else //space
+    {
+      expecting.push_back("space_char");
+      newCST.curNode = newCST.curNode->parent;
+      return false;
+    }
+  }
+  bool Parser::space()
+  {
+    int save = Parser::i; return ( Parser::i = save, space1());
+  }
+
+  //DIGIT=================================================================
+
+  bool Parser::digit1()
+  {
+    if(term("digit"))
+    {
+      expecting.clear();
+      newCST.curNode = newCST.curNode->parent; //kick back pointer
+      return true;
+    }
+    else //digit
+    {
+      expecting.push_back("digit");
+      newCST.curNode = newCST.curNode->parent;
+      return false;
+    }
+  }
+  bool Parser::digit()
+  {
+    int save = Parser::i; return ( Parser::i = save, digit1());
+  }
+
+  //BOOLOP================================================================
+
+  bool Parser::boolop1()
+  {
+    if(term("boolOp"))
+    {
+      expecting.clear();
+      newCST.curNode = newCST.curNode->parent; //kick back pointer
+      return true;
+    }
+    else //boolop
+    {
+      expecting.push_back("boolop");
+      newCST.curNode = newCST.curNode->parent; //kick back pointer
+      return false;
+    }
+  }
+  bool Parser::boolop()
+  {
+    int save = Parser::i; return ( Parser::i = save, boolop1());
+  }
+
+  //BOOLVAL===============================================================
+
+  bool Parser::boolval1()
+  {
+    if(term("boolVal"))
+    {
+      expecting.clear();
+      newCST.curNode = newCST.curNode->parent; //kick back pointer
+      return true;
+    }
+    else //boolval
+    {
+      expecting.push_back("boolval");
+      newCST.curNode = newCST.curNode->parent;
+      return false;
+    }
+  }
+  bool Parser::boolval()
+  {
+    int save = Parser::i; return ( Parser::i = save, boolval1());
+  }
+
+  //INTOP=================================================================
+
+  bool Parser::intop1() {
+    if(term("intOp"))
+    {
+      expecting.clear();
+      newCST.curNode = newCST.curNode->parent; //kick back pointer
+      return true;
+    }
+    else //intop
+    {
+      expecting.push_back("intop");
+      newCST.curNode = newCST.curNode->parent; //kick back pointer
+      return false;
+    }
+  }
+  bool Parser::intop()
+  {
+    int save = Parser::i; return ( Parser::i = save, intop1());
   }
