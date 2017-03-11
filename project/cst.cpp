@@ -61,22 +61,7 @@ void CST::returnToRoot()
 
 string CST::dfio(Token* a) //depth-first in order
 {
-  string ret;
-  for(unsigned long i = 0; i < a->children.size(); i++)
-  {
-    dfio(a->children[i]);
-  }
-  
-  //check for terminal
-  if(a->getData() != "") //non-terminal
-  {
-    ret = a->getType();
-  }
-  else //terminal
-  {
-    ret = a-> getData();
-  }
-  return ret;
+
 }
 
 void CST::deleteRecur(Token* a)

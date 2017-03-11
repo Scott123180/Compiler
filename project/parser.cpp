@@ -32,7 +32,6 @@ Parser::Parser(vector<Token> stream)
     
     //print out the cst in the command line
     newCST.returnToRoot();  //go back to the root
-    
   }
   else
   {
