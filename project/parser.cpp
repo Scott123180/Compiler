@@ -36,7 +36,11 @@ Parser::Parser(vector<Token> stream)
   }
   else
   {
-    cout << "No segmentation faults, but the parse wasn't successful";
+    cout << "No segmentation faults, but the parse wasn't successful" << endl;
+    for(auto i = 0; i < Parser::expecting.size(); i++)
+    {
+      cout << expecting[i] << endl;
+    }
   }
 
 
@@ -78,7 +82,7 @@ Parser::Parser(vector<Token> stream)
     {
       if(term("EOP"))
       {
-        //newCST.curNode = newCST.curNode->parent; //kick back pointer to start
+        newCST.curNode = newCST.curNode->parent; //kick back pointer to start
         expecting.clear();
         return true;
       }
@@ -178,6 +182,7 @@ Parser::Parser(vector<Token> stream)
   bool Parser::StatementList2() //epsilon
   {
     expecting.clear();
+    newCST.curNode = newCST.curNode->parent; //kick back pointer
     return true;
   }
 
@@ -413,7 +418,7 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::VarDecl1()
   {
-    Token* newBranchT = new Token("VarDecl");
+    Token* newBranchT = new Token("Type");
     newCST.addChild(newBranchT, true);
     if(type())
     {
@@ -626,7 +631,7 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::IntExpr1() //digit() intop Expr()
   {
-    Token* newBranchDigit = new Token("Digit");
+    Token* newBranchDigit = new Token("digit");
     newCST.addChild(newBranchDigit, true);
     if(digit())
     {
@@ -669,7 +674,7 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::IntExpr2() //digit()
   {
-    Token* newBranch = new Token("Digit");
+    Token* newBranch = new Token("digit");
     newCST.addChild(newBranch, true);
     if(digit())
     {
@@ -825,7 +830,7 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::Id1() //Char()
   {
-    Token* newBranch = new Token("Char");
+    Token* newBranch = new Token("char");
     newCST.addChild(newBranch, true);
     if(Char())
     {
@@ -850,7 +855,7 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::CharList1() //Char() CharList()
   {
-    Token* newBranchChar = new Token("Char");
+    Token* newBranchChar = new Token("char");
     newCST.addChild(newBranchChar, true);
     if(Char())
     {
@@ -911,6 +916,7 @@ Parser::Parser(vector<Token> stream)
   bool Parser::CharList3() //epsilon
   {
     expecting.clear();
+    newCST.curNode = newCST.curNode->parent; //kick back pointer
     return true;
   }
   bool Parser::CharList()
@@ -946,7 +952,7 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::Char1()
   {
-    if(term("Char"))
+    if(term("char"))
     {
       expecting.clear();
       newCST.curNode = newCST.curNode->parent; //kick back pointer
@@ -954,7 +960,7 @@ Parser::Parser(vector<Token> stream)
     }
     else //Char
     {
-      expecting.push_back("Char");
+      expecting.push_back("Char()");
       newCST.curNode = newCST.curNode->parent; //kick back pointer
       return false;
     }

@@ -37,7 +37,8 @@ class Token
     int position;
     
     map<string, string> textToType = {
-      {"print", "type"},
+      {"print", "print"}, //special terminal
+      {"boolean", "type"},
       {"int", "type"},
       {"string", "type"},
       {"=", "assign"},  //special terminal

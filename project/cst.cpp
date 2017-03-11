@@ -70,25 +70,44 @@ void CST::returnToRoot()
 
 void CST::dfio(Token* a) //depth-first in order
 {
+  //1 calculate current token dashes
   string dashes = "";
   for(unsigned int d = 0; d < depth; d++)
   {
     dashes.append("-");
   }
+  
+  //2 current token info
   if(a->getData() == "")  //branch non-terminal
   {
+    //3 print branch-nonterminal
     cout << dashes << a->getType() << endl;
+    
+    //4 depth calculations
+    //check for special epsilon terminal
+    if(!(a->children.empty())) //not special epsilon (has children)
+    {
+      ++depth;
+    }
+    //recursive call
+    for(auto i = 0; i < a->children.size(); i++)
+    {
+      //check for last child
+      if((i+1) == a->children.size()) //last node
+      {
+        dfio(a->children[i]);
+        --depth;
+      }
+      else
+      {
+        dfio(a->children[i]);
+      }
+      
+    }
   }
   else //leaf terminal
   {
-    --depth;
     cout << dashes << a->getType() << endl;
-  }
-  ++depth;
-  for(unsigned int i = 0; i < a->children.size(); i++)
-  {
-    //cout << "child " << i << endl;
-    dfio(a->children[i]);
   }
 
   
