@@ -20,16 +20,23 @@ CST::CST()
 
 void CST::addChild(Token* t, bool changeToChild)
 {
+  cout << "trying: " << t->getType() << endl;
   //add reference to parent's children
   curNode->children.push_back(t);
   
   //set the parent of the token
   t->parent = curNode;
   
+  if(t->parent == curNode->parent)
+  {
+    cout << "we done f*d up"<< endl;
+  }
+  
   if(changeToChild) //good for nonterminals
   {
     //change curNode reference to child node
     curNode = t;  //change the current node to the pointer (child)
+    cout << "we switched" << endl;
   }
   return;
 }
@@ -52,42 +59,25 @@ bool CST::deleteNode(Token *a)
 
 void CST::returnToRoot()
 {
+  //cout << "made it to return root" << endl;
   //scale up tree
-  while(curNode->parent != nullptr)
+  while(curNode->parent->getType() != "Program") //check for root
   {
+    //cout << curNode->getType() <<endl;
+    //cout << curNode->parent->getType() <<endl;
     curNode = curNode->parent;
   }
 }
 
-string CST::dfio(Token* a) //depth-first in order
+void CST::dfio(Token* a) //depth-first in order
 {
-
-}
-
-void CST::deleteRecur(Token* a)
-{
-  while(!(a->children.empty())) //has children
+  cout << "made it to dfio"<< endl;
+  for(unsigned int i = 0; i < a->children.size(); i++)
   {
-    unsigned long len = CST::curNode->children.size(); //size of vector
-    len--; //number of last element
-    CST::deleteRecur(a->children[len]);
+    cout << "child " << i << endl;
+    dfio(a->children[i]);
   }
-  
-  CST::curNode = CST::curNode->parent; //change current node to parent
-  //TODO: dereference node in parent
-  //after get to a node with no children, delete it
-  CST::deleteNode(a);
-}
-//recursively delete all children
-bool CST::deleteAllChildren()
-{
-
-  //starts at the current node
-  while(!CST::curNode->children.empty())
-  {
-    //keep on deleting the first child until none left
-    CST::deleteRecur(CST::curNode->children.at(0));
-  }
+  cout << a->getType() << endl;
 }
 
 /*

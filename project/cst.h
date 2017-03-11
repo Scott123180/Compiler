@@ -30,14 +30,7 @@ class CST
 
     void returnToRoot();
   
-    string dfio(Token* a); //depth-first in order
-  
-    //gets rid of specified tokens and all of their children
-    void deleteRecur(Token* a);
-    //delete child
-    //static bool deleteLastChild();
-    //recursively delete all children
-    bool deleteAllChildren();
+    void dfio(Token* a); //depth-first in order
   
   private:
     
