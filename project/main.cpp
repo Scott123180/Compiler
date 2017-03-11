@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 
   Lexer newLex(fileName);
   
-  Parser newParser(newLex.stream);
+  //Parser newParser(newLex.stream);
   
   Output newOutput;
   newOutput.printOutput(newLex.stream);
