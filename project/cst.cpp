@@ -43,7 +43,7 @@ bool CST::deleteLastChild()
   {
     unsigned long len = CST::curNode->children.size(); //size of vector
     len--; //number of last element
-    if(CST::deleteNode(CST::curNode->children.at(len), false))
+    if(CST::deleteNode(CST::curNode->children.at(len)))
     {
       return true;
     }
@@ -54,26 +54,21 @@ bool CST::deleteLastChild()
   }
 }
 
-bool CST::deleteNode(Token* a, bool recursive)
+bool CST::deleteNode(Token *a)
 {
+  cout << "enter function " << endl;
   //if it has children, don't allow
   if(a->children.empty())
   {
-    if(recursive)
-    {
-      CST::deleteRecur(a);
-    }
-    else
-    {
-      return false;
-    }
-  }
-  else
-  {
+  cout << "in the if" << endl;
     cout << "did we make it?" << endl;
     delete a;
     cout << "can't do this" << endl;
     return true;
+  }
+  else
+  {
+    return false;
   }
 }
 void CST::deleteRecur(Token* a)
@@ -88,7 +83,7 @@ void CST::deleteRecur(Token* a)
   CST::curNode = CST::curNode->parent; //change current node to parent
   //TODO: dereference node in parent
   //after get to a node with no children, delete it
-  CST::deleteNode(a, false);
+  CST::deleteNode(a);
 }
 //recursively delete all children
 bool CST::deleteAllChildren()

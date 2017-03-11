@@ -85,7 +85,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("Block()");
       newCST.curNode = newBranch->parent; //kick back pointer
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -121,7 +121,7 @@ Parser::Parser(vector<Token> stream)
       {
         expecting.push_back("StatementList()");
         newCST.curNode = newBranch->parent; //kick back pointer
-        newCST.deleteNode(newBranch, false);
+        newCST.deleteNode(newBranch);
         return false;
       }
     }
@@ -164,7 +164,7 @@ Parser::Parser(vector<Token> stream)
       {
         expecting.push_back("StatementList()");
         newCST.curNode = newBranchSL->parent; //kick back pointer
-        newCST.deleteNode(newBranchS, false);
+        newCST.deleteNode(newBranchS);
         return false;
       }
     }
@@ -172,7 +172,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("Statement()");
       newCST.curNode = newBranchS->parent; //kick back pointer
-      newCST.deleteNode(newBranchS, false);
+      newCST.deleteNode(newBranchS);
       return false;
     }
   }
@@ -207,7 +207,7 @@ Parser::Parser(vector<Token> stream)
       expecting.push_back("PrintStatement()");
       newCST.curNode = newBranch->parent; //kick back pointer
       cout << "set cur node parent correctly" <<endl;
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       cout << "i don't think we made it";
       return false;
     }
@@ -226,7 +226,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("AssignmentStatement()");
       newCST.curNode = newBranch->parent; //kick back pointer
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -244,7 +244,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("VarDecl()");
       newCST.curNode = newBranch->parent; //kick back pointer
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -262,7 +262,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("WhileStatement()");
       newCST.curNode = newBranch->parent; //kick back pointer
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -280,7 +280,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("IfStatement()");
       newCST.curNode = newBranch->parent; //kick back pointer
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -298,7 +298,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("BlockStatement()");
       newCST.curNode = newBranch->parent; //kick back pointer
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -342,7 +342,7 @@ Parser::Parser(vector<Token> stream)
         {
           expecting.push_back("Expr()");
           newCST.curNode = newBranch->parent; //kick back pointer
-          newCST.deleteNode(newBranch, false);
+          newCST.deleteNode(newBranch);
           return false;
         }
       }
@@ -388,7 +388,7 @@ Parser::Parser(vector<Token> stream)
         {
           expecting.push_back("Expr()");
           newCST.curNode = newBranchE->parent; //kick back pointer
-          newCST.deleteNode(newBranchE, false);
+          newCST.deleteNode(newBranchE);
           return false;
         }
       }
@@ -403,7 +403,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("Id()");
       newCST.curNode = newBranchI->parent; //kick back pointer
-      newCST.deleteNode(newBranchI, false);
+      newCST.deleteNode(newBranchI);
       return false;
     }
     
@@ -434,7 +434,7 @@ Parser::Parser(vector<Token> stream)
       {
         expecting.push_back("Id()");
         newCST.curNode = newBranchI->parent; //kick back pointer
-        newCST.deleteNode(newBranchI, false);
+        newCST.deleteNode(newBranchI);
         return false;
       }
     }
@@ -442,7 +442,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("Type()");
       newCST.curNode = newBranchT->parent; //kick back pointer
-      newCST.deleteNode(newBranchT, false);
+      newCST.deleteNode(newBranchT);
       return false;
     }
   }
@@ -473,7 +473,7 @@ Parser::Parser(vector<Token> stream)
         {
           expecting.push_back("Block()");
           newCST.curNode = newBranchBlock->parent; //kick back pointer
-          newCST.deleteNode(newBranchBlock, false);
+          newCST.deleteNode(newBranchBlock);
           return false;
         }
       }
@@ -481,7 +481,7 @@ Parser::Parser(vector<Token> stream)
       {
         expecting.push_back("BooleanExpr()");
         newCST.curNode = newBranchBool->parent; //kick back pointer
-        newCST.deleteNode(newBranchBool, false);
+        newCST.deleteNode(newBranchBool);
         return false;
       }
     }
@@ -520,7 +520,7 @@ Parser::Parser(vector<Token> stream)
         {
           expecting.push_back("Block()");
           newCST.curNode = newBranchBlock->parent; //kick back pointer
-          newCST.deleteNode(newBranchBlock, false);
+          newCST.deleteNode(newBranchBlock);
           return false;
         }
       }
@@ -528,7 +528,7 @@ Parser::Parser(vector<Token> stream)
       {
         expecting.push_back("BooleanExpr()");
         newCST.curNode = newBranchBool->parent; //kick back pointer
-        newCST.deleteNode(newBranchBool, false);
+        newCST.deleteNode(newBranchBool);
         return false;
       }
     }
@@ -560,7 +560,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("IntExpr()");
       newCST.curNode = newBranch->parent;
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -578,7 +578,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("StringExpr()");
       newCST.curNode = newBranch->parent; //kick back pointer
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -596,7 +596,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("BooleanExpr()");
       newCST.curNode = newBranch->parent; //kick back pointer
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -614,7 +614,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("Id()");
       newCST.curNode = newBranch->parent; //kick back pointer
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -649,7 +649,7 @@ Parser::Parser(vector<Token> stream)
          {
            expecting.push_back("Expr()");
            newCST.curNode = newBranchExpr->parent; //kick back pointer
-           newCST.deleteNode(newBranchExpr, false);
+           newCST.deleteNode(newBranchExpr);
            return false;
          }
       }
@@ -664,7 +664,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("Digit()");
       newCST.curNode = newBranchDigit->parent;
-      newCST.deleteNode(newBranchDigit, false);
+      newCST.deleteNode(newBranchDigit);
       return false;
     }
   }
@@ -682,7 +682,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("Digit()");
       newCST.curNode = newBranch->parent;
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -720,7 +720,7 @@ Parser::Parser(vector<Token> stream)
       {
         expecting.push_back("CharList()");
         newCST.curNode = newBranch->parent;
-        newCST.deleteNode(newBranch, false);
+        newCST.deleteNode(newBranch);
         return false;
       }
     }
@@ -771,7 +771,7 @@ Parser::Parser(vector<Token> stream)
           {
             expecting.push_back("Expr()");
             newCST.curNode = newBranchExpr2->parent;
-            newCST.deleteNode(newBranchExpr2, false);
+            newCST.deleteNode(newBranchExpr2);
             return false;
           }
         }
@@ -779,7 +779,7 @@ Parser::Parser(vector<Token> stream)
         {
           expecting.push_back("Boolop()");
           newCST.curNode = newBranchBool->parent;
-          newCST.deleteNode(newBranchBool, false);
+          newCST.deleteNode(newBranchBool);
           return false;
         }
       }
@@ -787,7 +787,7 @@ Parser::Parser(vector<Token> stream)
       {
         expecting.push_back("Expr()");
         newCST.curNode = newBranchExpr1->parent;
-        newCST.deleteNode(newBranchExpr1, false);
+        newCST.deleteNode(newBranchExpr1);
         return false;
       }
     }
@@ -812,7 +812,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("Boolval()");
       newCST.curNode = newBranch->parent; //kick back pointer
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -838,7 +838,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("Char()");
       newCST.curNode = newBranch->parent; //kick back pointer
-      newCST.deleteNode(newBranch, false);
+      newCST.deleteNode(newBranch);
       return false;
     }
   }
@@ -867,7 +867,7 @@ Parser::Parser(vector<Token> stream)
       {
         expecting.push_back("CharList()");
         newCST.curNode = newBranchCharL->parent; //kick back the pointer
-        newCST.deleteNode(newBranchCharL, false);
+        newCST.deleteNode(newBranchCharL);
         return false;
       }
     }
@@ -875,7 +875,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("Char()");
       newCST.curNode = newBranchChar->parent; //kick back pointer
-      newCST.deleteNode(newBranchChar,false);
+      newCST.deleteNode(newBranchChar);
       return false;
     }
   }
@@ -897,7 +897,7 @@ Parser::Parser(vector<Token> stream)
       {
         expecting.push_back("CharList()");
         newCST.curNode = newBranchCharL->parent;
-        newCST.deleteNode(newBranchCharL, false);
+        newCST.deleteNode(newBranchCharL);
         return false;
       }
     }
@@ -905,7 +905,7 @@ Parser::Parser(vector<Token> stream)
     {
       expecting.push_back("space()");
       newCST.curNode = newBranchS->parent;
-      newCST.deleteNode(newBranchS, false);
+      newCST.deleteNode(newBranchS);
       return false;
     }
   }

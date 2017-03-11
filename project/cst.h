@@ -26,7 +26,7 @@ class CST
     bool deleteLastChild();
 
     //delete the node
-    bool deleteNode(Token* a, bool recursive);
+    bool deleteNode(Token *a);
 
     //gets rid of specified tokens and all of their children
     void deleteRecur(Token* a);
