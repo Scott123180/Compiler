@@ -28,6 +28,11 @@ Parser::Parser(vector<Token> stream)
   if(Program())
   {
     cout << "Successful Parse!" << endl;
+    
+    
+    //print out the cst in the command line
+    newCST.returnToRoot();  //go back to the root
+    
   }
   else
   {
@@ -182,7 +187,6 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::Statement1() //PrintStatement()
   {
-    cout << "0099090 Statement1" << endl;
     Token* newBranch = new Token("PrintStatement");
     newCST.addChild(newBranch, true);
     if(PrintStatement())

@@ -16,18 +16,22 @@ class CST
   public:
   
     Token* curNode;
+  
+    //keep track of how deep in the tree for printing out
+    unsigned int depth;
     
     //constructor for CST
     CST();
     
     void addChild(Token* t, bool changeToChild);
 
-    //delete just the last child of current node
-    bool deleteLastChild();
-
     //delete the node
     bool deleteNode(Token *a);
 
+    void returnToRoot();
+  
+    string dfio(Token* a); //depth-first in order
+  
     //gets rid of specified tokens and all of their children
     void deleteRecur(Token* a);
     //delete child

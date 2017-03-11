@@ -15,6 +15,7 @@ CST::CST()
   Token* root = new Token("Program");
   root->parent = nullptr;
   curNode = root;
+  depth = 0; //initialize depth to root
 }
 
 void CST::addChild(Token* t, bool changeToChild)
@@ -33,30 +34,6 @@ void CST::addChild(Token* t, bool changeToChild)
   return;
 }
 
-
-//delete child
-bool CST::deleteLastChild()
-{
-  //if it has children, don't allow
-  if(curNode->children.empty())
-  {
-    return false;
-  }
-  else
-  {
-    unsigned long len = CST::curNode->children.size(); //size of vector
-    len--; //number of last element
-    if(CST::deleteNode(CST::curNode->children.at(len)))
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
-}
-
 bool CST::deleteNode(Token *a)
 {
   //if it has children, don't allow
@@ -72,6 +49,36 @@ bool CST::deleteNode(Token *a)
     return false;
   }
 }
+
+void CST::returnToRoot()
+{
+  //scale up tree
+  while(curNode->parent != nullptr)
+  {
+    curNode = curNode->parent;
+  }
+}
+
+string CST::dfio(Token* a) //depth-first in order
+{
+  string ret;
+  for(unsigned long i = 0; i < a->children.size(); i++)
+  {
+    dfio(a->children[i]);
+  }
+  
+  //check for terminal
+  if(a->getData() != "") //non-terminal
+  {
+    ret = a->getType();
+  }
+  else //terminal
+  {
+    ret = a-> getData();
+  }
+  return ret;
+}
+
 void CST::deleteRecur(Token* a)
 {
   while(!(a->children.empty())) //has children

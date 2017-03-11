@@ -5,6 +5,8 @@
 #include "token.h"
 #include "lexer.h"
 #include "output.h"
+#include "parser.h"
+#include "cst.h"
 
 using namespace std;
 
@@ -121,12 +123,13 @@ void Output::printTokens(vector<Token> stream) {
 
 void Output::printCST()
 {
-  //modify the cst javascript
+  /*
+  modify the cst javascript
   ofstream cstJS;
   cstJS.open("js/cst.js", std::ios_base::app); //open and append
-  //TODO: code for CST tree
+  TODO: code for CST tree
   cstJS.close();
-
+  */
 
   //modify the output html
   ofstream outputHTML;
