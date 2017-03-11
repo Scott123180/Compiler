@@ -1,6 +1,9 @@
 #include <string>
 #include <vector>
 
+//for debugging
+#include <iostream>
+
 #include "cst.h"
 #include "token.h"
 
@@ -11,7 +14,7 @@ CST::CST()
   //new root node
   Token* root = new Token("Program");
   root->parent = nullptr;
-  CST::curNode = root; //ATTN: may be wrong way to set root
+  curNode = root;
 }
 
 void CST::addChild(Token* t, bool changeToChild)
@@ -22,8 +25,9 @@ void CST::addChild(Token* t, bool changeToChild)
   if(changeToChild) //good for nonterminals
   {
     //change curNode reference to child node
-    CST::curNode = t;  //change the current node to the pointer (child)
+    curNode = t;  //change the current node to the pointer (child)
   }
+  return;
 }
 
 
@@ -31,7 +35,7 @@ void CST::addChild(Token* t, bool changeToChild)
 bool CST::deleteLastChild()
 {
   //if it has children, don't allow
-  if(CST::curNode->children.empty())
+  if(curNode->children.empty())
   {
     return false;
   }
@@ -66,7 +70,9 @@ bool CST::deleteNode(Token* a, bool recursive)
   }
   else
   {
+    cout << "did we make it?" << endl;
     delete a;
+    cout << "can't do this" << endl;
     return true;
   }
 }

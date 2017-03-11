@@ -19,10 +19,6 @@ class CST
     
     //constructor for CST
     CST();
-  
-    void setCurNode(Token* tok);
-  
-    Token* getCurNode(Token* tok);
     
     void addChild(Token* t, bool changeToChild);
 

@@ -1,8 +1,10 @@
-
+#include <iostream>
 
 #include "parser.h"
 #include "token.h"
 #include "cst.h"
+
+using namespace std;
 
 Parser::Parser(vector<Token> stream)
 {
@@ -23,7 +25,14 @@ Parser::Parser(vector<Token> stream)
   //remember, if a process fails, we need to delete all of the children
   Parser::tokens = stream;
   
-  Program();
+  if(Program())
+  {
+    cout << "Successful Parse!" << endl;
+  }
+  else
+  {
+    cout << "No segmentation faults, but the parse wasn't successful";
+  }
 
 
 
@@ -53,14 +62,16 @@ Parser::Parser(vector<Token> stream)
   //already added a program token as our root node
   bool Parser::Program1()
   {
+    cout << "got to beginning of program 1"<<endl;
     //create block branch
     Token* newBranch = new Token("Block");
     newCST.addChild(newBranch, true);
+    cout << "hey we added a branch" <<endl;
     if(Block())
     {
       if(term("EOP"))
       {
-        newCST.curNode = newCST.curNode->parent; //kick back pointer
+        newCST.curNode = newCST.curNode->parent; //kick back pointer to start
         expecting.clear();
         return true;
       }
@@ -92,6 +103,7 @@ Parser::Parser(vector<Token> stream)
     {
       Token* newBranch = new Token("StatementList"); //add token preemtively
       newCST.addChild(newBranch, true);
+      cout << "adding statementlist <><" <<endl;
       if(StatementList())
       {
         if(term("rightBrace"))
@@ -127,6 +139,7 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::Block()
   {
+    cout << "Hey we're in block!" << endl;
     int save = Parser::i; return (Parser::i = save, Block1())
                        ||(Parser::i = save, Block2());
   }
@@ -183,15 +196,19 @@ Parser::Parser(vector<Token> stream)
     newCST.addChild(newBranch, true);
     if(PrintStatement())
     {
+      cout << "Yo boi let's add this statement"<< endl;
       expecting.clear();
       newCST.curNode = newBranch->parent; //kick back pointer
       return true;
     }
     else //PrintStatement()
     {
+      cout << "nope it didn't work, here comes the segment :O"<<endl;
       expecting.push_back("PrintStatement()");
       newCST.curNode = newBranch->parent; //kick back pointer
+      cout << "set cur node parent correctly" <<endl;
       newCST.deleteNode(newBranch, false);
+      cout << "i don't think we made it";
       return false;
     }
   }
