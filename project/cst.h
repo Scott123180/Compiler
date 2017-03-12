@@ -17,6 +17,8 @@ class CST
   
     Token* curNode;
   
+    Token* calcDepth;
+  
     //keep track of how deep in the tree for printing out
     unsigned int depth;
     
@@ -31,6 +33,8 @@ class CST
     void returnToRoot();
   
     void dfio(Token* a); //depth-first in order
+  
+    void calcTokDepth();
   
   private:
     

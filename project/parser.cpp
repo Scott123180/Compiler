@@ -32,6 +32,7 @@ Parser::Parser(vector<Token> stream)
     
     //print out the cst in the command line
     newCST.returnToRoot();  //go back to the root
+    newCST.calcDepth = newCST.curNode; //set calc depth node
     newCST.dfio(newCST.curNode);
   }
   else
@@ -119,6 +120,7 @@ Parser::Parser(vector<Token> stream)
         if(term("rightBrace"))
         {
           expecting.clear();
+          newCST.curNode = newCST.curNode->parent; //kick back pointer to start
           return true;
         }
         else //fail rightBrace

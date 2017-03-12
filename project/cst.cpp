@@ -70,25 +70,26 @@ void CST::returnToRoot()
 
 void CST::dfio(Token* a) //depth-first in order
 {
-  //1 calculate current token dashes
+  //set depth node to curNode
+  calcDepth = a;
+  //calculate depth
+  calcTokDepth();
+  cout << depth << endl;
+  //calculate current token dashes
   string dashes = "";
   for(unsigned int d = 0; d < depth; d++)
   {
     dashes.append("-");
   }
+  //reset depth
+  depth = 0;
   
   //2 current token info
   if(a->getData() == "")  //branch non-terminal
   {
     //3 print branch-nonterminal
     cout << dashes << a->getType() << endl;
-  
-    //4 depth calculations
-    //check for special epsilon terminal
-    if (!(a->children.empty())) //not special epsilon (has children)
-    {
-      ++depth;
-    }
+    
     //recursive call
     for (auto i = 0; i < a->children.size(); i++) {
       dfio(a->children[i]);
@@ -96,12 +97,20 @@ void CST::dfio(Token* a) //depth-first in order
   }
   else //leaf terminal
   {
-    cout << dashes << a->getType() << endl;
+    cout << dashes << a->getData() << endl;
   }
-
-  
 }
 
+void CST::calcTokDepth()
+{
+  //scale up tree
+  while(calcDepth->parent) //check for root (nullptr parent)
+  {
+    ++depth;
+    cout << calcDepth->getType() << endl;
+    calcDepth = calcDepth->parent;
+  }
+}
 /*
 TODO: methods to add nodes and delete nodes
  -to add node, we need pointer to current parent node and to add it to the end
