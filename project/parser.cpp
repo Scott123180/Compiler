@@ -83,7 +83,7 @@ Parser::Parser(vector<Token> stream)
     {
       if(term("EOP"))
       {
-        newCST.curNode = newCST.curNode->parent; //kick back pointer to start
+        //newCST.curNode = newCST.curNode->parent; //kick back pointer to start
         expecting.clear();
         return true;
       }
@@ -158,7 +158,7 @@ Parser::Parser(vector<Token> stream)
     if (Statement())
     {
       cout << "Where we at dawg: " << newCST.curNode->getType() << endl;
-      newCST.curNode = newCST.curNode->parent;
+      //newCST.curNode = newCST.curNode->parent;
       cout << "Where we at now dawg: " << newCST.curNode->getType() << endl;
       Token* newBranchSL = new Token ("StatementList2");
       newCST.addChild(newBranchSL,true);
