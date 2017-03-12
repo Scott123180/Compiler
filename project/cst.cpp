@@ -48,8 +48,13 @@ bool CST::deleteNode(Token *a)
   //if it has children, don't allow
   if(a->children.empty())
   {
-    //get rid of reference in parent to avoid null ptr
-    a->parent->children.pop_back();
+    //safely remove reference of parent
+    a->parent->children.erase(std::remove(a->parent->children.begin(),
+                                          a->parent->children.end(),
+                                          a), a->parent->children.end());
+  
+    //old: get rid of reference in parent to avoid null ptr
+    //a->parent->children.pop_back();
     delete a;
     return true;
   }
