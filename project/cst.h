@@ -6,6 +6,7 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "token.h"
 
@@ -18,6 +19,8 @@ class CST
     Token* curNode;
   
     Token* calcDepth;
+  
+    vector<string> tree;
   
     //keep track of how deep in the tree for printing out
     unsigned int depth;

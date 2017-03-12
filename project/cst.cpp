@@ -102,7 +102,13 @@ void CST::dfio(Token* a, bool verbose) //depth-first in order
   if(a->getData() == "")  //branch non-terminal
   {
     //3 print branch-nonterminal
-    cout << dashes << "<"<< a->getType() << ">" << endl;
+    if(verbose)
+    {
+      cout << dashes << "<"<< a->getType() << ">" << endl;
+    }
+    //keep track of data in object
+    string branch = dashes + "&lt" + a->getType() + "&gt";//&lt and &gt to escape html tags in output
+    tree.push_back(branch);
     
     //recursive call
     for (auto i = 0; i < a->children.size(); i++) {
@@ -111,7 +117,13 @@ void CST::dfio(Token* a, bool verbose) //depth-first in order
   }
   else //leaf terminal
   {
-    cout << dashes << "[" << a->getData() << "]" << endl;
+    if (verbose)
+    {
+      cout << dashes << "[" << a->getData() << "]" << endl;
+    }
+    //keep track of data in object
+    string branch = dashes + "[" + a->getData() + "]";
+    tree.push_back(branch);
   }
 }
 

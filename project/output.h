@@ -2,6 +2,7 @@
 #define COMPILER_OUTPUT_H
 
 #include <vector>
+#include <string>
 
 #include "token.h"
 #include "lexer.h"
@@ -20,7 +21,7 @@ class Output {
 
     void printTokens(vector<Token> s);
 
-    void printCST();
+    void printCST(vector<string> t);
 
     void printHTMLFooter();
 
@@ -30,14 +31,14 @@ class Output {
 
     Output();
 
-  void printOutput(vector<Token> stream)
+  void printOutput(vector<Token> stream, vector<string> tree)
   {
     clearHTML();
-    //clearCST();
+    //clearCST(); if decide to use js tree, implement
     printHTMLHeader();
     printTitle();
     printTokens(stream);
-    //printCST();
+    printCST(tree);
     printHTMLFooter();
   }
 

@@ -36,6 +36,7 @@ Parser::Parser(vector<Token> stream, bool v) //v is for verbose
     newCST.returnToRoot();  //go back to the root
     newCST.calcDepth = newCST.curNode; //set calc depth node
     newCST.dfio(newCST.curNode, verbose);
+    
   }
   else //error
   {

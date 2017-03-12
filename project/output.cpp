@@ -39,7 +39,7 @@ void Output::printHTMLHeader()
   outputHTML << "<!DOCTYPE html> \n"
               "<html>\n"
               "<head>\n"
-              "<title>Lex Output</title>\n"
+              "<title>Lex and Parsing Output</title>\n"
               "<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap/css/bootstrap.css\">"
               "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js\"></script>\n"
               //"<script src=\"js/pic1.js\"></script> \n"
@@ -97,12 +97,17 @@ void Output::printTokens(vector<Token> stream) {
   outputHTML.open("output.html", std::ios_base::app); //open and append to file
 
   //table
-  outputHTML << "<table class = \"table col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n"
-             << "<tr>\n"
-             << "<th>Line</th>\n"
-             << "<th>Type</th>\n"
-             << "<th>Data</th>\n"
-             << "</tr>\n";
+  outputHTML << "<div class=\"panel panel-default col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n"
+                "<div class=\"panel-heading\">\n"
+                "<h3 class=\"panel-title\">Token List</h3>\n"
+                "</div>\n"
+                "<div class=\"panel-body\">\n"
+                "<table class = \"table col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n"
+                "<tr>\n"
+                "<th>Line</th>\n"
+                "<th>Type</th>\n"
+                "<th>Data</th>\n"
+                "</tr>\n";
 
   //table data
   for (int i = 0; i < stream.size(); i++) {
@@ -114,14 +119,16 @@ void Output::printTokens(vector<Token> stream) {
                << "</th>\n" //preserve white space with "pre"
                << "</tr>\n";
   }
-  outputHTML << "</table>\n";
+  outputHTML << "</table>\n"
+             << "</div>\n"
+             << "</div>\n";
 
   outputHTML.close();
 
   return;
 }
 
-void Output::printCST()
+void Output::printCST(vector<string> tree)
 {
   /*
   modify the cst javascript
@@ -134,7 +141,19 @@ void Output::printCST()
   //modify the output html
   ofstream outputHTML;
   outputHTML.open("output.html", std::ios_base::app); //open and append to file
-  //TODO: code for appending to HTML
+  
+  outputHTML <<"<div class=\"panel panel-default col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n"
+    "<div class=\"panel-heading\">\n"
+    "<h3 class=\"panel-title\">CST</h3>\n"
+    "</div>\n"
+    "<div class=\"panel-body\">\n";
+  
+  for (vector<string>::size_type a = 0; a < tree.size(); a++)
+  {
+    outputHTML << tree[a] << "<br>\n";
+  }
+  outputHTML << "</div>\n"
+             "</div>";
   outputHTML.close();
 
   return;

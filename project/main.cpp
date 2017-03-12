@@ -27,8 +27,7 @@ int main(int argc, char** argv)
   Parser newParser(newLex.stream, false);
   
   Output newOutput;
-  newOutput.printOutput(newLex.stream);
-
+  newOutput.printOutput(newLex.stream, newParser.newCST.tree);
 
 
 }
