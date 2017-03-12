@@ -18,8 +18,9 @@ public:
   //new CST object
   CST newCST;
   
-private:
+  void kick();
   
+private:
   
   
   vector<string> expecting;

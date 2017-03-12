@@ -37,6 +37,7 @@ void CST::addChild(Token* t, bool changeToChild)
   
   if(changeToChild) //good for nonterminals
   {
+    cout << "changing to child" << endl;
     //change curNode reference to child node
     curNode = t;  //change the current node to the pointer (child)
   }
