@@ -113,7 +113,7 @@ Parser::Parser(vector<Token> stream)
   {
     if(term("leftBrace"))
     {
-      Token* newBranch = new Token("StatementList"); //add token preemtively
+      Token* newBranch = new Token("StatementList1"); //add token preemtively
       newCST.addChild(newBranch, true);
       if(StatementList())
       {
@@ -157,7 +157,10 @@ Parser::Parser(vector<Token> stream)
     newCST.addChild(newBranchS, true);
     if (Statement())
     {
-      Token* newBranchSL = new Token ("StatementList");
+      cout << "Where we at dawg: " << newCST.curNode->getType() << endl;
+      newCST.curNode = newCST.curNode->parent;
+      cout << "Where we at now dawg: " << newCST.curNode->getType() << endl;
+      Token* newBranchSL = new Token ("StatementList2");
       newCST.addChild(newBranchSL,true);
       if (StatementList())
       {
@@ -184,12 +187,14 @@ Parser::Parser(vector<Token> stream)
   bool Parser::StatementList2() //epsilon
   {
     expecting.clear();
+    cout << "epsilon statementlist: " << endl;
     newCST.curNode = newCST.curNode->parent; //kick back pointer
     return true;
   }
 
   bool Parser::StatementList()
   {
+    cout << "hey I'm at the statementlist: " << newCST.curNode->getType() << endl;
     int save = Parser::i; return (Parser::i = save, StatementList1())
                                ||(Parser::i = save, StatementList2());
   }
