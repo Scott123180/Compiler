@@ -102,7 +102,18 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::Program()
   {
-    int save = Parser::i; return (Parser::i = save, Program1());
+    int save = Parser::i;
+    if (Parser::i = save, Program1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back to start
+      return true;
+    } else
+    {
+      {
+        newCST.curNode = newCST.curNode->parent; //kick back to start
+      }
+      return false;
+    }
   }
 
   //BLOCK=================================================================
@@ -142,7 +153,17 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::Block()
   {
-    int save = Parser::i; return (Parser::i = save, Block1());
+    int save = Parser::i;
+    if (Parser::i = save, Block1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back to start
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back to start
+      return false;
+    }
   }
 
   //STATEMENTLIST=========================================================
@@ -187,8 +208,22 @@ Parser::Parser(vector<Token> stream)
   bool Parser::StatementList()
   {
     cout << "hey I'm at the statementlist: " << newCST.curNode->getType() << endl;
-    int save = Parser::i; return (Parser::i = save, StatementList1())
-                               ||(Parser::i = save, StatementList2());
+    int save = Parser::i;
+    if(Parser::i = save, StatementList1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if (Parser::i = save, StatementList2())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //STATEMENT=============================================================
@@ -292,12 +327,42 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::Statement()
   {
-    int save = Parser::i; return (Parser::i = save, Statement1())
-                       ||(Parser::i = save, Statement2())
-                       ||(Parser::i = save, Statement3())
-                       ||(Parser::i = save, Statement4())
-                       ||(Parser::i = save, Statement5())
-                       ||(Parser::i = save, Statement6());
+    int save = Parser::i;
+    if(Parser::i = save, Statement1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if (Parser::i = save, Statement2())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if (Parser::i = save, Statement3())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if (Parser::i = save, Statement4())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if (Parser::i = save, Statement5())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if (Parser::i = save, Statement6())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //PRINTSTATEMENT========================================================
@@ -345,7 +410,17 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::PrintStatement()
   {
-    int save = Parser::i; return (Parser::i = save, PrintStatement1());
+    int save = Parser::i;
+    if (Parser::i = save, PrintStatement1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //ASSIGNMENTSTATEMENT====================================================
@@ -389,7 +464,17 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::AssignmentStatement()
   {
-    int save = Parser::i; return (Parser::i = save, AssignmentStatement1());
+    int save = Parser::i;
+    if (Parser::i = save, AssignmentStatement1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //VARDECL===============================================================
@@ -423,7 +508,17 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::VarDecl()
   {
-    int save = Parser::i; return (Parser::i = save, VarDecl1());
+    int save = Parser::i;
+    if(Parser::i = save, VarDecl1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //WHILESTATEMENT========================================================
@@ -466,7 +561,17 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::WhileStatement()
   {
-    int save = Parser::i; return (Parser::i = save, WhileStatement1());
+    int save = Parser::i;
+    if(Parser::i = save, WhileStatement1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //IFSTATEMENT===========================================================
@@ -508,7 +613,17 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::IfStatement()
   {
-    int save = Parser::i; return ( Parser::i = save, IfStatement1());
+    int save = Parser::i;
+    if( Parser::i = save, IfStatement1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //EXPR==================================================================
@@ -580,10 +695,32 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::Expr()
   {
-   int save = Parser::i; return ( Parser::i = save, Expr1())
-                      ||( Parser::i = save, Expr2())
-                      ||( Parser::i = save, Expr3())
-                      ||( Parser::i = save, Expr4());
+    int save = Parser::i;
+    if( Parser::i = save, Expr1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if( Parser::i = save, Expr2())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if ( Parser::i = save, Expr3())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if( Parser::i = save, Expr4())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //INTEXPR===============================================================
@@ -645,8 +782,22 @@ Parser::Parser(vector<Token> stream)
 
   bool Parser::IntExpr()
   {
-    int save = Parser::i; return ( Parser::i = save, IntExpr1())
-                       ||( Parser::i = save, IntExpr2());
+    int save = Parser::i;
+    if( Parser::i = save, IntExpr1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if( Parser::i = save, IntExpr2())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //STRINGEXPR============================================================
@@ -685,7 +836,17 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::StringExpr()
   {
-    int save = Parser::i; return ( Parser::i = save, StringExpr1());
+    int save = Parser::i;
+    if( Parser::i = save, StringExpr1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //BOOLEANEXPR===========================================================
@@ -762,8 +923,22 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::BooleanExpr()
   {
-    int save = Parser::i; return ( Parser::i = save, BooleanExpr1())
-                       ||( Parser::i = save, BooleanExpr2());
+    int save = Parser::i;
+    if( Parser::i = save, BooleanExpr1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if( Parser::i = save, BooleanExpr2())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //ID====================================================================
@@ -786,7 +961,16 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::Id()
   {
-    int save = Parser::i; return ( Parser::i = save, Id1());
+    int save = Parser::i; if ( Parser::i = save, Id1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //CHARLIST==============================================================
@@ -852,9 +1036,27 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::CharList()
   {
-    int save = Parser::i; return ( Parser::i = save, CharList1())
-                       ||( Parser::i = save, CharList2())
-                       ||( Parser::i = save, CharList3());
+    int save = Parser::i;
+    if ( Parser::i = save, CharList1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if ( Parser::i = save, CharList2())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else if( Parser::i = save, CharList3())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //TYPE==================================================================
@@ -874,7 +1076,17 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::type()
   {
-    int save = Parser::i; return ( Parser::i = save, type1());
+    int save = Parser::i;
+    if ( Parser::i = save, type1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //CHAR==================================================================
@@ -894,7 +1106,17 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::Char()
   {
-    int save = Parser::i; return ( Parser::i = save, Char1());
+    int save = Parser::i;
+    if ( Parser::i = save, Char1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //SPACE=================================================================
@@ -914,7 +1136,17 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::space()
   {
-    int save = Parser::i; return ( Parser::i = save, space1());
+    int save = Parser::i;
+    if ( Parser::i = save, space1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //DIGIT=================================================================
@@ -934,7 +1166,17 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::digit()
   {
-    int save = Parser::i; return ( Parser::i = save, digit1());
+    int save = Parser::i;
+    if( Parser::i = save, digit1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //BOOLOP================================================================
@@ -954,7 +1196,17 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::boolop()
   {
-    int save = Parser::i; return ( Parser::i = save, boolop1());
+    int save = Parser::i;
+    if( Parser::i = save, boolop1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //BOOLVAL===============================================================
@@ -974,7 +1226,17 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::boolval()
   {
-    int save = Parser::i; return ( Parser::i = save, boolval1());
+    int save = Parser::i;
+    if( Parser::i = save, boolval1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
 
   //INTOP=================================================================
@@ -993,5 +1255,15 @@ Parser::Parser(vector<Token> stream)
   }
   bool Parser::intop()
   {
-    int save = Parser::i; return ( Parser::i = save, intop1());
+    int save = Parser::i;
+    if( Parser::i = save, intop1())
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return true;
+    }
+    else
+    {
+      newCST.curNode = newCST.curNode->parent; //kick back
+      return false;
+    }
   }
