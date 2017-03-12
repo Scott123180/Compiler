@@ -1,5 +1,5 @@
 {
   boolean b
-  if (b === true)
+  if (b == true)
   b = false
 } $

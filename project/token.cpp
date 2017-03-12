@@ -1,5 +1,6 @@
 #include <map>
 #include <string>
+#include <vector>
 
 #include "token.h"
 #include "error.h"
@@ -38,7 +39,8 @@ string Token::findType() //line num and position for errors
   {
     if(data.length() > 1) //ERROR: Invalid character
     {
-      Error newError(true, newError.token, line, position, data, "Error in token creation: ");
+      vector<string> d = {data}; //create string vector of data
+      Error newError(true, newError.token, line, position, d, "Error in token creation: ");
     } 
     else
     {
@@ -53,7 +55,8 @@ string Token::findType() //line num and position for errors
       else //ERROR: Invalid id
       {
         //Exit execution if character invalid
-        Error newError(true, newError.token, line, position, data, "Error in token creation: ");
+        vector<string> d = {data}; //create string vector of data
+        Error newError(true, newError.token, line, position, d, "Error in token creation: ");
       }
     }
   }

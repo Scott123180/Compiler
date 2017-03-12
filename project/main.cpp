@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "lexer.h"
 #include "error.h"
@@ -13,7 +14,8 @@ int main(int argc, char** argv)
 {
   if(argc != 2)//make sure input file is specified
   {
-    Error newError(true, newError.fileInput, 0, 0, "", "Must have the name of a text file"
+    vector<string> empty = {""};
+    Error newError(true, newError.fileInput, 0, 0, empty, "Must have the name of a text file"
       " for input with no spaces as only argument.");
   }
 
@@ -21,7 +23,8 @@ int main(int argc, char** argv)
 
   Lexer newLex(fileName);
   
-  Parser newParser(newLex.stream);
+  //set boolean to true for verbose, false for not verbose
+  Parser newParser(newLex.stream, false);
   
   Output newOutput;
   newOutput.printOutput(newLex.stream);

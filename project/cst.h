@@ -25,16 +25,16 @@ class CST
     //constructor for CST
     CST();
     
-    void addChild(Token* t, bool changeToChild);
+    void addChild(Token *t, bool changeToChild, bool verbose);
 
     //delete the node
     bool deleteNode(Token *a);
 
     void returnToRoot();
   
-    void dfio(Token* a); //depth-first in order
+    void dfio(Token* a, bool verbose); //depth-first in order
   
-    void calcTokDepth();
+    void calcTokDepth(bool verbose);
   
   private:
     

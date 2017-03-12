@@ -11,7 +11,7 @@ class Parser
 
 public:
   //parser object
-  Parser(vector<Token> stream);
+  Parser(vector<Token> stream, bool v); //v is for verbose
   int i = 0; //points to which token we're on
   vector<Token> tokens;
   
@@ -20,8 +20,9 @@ public:
   
   void kick();
   
-private:
+  bool verbose;
   
+private:
   
   vector<string> expecting;
 

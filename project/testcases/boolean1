@@ -1,5 +1,0 @@
-{
-  boolean b
-  if (b === true)
-  b = false
-} $

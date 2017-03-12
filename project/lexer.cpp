@@ -17,7 +17,8 @@ Lexer::Lexer(string fileName)
 
   if (input.fail()) //check for error in file reading
   {
-    Error newError(true, newError.fileInput, 0, 0, fileName, "Error opening the filename specified: ");
+    vector<string> f = {fileName}; //create string vector of filename
+    Error newError(true, newError.fileInput, 0, 0, f, "Error opening the filename specified: ");
   }
 
   int lineNum = 0;
@@ -98,14 +99,16 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
       else //ERROR:invalid character
       {
         string castChar(1, c);
-        Error newError(true, newError.lex, line, pos, castChar, "Invalid character in string expression: ");
+        vector<string> castVec = {castChar}; //create string vector of data
+        Error newError(true, newError.lex, line, pos, castVec, "Invalid character in string expression: ");
         return;
       }
       //got to end of line without end quote
       if ((curLineLen - 1) == pos)
       {
         cout << "Lex error: run-on quote. Ensure string literals start and end on the same line" << endl;
-        Error newError(true, newError.lex, line, pos, "", "Ensure string literals start and end on the same line");
+        vector<string> empty = {""}; //create string vector of data
+        Error newError(true, newError.lex, line, pos, empty, "Ensure string literals start and end on the same line");
         return;
       }
       return;
@@ -186,7 +189,8 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
   else
   {
     string castChar(1, c);
-    Error newError(true, newError.lex, line, pos, castChar, "This symbol was not found: ");
+    vector<string> castVec = {castChar}; //create string vector of data
+    Error newError(true, newError.lex, line, pos, castVec, "This symbol was not found: ");
     return;
   }
 }

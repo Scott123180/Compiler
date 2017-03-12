@@ -18,16 +18,20 @@ CST::CST()
   depth = 0; //initialize depth to root
 }
 
-void CST::addChild(Token* t, bool changeToChild)
+void CST::addChild(Token *t, bool changeToChild, bool verbose)
 {
-  if(t->getData() == "")
+  if(verbose)
   {
-    cout << "trying: " << t->getType() << endl;
+    if(t->getData() == "")
+    {
+      cout << "trying: " << t->getType() << endl;
+    }
+    else
+    {
+      cout << "trying: " << t->getData() << endl;
+    }
   }
-  else
-  {
-    cout << "trying: " << t->getData() << endl;
-  }
+
   //add reference to parent's children
   curNode->children.push_back(t);
   
@@ -37,7 +41,10 @@ void CST::addChild(Token* t, bool changeToChild)
   
   if(changeToChild) //good for nonterminals
   {
-    cout << "changing to child" << endl;
+    if(verbose)
+    {
+      cout << "changing to child" << endl;
+    }
     //change curNode reference to child node
     curNode = t;  //change the current node to the pointer (child)
   }
@@ -53,9 +60,7 @@ bool CST::deleteNode(Token *a)
     a->parent->children.erase(std::remove(a->parent->children.begin(),
                                           a->parent->children.end(),
                                           a), a->parent->children.end());
-  
-    //old: get rid of reference in parent to avoid null ptr
-    //a->parent->children.pop_back();
+    
     delete a;
     return true;
   }
@@ -74,13 +79,16 @@ void CST::returnToRoot()
   }
 }
 
-void CST::dfio(Token* a) //depth-first in order
+void CST::dfio(Token* a, bool verbose) //depth-first in order
 {
   //set depth node to curNode
   calcDepth = a;
   //calculate depth
-  calcTokDepth();
-  cout << depth << endl;
+  calcTokDepth(verbose);
+  if(verbose)
+  {
+    cout << depth << endl;
+  }
   //calculate current token dashes
   string dashes = "";
   for(unsigned int d = 0; d < depth; d++)
@@ -94,26 +102,29 @@ void CST::dfio(Token* a) //depth-first in order
   if(a->getData() == "")  //branch non-terminal
   {
     //3 print branch-nonterminal
-    cout << dashes << a->getType() << endl;
+    cout << dashes << "<"<< a->getType() << ">" << endl;
     
     //recursive call
     for (auto i = 0; i < a->children.size(); i++) {
-      dfio(a->children[i]);
+      dfio(a->children[i], verbose);
     }
   }
   else //leaf terminal
   {
-    cout << dashes << a->getData() << endl;
+    cout << dashes << "[" << a->getData() << "]" << endl;
   }
 }
 
-void CST::calcTokDepth()
+void CST::calcTokDepth(bool verbose)  //verbose
 {
   //scale up tree
   while(calcDepth->parent) //check for root (nullptr parent)
   {
     ++depth;
-    cout << calcDepth->getType() << endl;
+    if(verbose)
+    {
+      cout << calcDepth->getType() << endl;
+    }
     calcDepth = calcDepth->parent;
   }
 }
