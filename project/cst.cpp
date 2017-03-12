@@ -82,27 +82,16 @@ void CST::dfio(Token* a) //depth-first in order
   {
     //3 print branch-nonterminal
     cout << dashes << a->getType() << endl;
-    
+  
     //4 depth calculations
     //check for special epsilon terminal
-    if(!(a->children.empty())) //not special epsilon (has children)
+    if (!(a->children.empty())) //not special epsilon (has children)
     {
       ++depth;
     }
     //recursive call
-    for(auto i = 0; i < a->children.size(); i++)
-    {
-      //check for last child
-      if((i+1) == a->children.size()) //last node
-      {
-        dfio(a->children[i]);
-        --depth;
-      }
-      else
-      {
-        dfio(a->children[i]);
-      }
-      
+    for (auto i = 0; i < a->children.size(); i++) {
+      dfio(a->children[i]);
     }
   }
   else //leaf terminal
