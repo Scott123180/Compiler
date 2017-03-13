@@ -11,8 +11,8 @@ class Parser
 
 public:
   //parser object
-  Parser(vector<Token> stream, bool v); //v is for verbose
-  int i = 0; //points to which token we're on
+  Parser(vector<Token> stream, bool v, unsigned int start); //v is for verbose
+  int i; //points to which woken we're on
   vector<Token> tokens;
   
   //new CST object

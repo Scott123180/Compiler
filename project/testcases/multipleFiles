@@ -1,22 +1,15 @@
 {
   boolean b
-  if(b==true)
+  if(b==true){}
   b=false
 }$
-
-{
-  string s
-  s = "         abcde "
-} $
-
 {
   boolean b
-  if (b === true)
-  b = false
-} $
-
+  if(b==true){}
+  b=false
+}$
 {
   boolean b
-  if (b === true)
+  b = true
   b = false
-} $int i
+} $

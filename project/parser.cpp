@@ -7,8 +7,8 @@
 
 using namespace std;
 
-Parser::Parser(vector<Token> stream, bool v) //v is for verbose
-  : verbose(v)
+Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verbose
+  : verbose(v), i(start)
 {
   /*
    * next is the current token we're working with, we increment it every time just
@@ -30,6 +30,7 @@ Parser::Parser(vector<Token> stream, bool v) //v is for verbose
   if(Program())
   {
     cout << "Successful Parse!" << endl;
+    cout << "Printing parse to output.html" << endl;
     
     
     //print out the cst in the command line
@@ -37,10 +38,19 @@ Parser::Parser(vector<Token> stream, bool v) //v is for verbose
     newCST.calcDepth = newCST.curNode; //set calc depth node
     newCST.dfio(newCST.curNode, verbose);
     
+    //recursivly call parser if leftover tokens
+    if(i != stream.size())
+    {
+      Parser recursiveParse(stream, verbose, i);
+      for(vector<string>::size_type j = 0; j < recursiveParse.newCST.tree.size(); j++)
+      {
+        newCST.tree.push_back(recursiveParse.newCST.tree[j]);
+      }
+    }
+    
   }
   else //error
   {
-    cout << "No segmentation faults, but the parse wasn't successful" << endl;
     Error parseError(true, parseError.parse, stream[Parser::i].getLine(),
                      stream[Parser::i].getPos(), Parser::expecting, "");
   }
@@ -51,13 +61,18 @@ Parser::Parser(vector<Token> stream, bool v) //v is for verbose
 
   void Parser::kick()
   {
-    
-    //cout << "before kick: " << newCST.curNode->getType() << endl;
+    if (verbose)
+    {
+      cout << "before kick: " << newCST.curNode->getType() << endl;
+    }
     if(newCST.curNode->parent) //avoid null ptr
     {
       newCST.curNode = newCST.curNode->parent;
     }
-    //cout << "after kick: " << newCST.curNode->getType() << endl;
+    if(verbose)
+    {
+      cout << "after kick: " << newCST.curNode->getType() << endl;
+    }
   }
 /*
 
@@ -74,13 +89,21 @@ Parser::Parser(vector<Token> stream, bool v) //v is for verbose
       //create leaf
       newCST.addChild(newTerminal, false, verbose);
       ++i; //increment i
-      //cout << "hey we matched: " << tt << endl;
+      if(verbose)
+      {
+        cout << "hey we matched: " << tt << endl;
+      }
+      
       return true;
     }
     else //no match
     {
-      //cout << "hey we failed: " << tt << endl;
-      //cout << "this is the type we couldn't match:  \"" << newCST.curNode->getType() << "\"" << endl;
+      if (verbose)
+      {
+        cout << "hey we failed: " << tt << endl;
+        cout << "this is the type we couldn't match:  \"" << newCST.curNode->getType() << "\"" << endl;
+      }
+      
       ++i; //increment i regardless
       return false;
     }
@@ -446,7 +469,7 @@ Parser::Parser(vector<Token> stream, bool v) //v is for verbose
     newCST.addChild(newBranchI, true, verbose);
     if(Id())
     {
-      if(term("="))
+      if(term("assign"))
       {
         Token* newBranchE = new Token("Expr");
         newCST.addChild(newBranchE, true, verbose);
