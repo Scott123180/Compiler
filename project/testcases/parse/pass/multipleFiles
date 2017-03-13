@@ -1,0 +1,15 @@
+{
+  boolean b
+  if(b==true){}
+  b=false
+}$
+{
+  boolean b
+  if(b==true){}
+  b=false
+}$
+{
+  boolean b
+  b = true
+  b = false
+} $

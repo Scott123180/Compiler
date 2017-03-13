@@ -1,0 +1,30 @@
+Hey, welcome to the parser testing documentation:
+
+Under the testcases files, there will be a separate folder for parsing
+that passes, and parsing that doesn't pass. The names should be self-
+explanatory in terms of what they test.
+
+While debugging my miserable pointers, I often needed to verify the
+correct structure of the tree and the correct addition and deletion
+of nodes. This functionality has been preserved if you enable verbose
+mode in the main function call to parser. During the testing process,
+I myself walked through a number of cases and calculated the expected
+output by hand and then looked at the program's output, confirming the
+results.
+
+
+Single File:
+  Parser has produced valid output for single files. Refer to the
+  testing folder for more information.
+
+Multiple Files:
+  Combined valid lex and parse programs into one file and made sure that
+  they all passed lex and parsing, and printed out the CST.
+
+Sample Files Provided:
+  The first two succeeded. The first one is the same as the minimal file
+  and StatementList successfully went to epsilon. The second one matched
+  the braces correctly. The third one did not have balanced braces, so 
+  the parser threw an error and mentioned that it was expecting an 
+  EOP symbol. The fourth one did not pass lex because of an invalid 
+  symbol, and thus did not make it to parse.

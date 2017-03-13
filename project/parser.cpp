@@ -1228,7 +1228,7 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
     }
     else //boolop
     {
-      expecting.push_back("boolop");
+      expecting.push_back("boolOp");
       return false;
     }
   }

@@ -1,0 +1,54 @@
+Welcome to the parser documentation!
+
+My parser is an object that is created in the main tab. It's methods include a verbose
+option, so all you need to do is call the parser object with true for verbose, and false
+for parsing without verbose. Verbose will give you a very detailed and very long step by
+step walkthrough of the recursive desent algorithm and adding and removing nodes. It is
+very long, but should be easy to follow. It should also relay all of the information that
+you need to know about the tree.
+
+Walkthrough of program:
+1. Recursive decent algorithm is called in main funciton. The first argument is for the
+   stream of tokens it will be using, and the second argument is for whether or not you
+   want verbose mode on. The third option is for recursively calling the parser in the
+   case of multiple input files. The program uses this number as the starting point in
+   the token stream.
+
+2. A parser object is created. The parser object creates a concrete syntax tree object
+   so that it can keep track of certain information, like the current token. The CST
+   object contains the algorithms for utilizing tree functionality within the tokens.
+   Things like creating, deleting, and finding the depth of each node are included.
+
+
+3. This object begins the recursive decent algorithm, which
+   goes through every definition and tries to find matches. The algorithm itself is based
+   on the one that Professor Alex Aiken teaches in his youtube walkthrough of recursive
+   decent algorithms. During the algorithm, tokens that have no data, essentially branches,
+   are created, and which are stored as children of of the current token. This is done recursively.
+   Pointers are used and I think I died a little on the inside. I debugged for days before 
+   everything worked correctly and I got no more segmentation faults.
+
+4. Branches kick back the current pointer to the parents regardless of whether or not
+   a match is found, this way they can recursivly try any option that makes sense.
+   When trying options, the save pointer is there because the pointer to the token
+   is incremented regardless of whether or not a match is found. Therefore, when attempting
+   to match different non-terminals, we must make sure to revert the pointer to it's original
+   location if it did not succeed.
+
+5. Assuming everything was matched, we have ourselves a tree, but  the makers of c++ just
+   gave us the seeds and we had to grow our own tree, and they can't be expected to
+   give you the rope to climb it yourself. THIS ISN'T PYTHON! Alright well I figured
+   that you can recursivly go through every child and print them out in order, and then
+   I calculted the depth of each node after I got angry at the computer and decided to
+   recursivly go up the tree and increment a variable. :P It all worked out in the end. :)
+   Now we can calculate the number of dashes we need with the depth of each branch/leaf
+   and print them out in order.
+
+6. And we're printing them all out from a string vector that we pushed them to. But wait,
+   what if we have multiple programs? Well, :) That's where recursion comes in. If we are
+   at the end of the token stream, then there are no more programs to go through. But
+   if we're not, we can recursivly make a parser object and continue where we left off.
+   Then we can append the results of the objec to the vector of strings from the previous
+   parser object, and print out this whole thing in the html page! Wahooooooooooooooo
+   <>< <>< <>< <>< ><> ><> ><>
+
