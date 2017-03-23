@@ -35,13 +35,18 @@ Error::Error(bool q, int e, int l, int p, vector<string> d, string m)
         }
         
       }
+      cerr << "Found: " << message << endl;
       cerr << "Aborting Parse." << endl;
       break;
 
     case semantic:
       cerr << "I don't know how you got here, but thanks for coding for me." << endl;
       break;
-
+    case token:
+      cerr << "Error at " << line << ":" << pos << endl
+           << message << "\"" << data[0] << "\"" << endl
+           << "Aborting Lex." << endl;
+      break;
     default:
       cerr << "Unknown error at " << line << ":" << pos << endl
            << message << data[0] << endl

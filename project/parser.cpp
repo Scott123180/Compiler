@@ -51,8 +51,9 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
   }
   else //error
   {
+    string found = "TYPE " + stream[Parser::i].getType() + ", VALUE " + stream[Parser::i].getData();
     Error parseError(true, parseError.parse, stream[Parser::i].getLine(),
-                     stream[Parser::i].getPos(), Parser::expecting, "");
+                     stream[Parser::i].getPos(), Parser::expecting, found);
   }
 
 

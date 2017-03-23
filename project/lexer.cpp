@@ -39,12 +39,12 @@ Lexer::Lexer(string fileName)
     }
   }
   
-  cout << "End of program reached. Printing tokens to \"output.html\"." << endl;
+  cout << "Lex: End of program reached. Lex successful!" << endl;
 
   return;
 }
 
-//returns false if error, adds token to buffer otherwise
+//attempts to add token to buffer, if fails, generates error
 void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
 {
 

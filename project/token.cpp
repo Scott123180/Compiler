@@ -40,7 +40,7 @@ string Token::findType() //line num and position for errors
     if(data.length() > 1) //ERROR: Invalid character
     {
       vector<string> d = {data}; //create string vector of data
-      Error newError(true, newError.token, line, position, d, "Error in token creation: ");
+      Error newError(true, newError.token, line, position, d, "Error creating the token with value: ");
     } 
     else
     {
