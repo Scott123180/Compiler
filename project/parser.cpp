@@ -1015,59 +1015,18 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
 
   bool Parser::CharList1() //Char() CharList()
   {
-    Token* newBranchChar = new Token("char");
-    newCST.addChild(newBranchChar, true, verbose);
-    if(Char())
+    if(term("charList"))
     {
-      Token* newBranchCharL = new Token("CharList");
-      newCST.addChild(newBranchCharL, true, verbose);
-      if(CharList())
-      {
-        expecting.clear();
-        return true;
-      }
-      else //CharList()
-      {
-        expecting.push_back("CharList()");
-        newCST.deleteNode(newBranchCharL);
-        return false;
-      }
+      expecting.clear();
+      return true;
     }
-    else //Char()
+    else
     {
-      expecting.push_back("Char()");
-      newCST.deleteNode(newBranchChar);
+      expecting.push_back("CharList()");
       return false;
     }
   }
-  bool Parser::CharList2() //space() CharList()
-  {
-    Token* newBranchS = new Token("Space");
-    newCST.addChild(newBranchS, true, verbose);
-    if(space())
-    {
-      Token* newBranchCharL = new Token("CharList");
-      newCST.addChild(newBranchCharL, true, verbose);
-      if(CharList())
-      {
-        expecting.clear();
-        return true;
-      }
-      else //CharList()
-      {
-        expecting.push_back("CharList()");
-        newCST.deleteNode(newBranchCharL);
-        return false;
-      }
-    }
-    else //space()
-    {
-      expecting.push_back("space()");
-      newCST.deleteNode(newBranchS);
-      return false;
-    }
-  }
-  bool Parser::CharList3() //epsilon
+  bool Parser::CharList2() //epsilon
   {
     expecting.clear();
     return true;
@@ -1081,11 +1040,6 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
       return true;
     }
     else if ( Parser::i = save, CharList2())
-    {
-      kick(); //kick back
-      return true;
-    }
-    else if( Parser::i = save, CharList3())
     {
       kick(); //kick back
       return true;

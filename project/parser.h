@@ -84,8 +84,7 @@ private:
   bool Id();
 
   bool CharList1();
-  bool CharList2();
-  bool CharList3(); //epsilon
+  bool CharList2(); //epsilon
   bool CharList();
 
   bool type1();

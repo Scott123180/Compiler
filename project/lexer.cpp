@@ -51,6 +51,18 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
   //ensure symbol is in alphabet
   if(find(acceptedChars.begin(), acceptedChars.end(), c) != acceptedChars.end())
   {
+    //push '=' separator if not "=="
+    if(!(buffer.empty()))
+    {
+      if(buffer.back() == '=')
+      {
+        if(c != '=')
+        {
+          stream.push_back(Token(buffer, line, pos));
+          buffer = "";
+        }
+      }
+    } //continue processing
 
     //string expression processing
     if(c == '"')
@@ -75,19 +87,7 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
       }
     }
 
-    //push separator if not "=="
-    if(!(buffer.empty()))
-    {
-      if(buffer.back() == '=')
-      {
-        if(c != '=')
-        {
-          stream.push_back(Token(buffer, line, pos));
-          buffer = "";
-        }
 
-      }
-    } //continue processing
 
     if(inString) //if in a string expression
     {
@@ -118,9 +118,15 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
 
     else if(c == '=')
     {
-      if(buffer.back() == '=') //double ==
+      if(buffer.back() == '=') //   ==
       {
         stream.push_back(Token("==", line, pos));
+        buffer = "";
+        return;
+      }
+      else if(buffer.back() == '!') //   !=
+      {
+        stream.push_back(Token("!=", line, pos));
         buffer = "";
         return;
       }
@@ -136,6 +142,17 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
         return;
       }
 
+    }
+
+    else if(c == '!') //start of !=
+    {
+      if(!(buffer.empty())) //if the buffer has item
+      {
+        stream.push_back(Token(buffer, line, pos));
+        buffer = "";
+      }
+      buffer.push_back(c);  //push back '!'
+      return;
     }
 
     else if(c == '$') //end of program
@@ -181,7 +198,7 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
     else//regular character processing
     {
       buffer.push_back(c);
-        return;
+      return;
     }
 
   }
