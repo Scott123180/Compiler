@@ -7,6 +7,8 @@
 #include "output.h"
 #include "parser.h"
 #include "cst.h"
+#include "ast.h"
+#include "symbolTable.h"
 
 using namespace std;
 
@@ -28,6 +30,5 @@ int main(int argc, char** argv)
   
   Output newOutput;
   newOutput.printOutput(newLex.stream, newParser.newCST.tree);
-
 
 }

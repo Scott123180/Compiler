@@ -5,7 +5,9 @@ using namespace std;
 
 class SymbolTable
 {
-
+  public:
+    SymbolTable();
+  private:
 };
 
 #endif
