@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 
-#include "cst.h"
+#include "AST.h"
 #include "semantic.h"
 
 Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for verbose
@@ -18,18 +18,18 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
     cout << "Printing SA to output.html" << endl;
 
 
-    //print out the cst in the command line
+    //print out the AST in the command line
     newAST.returnToRoot();  //go back to the root
-    newAST.calcDepth = newCST.curNode; //set calc depth node
-    newAST.dfio(newCST.curNode, verbose);
+    newAST.calcDepth = newAST.curNode; //set calc depth node
+    newAST.dfio(newAST.curNode, verbose);
 
-    //recursively call parser if leftover tokens
+    //recursively call Semantic if leftover tokens
     if(i != stream.size())
     {
       Semantic recursiveSemantic(stream, verbose, i);
       for(vector<string>::size_type j = 0; j < recursiveSemantic.newAST.tree.size(); j++)
       {
-        newAST.tree.push_back(recursiveParse.newAST.tree[j]);
+        newAST.tree.push_back(recursiveSemantic.newAST.tree[j]);
       }
     }
 
@@ -42,19 +42,19 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
 }
 
 //copy pasta
-void Parser::kick()
+void Semantic::kick()
 {
   if (verbose)
   {
-    cout << "before kick: " << newCST.curNode->getType() << endl;
+    cout << "before kick: " << newAST.curNode->getType() << endl;
   }
-  if(newCST.curNode->parent) //avoid null ptr
+  if(newAST.curNode->parent) //avoid null ptr
   {
-    newCST.curNode = newCST.curNode->parent;
+    newAST.curNode = newAST.curNode->parent;
   }
   if(verbose)
   {
-    cout << "after kick: " << newCST.curNode->getType() << endl;
+    cout << "after kick: " << newAST.curNode->getType() << endl;
   }
 }
 /*
@@ -63,20 +63,15 @@ void Parser::kick()
    returns true if the token we passed in matches the input or no it doesn't
  */
 
-bool Parser::term(string tt) //terminal leaf creation
+bool Semantic::term(string tt) //terminal leaf creation
 {
-  if (Parser::tokens[(Parser::i)].getType() == tt)
+  if (Semantic::tokens[(Semantic::i)].getType() == tt)
   {
-    //put token on the heap
-    Token* newTerminal = new Token(Parser::tokens[Parser::i]);
-    //create leaf
-    newCST.addChild(newTerminal, false, verbose);
     ++i; //increment i
     if(verbose)
     {
       cout << "hey we matched: " << tt << endl;
     }
-
     return true;
   }
   else //no match
@@ -84,7 +79,7 @@ bool Parser::term(string tt) //terminal leaf creation
     if (verbose)
     {
       cout << "hey we failed: " << tt << endl;
-      cout << "this is the type we couldn't match:  \"" << newCST.curNode->getType() << "\"" << endl;
+      cout << "this is the type we couldn't match:  \"" << newAST.curNode->getType() << "\"" << endl;
     }
 
     ++i; //increment i regardless
@@ -95,87 +90,72 @@ bool Parser::term(string tt) //terminal leaf creation
 
 //PROGRAM===============================================================
 //already added a program token as our root node
-bool Parser::Program1()
+bool Semantic::Program1()
 {
   //create block branch
   Token* newBranch = new Token("Block");
-  newCST.addChild(newBranch, true, verbose);
+  newAST.addChild(newBranch, true, verbose);
   if(Block())
   {
     if(term("EOP"))
     {
-      expecting.clear();
       return true;
     }
-    else //EOP
+    else
     {
-      expecting.push_back("$");
       return false;
-    }
+    } //NOT EOP
   }
   else //Block()
   {
-    expecting.push_back("Block()");
-    newCST.deleteNode(newBranch);
+    newAST.deleteNode(newBranch);
     return false;
   }
 }
 
-bool Parser::Program()
+bool Semantic::Program()
 {
-  int save = Parser::i;
-  if (Parser::i = save, Program1())
+  int save = Semantic::i;
+  if (Semantic::i = save, Program1())
   {
     kick(); //kick back to start
     return true;
-  } else
+  }
+  else
   {
-    {
-      kick(); //kick back to start
-    }
+    kick(); //kick back to start
     return false;
   }
 }
 
 //BLOCK=================================================================
 
-bool Parser::Block1()  //leftBrace, StatementList(), rightBrace
+bool Semantic::Block1()  //leftBrace, StatementList(), rightBrace
 {
   if(term("leftBrace"))
   {
-    Token* newBranch = new Token("StatementList"); //add token preemtively
-    newCST.addChild(newBranch, true, verbose);
     if(StatementList())
     {
       if(term("rightBrace"))
       {
-        expecting.clear();
         return true;
-      }
-      else //fail rightBrace
-      {
-        expecting.push_back("}");
-        return false;
       }
     }
     else //fail StatementList()
     {
-      expecting.push_back("StatementList()");
-      newCST.deleteNode(newBranch);
       return false;
     }
   }
   else //fail leftBrace
   {
-    expecting.push_back("{");
     return false;
   }
 }
 
-bool Parser::Block()
+bool Semantic::Block()
 {
-  int save = Parser::i;
-  if (Parser::i = save, Block1())
+  int save = Semantic::i;
+  if (Semantic::i = save, Block1())
   {
     kick(); //kick back to start
     return true;
@@ -189,53 +169,39 @@ bool Parser::Block()
 
 //STATEMENTLIST=========================================================
 
-bool Parser::StatementList1() //Statement() StatementList()
+bool Semantic::StatementList1() //Statement() StatementList()
 {
-  Token* newBranchS = new Token("Statement");
-  newCST.addChild(newBranchS, true, verbose);
   if (Statement())
   {
-    //cout << "Where we at dawg: " << newCST.curNode->getType() << endl;
-    //kick();
-    //cout << "Where we at now dawg: " << newCST.curNode->getType() << endl;
-    Token* newBranchSL = new Token ("StatementList");
-    newCST.addChild(newBranchSL, true, verbose);
     if (StatementList())
     {
-      expecting.clear();
+      
       return true;
     }
     else //StatementList()
     {
-      expecting.push_back("StatementList()");
-      newCST.deleteNode(newBranchSL);
       return false;
     }
   }
   else //Statement()
   {
-    expecting.push_back("Statement()");
-    newCST.deleteNode(newBranchS);
     return false;
   }
 }
-bool Parser::StatementList2() //epsilon
+bool Semantic::StatementList2() //epsilon
 {
-  expecting.clear();
-  //cout << "epsilon statementlist: " << endl;
   return true;
 }
 
-bool Parser::StatementList()
+bool Semantic::StatementList()
 {
-  //cout << "hey I'm at the statementlist: " << newCST.curNode->getType() << endl;
-  int save = Parser::i;
-  if(Parser::i = save, StatementList1())
+  int save = Semantic::i;
+  if(Semantic::i = save, StatementList1())
   {
     kick(); //kick back
     return true;
   }
-  else if (Parser::i = save, StatementList2())
+  else if (Semantic::i = save, StatementList2())
   {
     kick(); //kick back
     return true;
@@ -249,132 +215,123 @@ bool Parser::StatementList()
 
 //STATEMENT=============================================================
 
-bool Parser::Statement1() //PrintStatement()
+bool Semantic::Statement1() //PrintStatement()
 {
   Token* newBranch = new Token("PrintStatement");
-  newCST.addChild(newBranch, true, verbose);
+  newAST.addChild(newBranch, true, verbose);
   if(PrintStatement())
   {
-    expecting.clear();
+    
     return true;
   }
   else //PrintStatement()
   {
-    expecting.push_back("PrintStatement()");
-    newCST.deleteNode(newBranch);
+    newAST.deleteNode(newBranch);
     return false;
   }
 }
-bool Parser::Statement2() //AssignStatement()
+bool Semantic::Statement2() //AssignStatement()
 {
   Token* newBranch = new Token("AssignStatement");
-  newCST.addChild(newBranch, true, verbose);
+  newAST.addChild(newBranch, true, verbose);
   if(AssignmentStatement())
   {
-    expecting.clear();
+    
     return true;
   }
   else //AssignmentStatement()
   {
-    expecting.push_back("AssignmentStatement()");
-    newCST.deleteNode(newBranch);
+    newAST.deleteNode(newBranch);
     return false;
   }
 }
-bool Parser::Statement3() //VarDecl()
+bool Semantic::Statement3() //VarDecl()
 {
   Token* newBranch = new Token("VarDecl");
-  newCST.addChild(newBranch, true, verbose);
+  newAST.addChild(newBranch, true, verbose);
   if(VarDecl())
   {
-    expecting.clear();
     return true;
   }
   else //VarDecl()
   {
-    expecting.push_back("VarDecl()");
-    newCST.deleteNode(newBranch);
+    newAST.deleteNode(newBranch);
     return false;
   }
 }
-bool Parser::Statement4() //WhileStatement()
+bool Semantic::Statement4() //WhileStatement()
 {
   Token* newBranch = new Token("WhileStatement");
-  newCST.addChild(newBranch, true, verbose);
+  newAST.addChild(newBranch, true, verbose);
   if(WhileStatement())
   {
-    expecting.clear();
     return true;
   }
   else //WhileStatement()
   {
-    expecting.push_back("WhileStatement()");
-    newCST.deleteNode(newBranch);
+    newAST.deleteNode(newBranch);
     return false;
   }
 }
-bool Parser::Statement5() //IfStatement()
+bool Semantic::Statement5() //IfStatement()
 {
   Token* newBranch = new Token("IfStatement");
-  newCST.addChild(newBranch, true, verbose);
+  newAST.addChild(newBranch, true, verbose);
   if(IfStatement())
   {
-    expecting.clear();
+    
     return true;
   }
   else //IfStatement()
   {
-    expecting.push_back("IfStatement()");
-    newCST.deleteNode(newBranch);
+    newAST.deleteNode(newBranch);
     return false;
   }
 }
-bool Parser::Statement6() //Block()
+bool Semantic::Statement6() //Block()
 {
   Token* newBranch = new Token("Block");
-  newCST.addChild(newBranch, true, verbose);
+  newAST.addChild(newBranch, true, verbose);
   if(Block())
   {
-    expecting.clear();
     return true;
   }
   else //Block()
   {
-    expecting.push_back("BlockStatement()");
-    newCST.deleteNode(newBranch);
+    newAST.deleteNode(newBranch);
     return false;
   }
 }
 
-bool Parser::Statement()
+bool Semantic::Statement()
 {
-  int save = Parser::i;
-  if(Parser::i = save, Statement1())
+  int save = Semantic::i;
+  if(Semantic::i = save, Statement1())
   {
     kick(); //kick back
     return true;
   }
-  else if (Parser::i = save, Statement2())
+  else if (Semantic::i = save, Statement2())
   {
     kick(); //kick back
     return true;
   }
-  else if (Parser::i = save, Statement3())
+  else if (Semantic::i = save, Statement3())
   {
     kick(); //kick back
     return true;
   }
-  else if (Parser::i = save, Statement4())
+  else if (Semantic::i = save, Statement4())
   {
     kick(); //kick back
     return true;
   }
-  else if (Parser::i = save, Statement5())
+  else if (Semantic::i = save, Statement5())
   {
     kick(); //kick back
     return true;
   }
-  else if (Parser::i = save, Statement6())
+  else if (Semantic::i = save, Statement6())
   {
     kick(); //kick back
     return true;
@@ -388,51 +345,44 @@ bool Parser::Statement()
 
 //PRINTSTATEMENT========================================================
 
-bool Parser::PrintStatement1() //print leftParen Expr() rightParen
+bool Semantic::PrintStatement1() //print leftParen Expr() rightParen
 {
   if (term("print"))
   {
     if (term("leftParen"))
     {
-      Token* newBranch = new Token("Expr");
-      newCST.addChild(newBranch, true, verbose);
       if (Expr())
       {
         if (term("rightParen"))
         {
-          expecting.clear();
+          
           return true;
         }
         else //rightParen
         {
-          expecting.push_back("(");
           return false;
         }
       }
       else  //Expr()
       {
-        expecting.push_back("Expr()");
-        newCST.deleteNode(newBranch);
         return false;
       }
     }
     else //leftParen
     {
-      expecting.push_back("(");
       return false;
     }
   }
   else //print
   {
-    expecting.push_back("print");
     return false;
   }
 }
 
-bool Parser::PrintStatement()
+bool Semantic::PrintStatement()
 {
-  int save = Parser::i;
-  if (Parser::i = save, PrintStatement1())
+  int save = Semantic::i;
+  if (Semantic::i = save, PrintStatement1())
   {
     kick(); //kick back
     return true;
@@ -446,47 +396,37 @@ bool Parser::PrintStatement()
 
 //ASSIGNMENTSTATEMENT====================================================
 
-bool Parser::AssignmentStatement1()  //Id = Expr()
+bool Semantic::AssignmentStatement1()  //Id = Expr()
 {
-  Token* newBranchI = new Token("Id");
-  newCST.addChild(newBranchI, true, verbose);
   if(Id())
   {
     if(term("assign"))
     {
-      Token* newBranchE = new Token("Expr");
-      newCST.addChild(newBranchE, true, verbose);
       if(Expr())
       {
-        expecting.clear();
         return true;
       }
       else //Expr()
       {
-        expecting.push_back("Expr()");
-        newCST.deleteNode(newBranchE);
         return false;
       }
     }
     else //=
     {
-      expecting.push_back("=");
       return false;
     }
   }
   else //Id()
   {
-    expecting.push_back("Id()");
-    newCST.deleteNode(newBranchI);
     return false;
   }
 
 }
 
-bool Parser::AssignmentStatement()
+bool Semantic::AssignmentStatement()
 {
-  int save = Parser::i;
-  if (Parser::i = save, AssignmentStatement1())
+  int save = Semantic::i;
+  if (Semantic::i = save, AssignmentStatement1())
   {
     kick(); //kick back
     return true;
@@ -500,37 +440,28 @@ bool Parser::AssignmentStatement()
 
 //VARDECL===============================================================
 
-bool Parser::VarDecl1()
+bool Semantic::VarDecl1()
 {
-  Token* newBranchT = new Token("type");
-  newCST.addChild(newBranchT, true, verbose);
   if(type())
   {
-    Token* newBranchI = new Token("Id");
-    newCST.addChild(newBranchI, true, verbose);
     if(Id())
     {
-      expecting.clear();
       return true;
     }
     else //Id()
     {
-      expecting.push_back("Id()");
-      newCST.deleteNode(newBranchI);
       return false;
     }
   }
   else //type()
   {
-    expecting.push_back("Type()");
-    newCST.deleteNode(newBranchT);
     return false;
   }
 }
-bool Parser::VarDecl()
+bool Semantic::VarDecl()
 {
-  int save = Parser::i;
-  if(Parser::i = save, VarDecl1())
+  int save = Semantic::i;
+  if(Semantic::i = save, VarDecl1())
   {
     kick(); //kick back
     return true;
@@ -544,46 +475,43 @@ bool Parser::VarDecl()
 
 //WHILESTATEMENT========================================================
 
-bool Parser::WhileStatement1()  //while BoolExpr() Block()
+bool Semantic::WhileStatement1()  //while BoolExpr() Block()
 {
   if(term("while"))
   {
     Token* newBranchBool = new Token("BooleanExpr");
-    newCST.addChild(newBranchBool, true, verbose);
+    newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
     {
       Token* newBranchBlock = new Token("Block");
-      newCST.addChild(newBranchBlock, true, verbose);
+      newAST.addChild(newBranchBlock, true, verbose);
       if(Block())
       {
-        expecting.clear();
+        
         return true;
       }
       else //Block()
       {
-        expecting.push_back("Block()");
-        newCST.deleteNode(newBranchBlock);
+        newAST.deleteNode(newBranchBlock);
         return false;
       }
     }
     else //BooleanExpr()
     {
-      expecting.push_back("BooleanExpr()");
-      newCST.deleteNode(newBranchBool);
+      newAST.deleteNode(newBranchBool);
       return false;
     }
   }
   else //while
   {
-    expecting.push_back("while");
     return false;
   }
 }
 
-bool Parser::WhileStatement()
+bool Semantic::WhileStatement()
 {
-  int save = Parser::i;
-  if(Parser::i = save, WhileStatement1())
+  int save = Semantic::i;
+  if(Semantic::i = save, WhileStatement1())
   {
     kick(); //kick back
     return true;
@@ -597,45 +525,42 @@ bool Parser::WhileStatement()
 
 //IFSTATEMENT===========================================================
 
-bool Parser::IfStatement1() //if BooleanExpr() Block()
+bool Semantic::IfStatement1() //if BooleanExpr() Block()
 {
   if(term("if"))
   {
     Token* newBranchBool = new Token("BooleanExpr");
-    newCST.addChild(newBranchBool, true, verbose);
+    newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
     {
       Token* newBranchBlock = new Token("Block");
-      newCST.addChild(newBranchBlock, true, verbose);
+      newAST.addChild(newBranchBlock, true, verbose);
       if(Block())
       {
-        expecting.clear();
+        
         return true;
       }
       else //Block()
       {
-        expecting.push_back("Block()");
-        newCST.deleteNode(newBranchBlock);
+        newAST.deleteNode(newBranchBlock);
         return false;
       }
     }
     else //BooleanExpr()
     {
-      expecting.push_back("BooleanExpr()");
-      newCST.deleteNode(newBranchBool);
+      newAST.deleteNode(newBranchBool);
       return false;
     }
   }
   else //if
   {
-    expecting.push_back("if");
     return false;
   }
 }
-bool Parser::IfStatement()
+bool Semantic::IfStatement()
 {
-  int save = Parser::i;
-  if( Parser::i = save, IfStatement1())
+  int save = Semantic::i;
+  if( Semantic::i = save, IfStatement1())
   {
     kick(); //kick back
     return true;
@@ -649,90 +574,74 @@ bool Parser::IfStatement()
 
 //EXPR==================================================================
 
-bool Parser::Expr1()  //IntExpr()
+bool Semantic::Expr1()  //IntExpr()
 {
-  Token* newBranch = new Token("IntExpr");
-  newCST.addChild(newBranch, true, verbose);
   if(IntExpr())
   {
-    expecting.clear();
     return true;
   }
   else //IntExpr()
   {
-    expecting.push_back("IntExpr()");
-    newCST.deleteNode(newBranch);
     return false;
   }
 }
-bool Parser::Expr2() //StringExpr()
+bool Semantic::Expr2() //StringExpr()
 {
-  Token* newBranch = new Token("StringExpr");
-  newCST.addChild(newBranch, true, verbose);
   if(StringExpr())
   {
-    expecting.clear();
     return true;
   }
   else //StringExpr()
   {
-    expecting.push_back("StringExpr()");
-    newCST.deleteNode(newBranch);
     return false;
   }
 }
-bool Parser::Expr3() //BooleanExpr()
+bool Semantic::Expr3() //BooleanExpr()
 {
   Token* newBranch = new Token("BooleanExpr");
-  newCST.addChild(newBranch, true, verbose);
+  newAST.addChild(newBranch, true, verbose);
   if(BooleanExpr())
   {
-    expecting.clear();
     return true;
   }
   else //BooleanExpr()
   {
-    expecting.push_back("BooleanExpr()");
-    newCST.deleteNode(newBranch);
+    newAST.deleteNode(newBranch);
     return false;
   }
 }
-bool Parser::Expr4() //Id()
+bool Semantic::Expr4() //Id()
 {
-  Token* newBranch = new Token("Id");
-  newCST.addChild(newBranch, true, verbose);
   if(Id())
   {
-    expecting.clear();
+    
     return true;
   }
   else//Id()
   {
-    expecting.push_back("Id()");
-    newCST.deleteNode(newBranch);
     return false;
   }
 }
 
-bool Parser::Expr()
+bool Semantic::Expr()
 {
-  int save = Parser::i;
-  if( Parser::i = save, Expr1())
+  int save = Semantic::i;
+  if( Semantic::i = save, Expr1())
   {
     kick(); //kick back
     return true;
   }
-  else if( Parser::i = save, Expr2())
+  else if( Semantic::i = save, Expr2())
   {
     kick(); //kick back
     return true;
   }
-  else if ( Parser::i = save, Expr3())
+  else if ( Semantic::i = save, Expr3())
   {
     kick(); //kick back
     return true;
   }
-  else if( Parser::i = save, Expr4())
+  else if( Semantic::i = save, Expr4())
   {
     kick(); //kick back
     return true;
@@ -746,70 +655,53 @@ bool Parser::Expr()
 
 //INTEXPR===============================================================
 
-bool Parser::IntExpr1() //digit() intop Expr()
+bool Semantic::IntExpr1() //digit() intop Expr()
 {
-  Token* newBranchDigit = new Token("digit");
-  newCST.addChild(newBranchDigit, true, verbose);
   if(digit())
   {
-    Token* newBranchIntOp = new Token("IntOp");
-    newCST.addChild(newBranchIntOp, true, verbose);
     if(intop())
     {
-      Token* newBranchExpr = new Token("Expr");
-      newCST.addChild(newBranchExpr, true, verbose);
       if(Expr())
       {
-        expecting.clear();
         return true;
       }
       else //Expr()
       {
-        expecting.push_back("Expr()");
-        newCST.deleteNode(newBranchExpr);
         return false;
       }
     }
     else //intop
     {
-      expecting.push_back("Intop()");
-      newCST.deleteNode(newBranchIntOp);
       return false;
     }
   }
   else //digit()
   {
-    expecting.push_back("Digit()");
-    newCST.deleteNode(newBranchDigit);
     return false;
   }
 }
-bool Parser::IntExpr2() //digit()
+bool Semantic::IntExpr2() //digit()
 {
-  Token* newBranch = new Token("digit");
-  newCST.addChild(newBranch, true, verbose);
   if(digit())
   {
-    expecting.clear();
+    
     return true;
   }
   else //digit()
   {
-    expecting.push_back("Digit()");
-    newCST.deleteNode(newBranch);
     return false;
   }
 }
 
-bool Parser::IntExpr()
+bool Semantic::IntExpr()
 {
-  int save = Parser::i;
-  if( Parser::i = save, IntExpr1())
+  int save = Semantic::i;
+  if( Semantic::i = save, IntExpr1())
   {
     kick(); //kick back
     return true;
   }
-  else if( Parser::i = save, IntExpr2())
+  else if( Semantic::i = save, IntExpr2())
   {
     kick(); //kick back
     return true;
@@ -823,42 +715,36 @@ bool Parser::IntExpr()
 
 //STRINGEXPR============================================================
 
-bool Parser::StringExpr1() //leftQuote CharList() rightQuote
+bool Semantic::StringExpr1() //leftQuote CharList() rightQuote
 {
   if(term("leftQuote"))
   {
-    Token* newBranch = new Token("CharList");
-    newCST.addChild(newBranch, true, verbose);
     if(CharList())
     {
       if(term("rightQuote"))
       {
-        expecting.clear();
+        
         return true;
       }
       else //rightQuote
       {
-        expecting.push_back("\"");
         return false;
       }
     }
     else //CharList()
     {
-      expecting.push_back("CharList()");
-      newCST.deleteNode(newBranch);
       return false;
     }
   }
   else //leftQuote
   {
-    expecting.push_back("\"");
     return false;
   }
 }
-bool Parser::StringExpr()
+bool Semantic::StringExpr()
 {
-  int save = Parser::i;
-  if( Parser::i = save, StringExpr1())
+  int save = Semantic::i;
+  if( Semantic::i = save, StringExpr1())
   {
     kick(); //kick back
     return true;
@@ -872,85 +758,65 @@ bool Parser::StringExpr()
 
 //BOOLEANEXPR===========================================================
 
-bool Parser::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
+bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
 {
   if(term("leftParen"))
   {
-    Token* newBranchExpr1 = new Token("Expr");
-    newCST.addChild(newBranchExpr1, true, verbose);
     if(Expr())
     {
-      Token* newBranchBool = new Token("BoolOp");
-      newCST.addChild(newBranchBool, true, verbose);
       if (boolop())
       {
-        Token* newBranchExpr2 = new Token("Expr");
-        newCST.addChild(newBranchExpr2, true, verbose);
         if(Expr())
         {
           if(term("rightParen"))
           {
-            expecting.clear();
             return true;
           }
           else //rightParen
           {
-            expecting.push_back(")");
             return false;
           }
         }
         else //Expr() #2
         {
-          expecting.push_back("Expr()");
-          newCST.deleteNode(newBranchExpr2);
           return false;
         }
       }
       else //boolop()
       {
-        expecting.push_back("Boolop()");
-        newCST.deleteNode(newBranchBool);
         return false;
       }
     }
     else //Expr()
     {
-      expecting.push_back("Expr()");
-      newCST.deleteNode(newBranchExpr1);
       return false;
     }
   }
   else //leftParen
   {
-    expecting.push_back("(");
     return false;
   }
 }
-bool Parser::BooleanExpr2() //boolval()
+bool Semantic::BooleanExpr2() //boolval()
 {
-  Token* newBranch = new Token("BoolVal");
-  newCST.addChild(newBranch, true, verbose);
   if(boolval())
   {
-    expecting.clear();
     return true;
   }
   else //boolval()
   {
-    expecting.push_back("Boolval()");
-    newCST.deleteNode(newBranch);
     return false;
   }
 }
-bool Parser::BooleanExpr()
+bool Semantic::BooleanExpr()
 {
-  int save = Parser::i;
-  if( Parser::i = save, BooleanExpr1())
+  int save = Semantic::i;
+  if( Semantic::i = save, BooleanExpr1())
   {
     kick(); //kick back
     return true;
   }
-  else if( Parser::i = save, BooleanExpr2())
+  else if( Semantic::i = save, BooleanExpr2())
   {
     kick(); //kick back
     return true;
@@ -964,25 +830,20 @@ bool Parser::BooleanExpr()
 
 //ID====================================================================
 
-bool Parser::Id1() //Char()
+bool Semantic::Id1() //Char()
 {
-  Token* newBranch = new Token("char");
-  newCST.addChild(newBranch, true, verbose);
   if(Char())
   {
-    expecting.clear();
     return true;
   }
   else //Char()
   {
-    expecting.push_back("Char()");
-    newCST.deleteNode(newBranch);
     return false;
   }
 }
-bool Parser::Id()
+bool Semantic::Id()
 {
-  int save = Parser::i; if ( Parser::i = save, Id1())
+  int save = Semantic::i; if ( Semantic::i = save, Id1())
   {
     kick(); //kick back
     return true;
@@ -996,33 +857,30 @@ bool Parser::Id()
 
 //CHARLIST==============================================================
 
-bool Parser::CharList1() //Char() CharList()
+bool Semantic::CharList1() //Char() CharList()
 {
   if(term("charList"))
   {
-    expecting.clear();
     return true;
   }
   else
   {
-    expecting.push_back("CharList()");
     return false;
   }
 }
-bool Parser::CharList2() //epsilon
+bool Semantic::CharList2() //epsilon
 {
-  expecting.clear();
   return true;
 }
-bool Parser::CharList()
+bool Semantic::CharList()
 {
-  int save = Parser::i;
-  if ( Parser::i = save, CharList1())
+  int save = Semantic::i;
+  if ( Semantic::i = save, CharList1())
   {
     kick(); //kick back
     return true;
   }
-  else if ( Parser::i = save, CharList2())
+  else if ( Semantic::i = save, CharList2())
   {
     kick(); //kick back
     return true;
@@ -1036,23 +894,21 @@ bool Parser::CharList()
 
 //TYPE==================================================================
 
-bool Parser::type1() //type
+bool Semantic::type1() //type
 {
   if(term("type"))
   {
-    expecting.clear();
     return true;
   }
   else //type
   {
-    expecting.push_back("type");
     return false;
   }
 }
-bool Parser::type()
+bool Semantic::type()
 {
-  int save = Parser::i;
-  if ( Parser::i = save, type1())
+  int save = Semantic::i;
+  if ( Semantic::i = save, type1())
   {
     kick(); //kick back
     return true;
@@ -1066,23 +922,21 @@ bool Parser::type()
 
 //CHAR==================================================================
 
-bool Parser::Char1()
+bool Semantic::Char1()
 {
   if(term("char"))
   {
-    expecting.clear();
     return true;
   }
   else //Char
   {
-    expecting.push_back("Char()");
     return false;
   }
 }
-bool Parser::Char()
+bool Semantic::Char()
 {
-  int save = Parser::i;
-  if ( Parser::i = save, Char1())
+  int save = Semantic::i;
+  if ( Semantic::i = save, Char1())
   {
     kick(); //kick back
     return true;
@@ -1096,23 +950,21 @@ bool Parser::Char()
 
 //SPACE=================================================================
 
-bool Parser::space1()
+bool Semantic::space1()
 {
   if(term(" "))
   {
-    expecting.clear();
     return true;
   }
   else //space
   {
-    expecting.push_back("space_char");
     return false;
   }
 }
-bool Parser::space()
+bool Semantic::space()
 {
-  int save = Parser::i;
-  if ( Parser::i = save, space1())
+  int save = Semantic::i;
+  if ( Semantic::i = save, space1())
   {
     kick(); //kick back
     return true;
@@ -1126,23 +978,21 @@ bool Parser::space()
 
 //DIGIT=================================================================
 
-bool Parser::digit1()
+bool Semantic::digit1()
 {
   if(term("digit"))
   {
-    expecting.clear();
     return true;
   }
   else //digit
   {
-    expecting.push_back("digit");
     return false;
   }
 }
-bool Parser::digit()
+bool Semantic::digit()
 {
-  int save = Parser::i;
-  if( Parser::i = save, digit1())
+  int save = Semantic::i;
+  if( Semantic::i = save, digit1())
   {
     kick(); //kick back
     return true;
@@ -1156,23 +1006,21 @@ bool Parser::digit()
 
 //BOOLOP================================================================
 
-bool Parser::boolop1()
+bool Semantic::boolop1()
 {
   if(term("boolOp"))
   {
-    expecting.clear();
     return true;
   }
   else //boolop
   {
-    expecting.push_back("boolOp");
     return false;
   }
 }
-bool Parser::boolop()
+bool Semantic::boolop()
 {
-  int save = Parser::i;
-  if( Parser::i = save, boolop1())
+  int save = Semantic::i;
+  if( Semantic::i = save, boolop1())
   {
     kick(); //kick back
     return true;
@@ -1186,23 +1034,21 @@ bool Parser::boolop()
 
 //BOOLVAL===============================================================
 
-bool Parser::boolval1()
+bool Semantic::boolval1()
 {
   if(term("boolVal"))
   {
-    expecting.clear();
     return true;
   }
   else //boolval
   {
-    expecting.push_back("boolval");
     return false;
   }
 }
-bool Parser::boolval()
+bool Semantic::boolval()
 {
-  int save = Parser::i;
-  if( Parser::i = save, boolval1())
+  int save = Semantic::i;
+  if( Semantic::i = save, boolval1())
   {
     kick(); //kick back
     return true;
@@ -1216,22 +1062,20 @@ bool Parser::boolval()
 
 //INTOP=================================================================
 
-bool Parser::intop1() {
+bool Semantic::intop1() {
   if(term("intOp"))
   {
-    expecting.clear();
     return true;
   }
   else //intop
   {
-    expecting.push_back("intop");
     return false;
   }
 }
-bool Parser::intop()
+bool Semantic::intop()
 {
-  int save = Parser::i;
-  if( Parser::i = save, intop1())
+  int save = Semantic::i;
+  if( Semantic::i = save, intop1())
   {
     kick(); //kick back
     return true;

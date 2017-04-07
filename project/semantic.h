@@ -26,8 +26,6 @@ class Semantic
 
   private:
 
-    vector<string> expecting;
-
     //recursive decent functions
     bool term(string tt); //terminal
 
