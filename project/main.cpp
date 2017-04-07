@@ -27,7 +27,8 @@ int main(int argc, char** argv)
   
   //set boolean to true for verbose, false for not verbose
   Parser newParser(newLex.stream, false,0);
-  
+
+
   Output newOutput;
   newOutput.printOutput(newLex.stream, newParser.newCST.tree);
 

@@ -38,7 +38,7 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
     newCST.calcDepth = newCST.curNode; //set calc depth node
     newCST.dfio(newCST.curNode, verbose);
     
-    //recursivly call parser if leftover tokens
+    //recursively call parser if leftover tokens
     if(i != stream.size())
     {
       Parser recursiveParse(stream, verbose, i);
