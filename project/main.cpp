@@ -7,8 +7,8 @@
 #include "output.h"
 #include "parser.h"
 #include "cst.h"
-#include "ast.h"
 #include "symbolTable.h"
+#include "semantic.h"
 
 using namespace std;
 
@@ -28,8 +28,11 @@ int main(int argc, char** argv)
   //set boolean to true for verbose, false for not verbose
   Parser newParser(newLex.stream, false,0);
 
+  //set boolean to true for verbose, false for not verbose
+  Semantic newSemantic(newLex.stream, false, 0);
+
 
   Output newOutput;
-  newOutput.printOutput(newLex.stream, newParser.newCST.tree);
+  newOutput.printOutput(newLex.stream, newParser.newCST.tree, newSemantic.newAST.tree);
 
 }

@@ -1,0 +1,1441 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<title>Lex and Parsing Output</title>
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css"><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+</head>
+<body>
+<div class="page-header"> 
+<h1>Scott's Dank Compiler <small>Scott Hansen</small></h1>
+</div>
+</div> 
+<div class="panel panel-default col-xs-6 col-sm-6 col-md-6 col-lg-6">
+<div class="panel-heading">
+<h3 class="panel-title">Token List</h3>
+</div>
+<div class="panel-body">
+<table class = "table col-xs-6 col-sm-6 col-md-6 col-lg-6">
+<tr>
+<th>Line</th>
+<th>Type</th>
+<th>Data</th>
+</tr>
+<tr>
+<th>1</th>
+<th>T_leftBrace</th>
+<th style="white-space: pre;">{</th>
+</tr>
+<tr>
+<th>2</th>
+<th>T_type</th>
+<th style="white-space: pre;">int</th>
+</tr>
+<tr>
+<th>2</th>
+<th>T_char</th>
+<th style="white-space: pre;">a</th>
+</tr>
+<tr>
+<th>3</th>
+<th>T_char</th>
+<th style="white-space: pre;">a</th>
+</tr>
+<tr>
+<th>3</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>3</th>
+<th>T_digit</th>
+<th style="white-space: pre;">0</th>
+</tr>
+<tr>
+<th>4</th>
+<th>T_type</th>
+<th style="white-space: pre;">string</th>
+</tr>
+<tr>
+<th>4</th>
+<th>T_char</th>
+<th style="white-space: pre;">z</th>
+</tr>
+<tr>
+<th>5</th>
+<th>T_char</th>
+<th style="white-space: pre;">z</th>
+</tr>
+<tr>
+<th>5</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>5</th>
+<th>T_leftQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>5</th>
+<th>T_charList</th>
+<th style="white-space: pre;">bond</th>
+</tr>
+<tr>
+<th>5</th>
+<th>T_rightQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>6</th>
+<th>T_while</th>
+<th style="white-space: pre;">while</th>
+</tr>
+<tr>
+<th>6</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>6</th>
+<th>T_char</th>
+<th style="white-space: pre;">a</th>
+</tr>
+<tr>
+<th>6</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">!=</th>
+</tr>
+<tr>
+<th>6</th>
+<th>T_digit</th>
+<th style="white-space: pre;">9</th>
+</tr>
+<tr>
+<th>6</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>6</th>
+<th>T_leftBrace</th>
+<th style="white-space: pre;">{</th>
+</tr>
+<tr>
+<th>7</th>
+<th>T_if</th>
+<th style="white-space: pre;">if</th>
+</tr>
+<tr>
+<th>7</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>7</th>
+<th>T_char</th>
+<th style="white-space: pre;">a</th>
+</tr>
+<tr>
+<th>7</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">!=</th>
+</tr>
+<tr>
+<th>7</th>
+<th>T_digit</th>
+<th style="white-space: pre;">5</th>
+</tr>
+<tr>
+<th>7</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>7</th>
+<th>T_leftBrace</th>
+<th style="white-space: pre;">{</th>
+</tr>
+<tr>
+<th>8</th>
+<th>T_print</th>
+<th style="white-space: pre;">print</th>
+</tr>
+<tr>
+<th>8</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>8</th>
+<th>T_leftQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>8</th>
+<th>T_charList</th>
+<th style="white-space: pre;">bond</th>
+</tr>
+<tr>
+<th>8</th>
+<th>T_rightQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>8</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>9</th>
+<th>T_rightBrace</th>
+<th style="white-space: pre;">}</th>
+</tr>
+<tr>
+<th>10</th>
+<th>T_leftBrace</th>
+<th style="white-space: pre;">{</th>
+</tr>
+<tr>
+<th>11</th>
+<th>T_char</th>
+<th style="white-space: pre;">a</th>
+</tr>
+<tr>
+<th>11</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>11</th>
+<th>T_digit</th>
+<th style="white-space: pre;">1</th>
+</tr>
+<tr>
+<th>11</th>
+<th>T_intOp</th>
+<th style="white-space: pre;">+</th>
+</tr>
+<tr>
+<th>11</th>
+<th>T_char</th>
+<th style="white-space: pre;">a</th>
+</tr>
+<tr>
+<th>12</th>
+<th>T_type</th>
+<th style="white-space: pre;">string</th>
+</tr>
+<tr>
+<th>12</th>
+<th>T_char</th>
+<th style="white-space: pre;">b</th>
+</tr>
+<tr>
+<th>13</th>
+<th>T_char</th>
+<th style="white-space: pre;">b</th>
+</tr>
+<tr>
+<th>13</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>13</th>
+<th>T_leftQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>13</th>
+<th>T_charList</th>
+<th style="white-space: pre;">james bond</th>
+</tr>
+<tr>
+<th>13</th>
+<th>T_rightQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>14</th>
+<th>T_print</th>
+<th style="white-space: pre;">print</th>
+</tr>
+<tr>
+<th>14</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>14</th>
+<th>T_char</th>
+<th style="white-space: pre;">b</th>
+</tr>
+<tr>
+<th>14</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>15</th>
+<th>T_rightBrace</th>
+<th style="white-space: pre;">}</th>
+</tr>
+<tr>
+<th>16</th>
+<th>T_rightBrace</th>
+<th style="white-space: pre;">}</th>
+</tr>
+<tr>
+<th>17</th>
+<th>T_leftBrace</th>
+<th style="white-space: pre;">{</th>
+</tr>
+<tr>
+<th>17</th>
+<th>T_rightBrace</th>
+<th style="white-space: pre;">}</th>
+</tr>
+<tr>
+<th>18</th>
+<th>T_type</th>
+<th style="white-space: pre;">boolean</th>
+</tr>
+<tr>
+<th>18</th>
+<th>T_char</th>
+<th style="white-space: pre;">c</th>
+</tr>
+<tr>
+<th>19</th>
+<th>T_char</th>
+<th style="white-space: pre;">c</th>
+</tr>
+<tr>
+<th>19</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>19</th>
+<th>T_boolVal</th>
+<th style="white-space: pre;">true</th>
+</tr>
+<tr>
+<th>20</th>
+<th>T_type</th>
+<th style="white-space: pre;">boolean</th>
+</tr>
+<tr>
+<th>20</th>
+<th>T_char</th>
+<th style="white-space: pre;">d</th>
+</tr>
+<tr>
+<th>21</th>
+<th>T_char</th>
+<th style="white-space: pre;">d</th>
+</tr>
+<tr>
+<th>21</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>21</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>21</th>
+<th>T_boolVal</th>
+<th style="white-space: pre;">true</th>
+</tr>
+<tr>
+<th>21</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">==</th>
+</tr>
+<tr>
+<th>21</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>21</th>
+<th>T_boolVal</th>
+<th style="white-space: pre;">true</th>
+</tr>
+<tr>
+<th>21</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">==</th>
+</tr>
+<tr>
+<th>21</th>
+<th>T_boolVal</th>
+<th style="white-space: pre;">false</th>
+</tr>
+<tr>
+<th>21</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>21</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>22</th>
+<th>T_char</th>
+<th style="white-space: pre;">d</th>
+</tr>
+<tr>
+<th>22</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>22</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>22</th>
+<th>T_char</th>
+<th style="white-space: pre;">a</th>
+</tr>
+<tr>
+<th>22</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">==</th>
+</tr>
+<tr>
+<th>22</th>
+<th>T_char</th>
+<th style="white-space: pre;">b</th>
+</tr>
+<tr>
+<th>22</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>23</th>
+<th>T_char</th>
+<th style="white-space: pre;">d</th>
+</tr>
+<tr>
+<th>23</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>23</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>23</th>
+<th>T_digit</th>
+<th style="white-space: pre;">1</th>
+</tr>
+<tr>
+<th>23</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">==</th>
+</tr>
+<tr>
+<th>23</th>
+<th>T_char</th>
+<th style="white-space: pre;">a</th>
+</tr>
+<tr>
+<th>23</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>24</th>
+<th>T_char</th>
+<th style="white-space: pre;">d</th>
+</tr>
+<tr>
+<th>24</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>24</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>24</th>
+<th>T_digit</th>
+<th style="white-space: pre;">1</th>
+</tr>
+<tr>
+<th>24</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">!=</th>
+</tr>
+<tr>
+<th>24</th>
+<th>T_digit</th>
+<th style="white-space: pre;">1</th>
+</tr>
+<tr>
+<th>24</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>25</th>
+<th>T_char</th>
+<th style="white-space: pre;">d</th>
+</tr>
+<tr>
+<th>25</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>25</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>25</th>
+<th>T_leftQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>25</th>
+<th>T_charList</th>
+<th style="white-space: pre;">string</th>
+</tr>
+<tr>
+<th>25</th>
+<th>T_rightQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>25</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">==</th>
+</tr>
+<tr>
+<th>25</th>
+<th>T_digit</th>
+<th style="white-space: pre;">1</th>
+</tr>
+<tr>
+<th>25</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>26</th>
+<th>T_char</th>
+<th style="white-space: pre;">d</th>
+</tr>
+<tr>
+<th>26</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>26</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>26</th>
+<th>T_char</th>
+<th style="white-space: pre;">a</th>
+</tr>
+<tr>
+<th>26</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">!=</th>
+</tr>
+<tr>
+<th>26</th>
+<th>T_leftQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>26</th>
+<th>T_charList</th>
+<th style="white-space: pre;">string</th>
+</tr>
+<tr>
+<th>26</th>
+<th>T_rightQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>26</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>27</th>
+<th>T_char</th>
+<th style="white-space: pre;">d</th>
+</tr>
+<tr>
+<th>27</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>27</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>27</th>
+<th>T_leftQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>27</th>
+<th>T_charList</th>
+<th style="white-space: pre;">string</th>
+</tr>
+<tr>
+<th>27</th>
+<th>T_rightQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>27</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">!=</th>
+</tr>
+<tr>
+<th>27</th>
+<th>T_leftQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>27</th>
+<th>T_charList</th>
+<th style="white-space: pre;">string</th>
+</tr>
+<tr>
+<th>27</th>
+<th>T_rightQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>27</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>28</th>
+<th>T_if</th>
+<th style="white-space: pre;">if</th>
+</tr>
+<tr>
+<th>28</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>28</th>
+<th>T_char</th>
+<th style="white-space: pre;">d</th>
+</tr>
+<tr>
+<th>28</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">==</th>
+</tr>
+<tr>
+<th>28</th>
+<th>T_boolVal</th>
+<th style="white-space: pre;">true</th>
+</tr>
+<tr>
+<th>28</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>28</th>
+<th>T_leftBrace</th>
+<th style="white-space: pre;">{</th>
+</tr>
+<tr>
+<th>29</th>
+<th>T_type</th>
+<th style="white-space: pre;">int</th>
+</tr>
+<tr>
+<th>29</th>
+<th>T_char</th>
+<th style="white-space: pre;">c</th>
+</tr>
+<tr>
+<th>30</th>
+<th>T_char</th>
+<th style="white-space: pre;">c</th>
+</tr>
+<tr>
+<th>30</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>30</th>
+<th>T_digit</th>
+<th style="white-space: pre;">1</th>
+</tr>
+<tr>
+<th>30</th>
+<th>T_intOp</th>
+<th style="white-space: pre;">+</th>
+</tr>
+<tr>
+<th>30</th>
+<th>T_char</th>
+<th style="white-space: pre;">d</th>
+</tr>
+<tr>
+<th>31</th>
+<th>T_if</th>
+<th style="white-space: pre;">if</th>
+</tr>
+<tr>
+<th>31</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>31</th>
+<th>T_char</th>
+<th style="white-space: pre;">c</th>
+</tr>
+<tr>
+<th>31</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">==</th>
+</tr>
+<tr>
+<th>31</th>
+<th>T_digit</th>
+<th style="white-space: pre;">1</th>
+</tr>
+<tr>
+<th>31</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>31</th>
+<th>T_leftBrace</th>
+<th style="white-space: pre;">{</th>
+</tr>
+<tr>
+<th>32</th>
+<th>T_print</th>
+<th style="white-space: pre;">print</th>
+</tr>
+<tr>
+<th>32</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>32</th>
+<th>T_leftQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>32</th>
+<th>T_charList</th>
+<th style="white-space: pre;">ugh</th>
+</tr>
+<tr>
+<th>32</th>
+<th>T_rightQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>32</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>33</th>
+<th>T_rightBrace</th>
+<th style="white-space: pre;">}</th>
+</tr>
+<tr>
+<th>34</th>
+<th>T_rightBrace</th>
+<th style="white-space: pre;">}</th>
+</tr>
+<tr>
+<th>35</th>
+<th>T_while</th>
+<th style="white-space: pre;">while</th>
+</tr>
+<tr>
+<th>35</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>35</th>
+<th>T_leftQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>35</th>
+<th>T_charList</th>
+<th style="white-space: pre;">string</th>
+</tr>
+<tr>
+<th>35</th>
+<th>T_rightQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>35</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">==</th>
+</tr>
+<tr>
+<th>35</th>
+<th>T_char</th>
+<th style="white-space: pre;">a</th>
+</tr>
+<tr>
+<th>35</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>35</th>
+<th>T_leftBrace</th>
+<th style="white-space: pre;">{</th>
+</tr>
+<tr>
+<th>36</th>
+<th>T_while</th>
+<th style="white-space: pre;">while</th>
+</tr>
+<tr>
+<th>36</th>
+<th>T_leftParen</th>
+<th style="white-space: pre;">(</th>
+</tr>
+<tr>
+<th>36</th>
+<th>T_digit</th>
+<th style="white-space: pre;">1</th>
+</tr>
+<tr>
+<th>36</th>
+<th>T_boolOp</th>
+<th style="white-space: pre;">==</th>
+</tr>
+<tr>
+<th>36</th>
+<th>T_boolVal</th>
+<th style="white-space: pre;">true</th>
+</tr>
+<tr>
+<th>36</th>
+<th>T_rightParen</th>
+<th style="white-space: pre;">)</th>
+</tr>
+<tr>
+<th>36</th>
+<th>T_leftBrace</th>
+<th style="white-space: pre;">{</th>
+</tr>
+<tr>
+<th>37</th>
+<th>T_char</th>
+<th style="white-space: pre;">a</th>
+</tr>
+<tr>
+<th>37</th>
+<th>T_assign</th>
+<th style="white-space: pre;">=</th>
+</tr>
+<tr>
+<th>37</th>
+<th>T_digit</th>
+<th style="white-space: pre;">1</th>
+</tr>
+<tr>
+<th>37</th>
+<th>T_intOp</th>
+<th style="white-space: pre;">+</th>
+</tr>
+<tr>
+<th>37</th>
+<th>T_leftQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>37</th>
+<th>T_charList</th>
+<th style="white-space: pre;">string</th>
+</tr>
+<tr>
+<th>37</th>
+<th>T_rightQuote</th>
+<th style="white-space: pre;">"</th>
+</tr>
+<tr>
+<th>38</th>
+<th>T_rightBrace</th>
+<th style="white-space: pre;">}</th>
+</tr>
+<tr>
+<th>39</th>
+<th>T_rightBrace</th>
+<th style="white-space: pre;">}</th>
+</tr>
+<tr>
+<th>40</th>
+<th>T_rightBrace</th>
+<th style="white-space: pre;">}</th>
+</tr>
+<tr>
+<th>40</th>
+<th>T_EOP</th>
+<th style="white-space: pre;">$</th>
+</tr>
+</table>
+</div>
+</div>
+<div class="panel panel-default col-xs-6 col-sm-6 col-md-6 col-lg-6">
+<div class="panel-heading">
+<h3 class="panel-title">CST</h3>
+</div>
+<div class="panel-body">
+&ltProgram&gt<br>
+-&ltBlock&gt<br>
+--[{]<br>
+--&ltStatementList&gt<br>
+---&ltStatement&gt<br>
+----&ltVarDecl&gt<br>
+-----&lttype&gt<br>
+------[int]<br>
+-----&ltId&gt<br>
+------&ltchar&gt<br>
+-------[a]<br>
+---&ltStatementList&gt<br>
+----&ltStatement&gt<br>
+-----&ltAssignStatement&gt<br>
+------&ltId&gt<br>
+-------&ltchar&gt<br>
+--------[a]<br>
+------[=]<br>
+------&ltExpr&gt<br>
+-------&ltIntExpr&gt<br>
+--------&ltdigit&gt<br>
+---------[0]<br>
+--------&ltdigit&gt<br>
+---------[0]<br>
+----&ltStatementList&gt<br>
+-----&ltStatement&gt<br>
+------&ltVarDecl&gt<br>
+-------&lttype&gt<br>
+--------[string]<br>
+-------&ltId&gt<br>
+--------&ltchar&gt<br>
+---------[z]<br>
+-----&ltStatementList&gt<br>
+------&ltStatement&gt<br>
+-------&ltAssignStatement&gt<br>
+--------&ltId&gt<br>
+---------&ltchar&gt<br>
+----------[z]<br>
+--------[=]<br>
+--------&ltExpr&gt<br>
+---------&ltStringExpr&gt<br>
+----------["]<br>
+----------&ltCharList&gt<br>
+-----------[bond]<br>
+----------["]<br>
+------&ltStatementList&gt<br>
+-------&ltStatement&gt<br>
+--------&ltWhileStatement&gt<br>
+---------[while]<br>
+---------&ltBooleanExpr&gt<br>
+----------[(]<br>
+----------&ltExpr&gt<br>
+-----------&ltId&gt<br>
+------------&ltchar&gt<br>
+-------------[a]<br>
+----------&ltBoolOp&gt<br>
+-----------[!=]<br>
+----------&ltExpr&gt<br>
+-----------&ltIntExpr&gt<br>
+------------&ltdigit&gt<br>
+-------------[9]<br>
+------------&ltdigit&gt<br>
+-------------[9]<br>
+----------[)]<br>
+---------&ltBlock&gt<br>
+----------[{]<br>
+----------&ltStatementList&gt<br>
+-----------&ltStatement&gt<br>
+------------&ltIfStatement&gt<br>
+-------------[if]<br>
+-------------&ltBooleanExpr&gt<br>
+--------------[(]<br>
+--------------&ltExpr&gt<br>
+---------------&ltId&gt<br>
+----------------&ltchar&gt<br>
+-----------------[a]<br>
+--------------&ltBoolOp&gt<br>
+---------------[!=]<br>
+--------------&ltExpr&gt<br>
+---------------&ltIntExpr&gt<br>
+----------------&ltdigit&gt<br>
+-----------------[5]<br>
+----------------&ltdigit&gt<br>
+-----------------[5]<br>
+--------------[)]<br>
+-------------&ltBlock&gt<br>
+--------------[{]<br>
+--------------&ltStatementList&gt<br>
+---------------&ltStatement&gt<br>
+----------------&ltPrintStatement&gt<br>
+-----------------[print]<br>
+-----------------[(]<br>
+-----------------&ltExpr&gt<br>
+------------------&ltStringExpr&gt<br>
+-------------------["]<br>
+-------------------&ltCharList&gt<br>
+--------------------[bond]<br>
+-------------------["]<br>
+-----------------[)]<br>
+---------------&ltStatementList&gt<br>
+--------------[}]<br>
+-----------&ltStatementList&gt<br>
+------------&ltStatement&gt<br>
+-------------&ltBlock&gt<br>
+--------------[{]<br>
+--------------&ltStatementList&gt<br>
+---------------&ltStatement&gt<br>
+----------------&ltAssignStatement&gt<br>
+-----------------&ltId&gt<br>
+------------------&ltchar&gt<br>
+-------------------[a]<br>
+-----------------[=]<br>
+-----------------&ltExpr&gt<br>
+------------------&ltIntExpr&gt<br>
+-------------------&ltdigit&gt<br>
+--------------------[1]<br>
+-------------------&ltIntOp&gt<br>
+--------------------[+]<br>
+-------------------&ltExpr&gt<br>
+--------------------&ltId&gt<br>
+---------------------&ltchar&gt<br>
+----------------------[a]<br>
+---------------&ltStatementList&gt<br>
+----------------&ltStatement&gt<br>
+-----------------&ltVarDecl&gt<br>
+------------------&lttype&gt<br>
+-------------------[string]<br>
+------------------&ltId&gt<br>
+-------------------&ltchar&gt<br>
+--------------------[b]<br>
+----------------&ltStatementList&gt<br>
+-----------------&ltStatement&gt<br>
+------------------&ltAssignStatement&gt<br>
+-------------------&ltId&gt<br>
+--------------------&ltchar&gt<br>
+---------------------[b]<br>
+-------------------[=]<br>
+-------------------&ltExpr&gt<br>
+--------------------&ltStringExpr&gt<br>
+---------------------["]<br>
+---------------------&ltCharList&gt<br>
+----------------------[james bond]<br>
+---------------------["]<br>
+-----------------&ltStatementList&gt<br>
+------------------&ltStatement&gt<br>
+-------------------&ltPrintStatement&gt<br>
+--------------------[print]<br>
+--------------------[(]<br>
+--------------------&ltExpr&gt<br>
+---------------------&ltId&gt<br>
+----------------------&ltchar&gt<br>
+-----------------------[b]<br>
+--------------------[)]<br>
+------------------&ltStatementList&gt<br>
+--------------[}]<br>
+------------&ltStatementList&gt<br>
+----------[}]<br>
+-------&ltStatementList&gt<br>
+--------&ltStatement&gt<br>
+---------&ltBlock&gt<br>
+----------[{]<br>
+----------&ltStatementList&gt<br>
+----------[}]<br>
+--------&ltStatementList&gt<br>
+---------&ltStatement&gt<br>
+----------&ltVarDecl&gt<br>
+-----------&lttype&gt<br>
+------------[boolean]<br>
+-----------&ltId&gt<br>
+------------&ltchar&gt<br>
+-------------[c]<br>
+---------&ltStatementList&gt<br>
+----------&ltStatement&gt<br>
+-----------&ltAssignStatement&gt<br>
+------------&ltId&gt<br>
+-------------&ltchar&gt<br>
+--------------[c]<br>
+------------[=]<br>
+------------&ltExpr&gt<br>
+-------------&ltBooleanExpr&gt<br>
+--------------&ltBoolVal&gt<br>
+---------------[true]<br>
+----------&ltStatementList&gt<br>
+-----------&ltStatement&gt<br>
+------------&ltVarDecl&gt<br>
+-------------&lttype&gt<br>
+--------------[boolean]<br>
+-------------&ltId&gt<br>
+--------------&ltchar&gt<br>
+---------------[d]<br>
+-----------&ltStatementList&gt<br>
+------------&ltStatement&gt<br>
+-------------&ltAssignStatement&gt<br>
+--------------&ltId&gt<br>
+---------------&ltchar&gt<br>
+----------------[d]<br>
+--------------[=]<br>
+--------------&ltExpr&gt<br>
+---------------&ltBooleanExpr&gt<br>
+----------------[(]<br>
+----------------&ltExpr&gt<br>
+-----------------&ltBooleanExpr&gt<br>
+------------------&ltBoolVal&gt<br>
+-------------------[true]<br>
+----------------&ltBoolOp&gt<br>
+-----------------[==]<br>
+----------------&ltExpr&gt<br>
+-----------------&ltBooleanExpr&gt<br>
+------------------[(]<br>
+------------------&ltExpr&gt<br>
+-------------------&ltBooleanExpr&gt<br>
+--------------------&ltBoolVal&gt<br>
+---------------------[true]<br>
+------------------&ltBoolOp&gt<br>
+-------------------[==]<br>
+------------------&ltExpr&gt<br>
+-------------------&ltBooleanExpr&gt<br>
+--------------------&ltBoolVal&gt<br>
+---------------------[false]<br>
+------------------[)]<br>
+----------------[)]<br>
+------------&ltStatementList&gt<br>
+-------------&ltStatement&gt<br>
+--------------&ltAssignStatement&gt<br>
+---------------&ltId&gt<br>
+----------------&ltchar&gt<br>
+-----------------[d]<br>
+---------------[=]<br>
+---------------&ltExpr&gt<br>
+----------------&ltBooleanExpr&gt<br>
+-----------------[(]<br>
+-----------------&ltExpr&gt<br>
+------------------&ltId&gt<br>
+-------------------&ltchar&gt<br>
+--------------------[a]<br>
+-----------------&ltBoolOp&gt<br>
+------------------[==]<br>
+-----------------&ltExpr&gt<br>
+------------------&ltId&gt<br>
+-------------------&ltchar&gt<br>
+--------------------[b]<br>
+-----------------[)]<br>
+-------------&ltStatementList&gt<br>
+--------------&ltStatement&gt<br>
+---------------&ltAssignStatement&gt<br>
+----------------&ltId&gt<br>
+-----------------&ltchar&gt<br>
+------------------[d]<br>
+----------------[=]<br>
+----------------&ltExpr&gt<br>
+-----------------&ltBooleanExpr&gt<br>
+------------------[(]<br>
+------------------&ltExpr&gt<br>
+-------------------&ltIntExpr&gt<br>
+--------------------&ltdigit&gt<br>
+---------------------[1]<br>
+--------------------&ltdigit&gt<br>
+---------------------[1]<br>
+------------------&ltBoolOp&gt<br>
+-------------------[==]<br>
+------------------&ltExpr&gt<br>
+-------------------&ltId&gt<br>
+--------------------&ltchar&gt<br>
+---------------------[a]<br>
+------------------[)]<br>
+--------------&ltStatementList&gt<br>
+---------------&ltStatement&gt<br>
+----------------&ltAssignStatement&gt<br>
+-----------------&ltId&gt<br>
+------------------&ltchar&gt<br>
+-------------------[d]<br>
+-----------------[=]<br>
+-----------------&ltExpr&gt<br>
+------------------&ltBooleanExpr&gt<br>
+-------------------[(]<br>
+-------------------&ltExpr&gt<br>
+--------------------&ltIntExpr&gt<br>
+---------------------&ltdigit&gt<br>
+----------------------[1]<br>
+---------------------&ltdigit&gt<br>
+----------------------[1]<br>
+-------------------&ltBoolOp&gt<br>
+--------------------[!=]<br>
+-------------------&ltExpr&gt<br>
+--------------------&ltIntExpr&gt<br>
+---------------------&ltdigit&gt<br>
+----------------------[1]<br>
+---------------------&ltdigit&gt<br>
+----------------------[1]<br>
+-------------------[)]<br>
+---------------&ltStatementList&gt<br>
+----------------&ltStatement&gt<br>
+-----------------&ltAssignStatement&gt<br>
+------------------&ltId&gt<br>
+-------------------&ltchar&gt<br>
+--------------------[d]<br>
+------------------[=]<br>
+------------------&ltExpr&gt<br>
+-------------------&ltBooleanExpr&gt<br>
+--------------------[(]<br>
+--------------------&ltExpr&gt<br>
+---------------------&ltStringExpr&gt<br>
+----------------------["]<br>
+----------------------&ltCharList&gt<br>
+-----------------------[string]<br>
+----------------------["]<br>
+--------------------&ltBoolOp&gt<br>
+---------------------[==]<br>
+--------------------&ltExpr&gt<br>
+---------------------&ltIntExpr&gt<br>
+----------------------&ltdigit&gt<br>
+-----------------------[1]<br>
+----------------------&ltdigit&gt<br>
+-----------------------[1]<br>
+--------------------[)]<br>
+----------------&ltStatementList&gt<br>
+-----------------&ltStatement&gt<br>
+------------------&ltAssignStatement&gt<br>
+-------------------&ltId&gt<br>
+--------------------&ltchar&gt<br>
+---------------------[d]<br>
+-------------------[=]<br>
+-------------------&ltExpr&gt<br>
+--------------------&ltBooleanExpr&gt<br>
+---------------------[(]<br>
+---------------------&ltExpr&gt<br>
+----------------------&ltId&gt<br>
+-----------------------&ltchar&gt<br>
+------------------------[a]<br>
+---------------------&ltBoolOp&gt<br>
+----------------------[!=]<br>
+---------------------&ltExpr&gt<br>
+----------------------&ltStringExpr&gt<br>
+-----------------------["]<br>
+-----------------------&ltCharList&gt<br>
+------------------------[string]<br>
+-----------------------["]<br>
+---------------------[)]<br>
+-----------------&ltStatementList&gt<br>
+------------------&ltStatement&gt<br>
+-------------------&ltAssignStatement&gt<br>
+--------------------&ltId&gt<br>
+---------------------&ltchar&gt<br>
+----------------------[d]<br>
+--------------------[=]<br>
+--------------------&ltExpr&gt<br>
+---------------------&ltBooleanExpr&gt<br>
+----------------------[(]<br>
+----------------------&ltExpr&gt<br>
+-----------------------&ltStringExpr&gt<br>
+------------------------["]<br>
+------------------------&ltCharList&gt<br>
+-------------------------[string]<br>
+------------------------["]<br>
+----------------------&ltBoolOp&gt<br>
+-----------------------[!=]<br>
+----------------------&ltExpr&gt<br>
+-----------------------&ltStringExpr&gt<br>
+------------------------["]<br>
+------------------------&ltCharList&gt<br>
+-------------------------[string]<br>
+------------------------["]<br>
+----------------------[)]<br>
+------------------&ltStatementList&gt<br>
+-------------------&ltStatement&gt<br>
+--------------------&ltIfStatement&gt<br>
+---------------------[if]<br>
+---------------------&ltBooleanExpr&gt<br>
+----------------------[(]<br>
+----------------------&ltExpr&gt<br>
+-----------------------&ltId&gt<br>
+------------------------&ltchar&gt<br>
+-------------------------[d]<br>
+----------------------&ltBoolOp&gt<br>
+-----------------------[==]<br>
+----------------------&ltExpr&gt<br>
+-----------------------&ltBooleanExpr&gt<br>
+------------------------&ltBoolVal&gt<br>
+-------------------------[true]<br>
+----------------------[)]<br>
+---------------------&ltBlock&gt<br>
+----------------------[{]<br>
+----------------------&ltStatementList&gt<br>
+-----------------------&ltStatement&gt<br>
+------------------------&ltVarDecl&gt<br>
+-------------------------&lttype&gt<br>
+--------------------------[int]<br>
+-------------------------&ltId&gt<br>
+--------------------------&ltchar&gt<br>
+---------------------------[c]<br>
+-----------------------&ltStatementList&gt<br>
+------------------------&ltStatement&gt<br>
+-------------------------&ltAssignStatement&gt<br>
+--------------------------&ltId&gt<br>
+---------------------------&ltchar&gt<br>
+----------------------------[c]<br>
+--------------------------[=]<br>
+--------------------------&ltExpr&gt<br>
+---------------------------&ltIntExpr&gt<br>
+----------------------------&ltdigit&gt<br>
+-----------------------------[1]<br>
+----------------------------&ltIntOp&gt<br>
+-----------------------------[+]<br>
+----------------------------&ltExpr&gt<br>
+-----------------------------&ltId&gt<br>
+------------------------------&ltchar&gt<br>
+-------------------------------[d]<br>
+------------------------&ltStatementList&gt<br>
+-------------------------&ltStatement&gt<br>
+--------------------------&ltIfStatement&gt<br>
+---------------------------[if]<br>
+---------------------------&ltBooleanExpr&gt<br>
+----------------------------[(]<br>
+----------------------------&ltExpr&gt<br>
+-----------------------------&ltId&gt<br>
+------------------------------&ltchar&gt<br>
+-------------------------------[c]<br>
+----------------------------&ltBoolOp&gt<br>
+-----------------------------[==]<br>
+----------------------------&ltExpr&gt<br>
+-----------------------------&ltIntExpr&gt<br>
+------------------------------&ltdigit&gt<br>
+-------------------------------[1]<br>
+------------------------------&ltdigit&gt<br>
+-------------------------------[1]<br>
+----------------------------[)]<br>
+---------------------------&ltBlock&gt<br>
+----------------------------[{]<br>
+----------------------------&ltStatementList&gt<br>
+-----------------------------&ltStatement&gt<br>
+------------------------------&ltPrintStatement&gt<br>
+-------------------------------[print]<br>
+-------------------------------[(]<br>
+-------------------------------&ltExpr&gt<br>
+--------------------------------&ltStringExpr&gt<br>
+---------------------------------["]<br>
+---------------------------------&ltCharList&gt<br>
+----------------------------------[ugh]<br>
+---------------------------------["]<br>
+-------------------------------[)]<br>
+-----------------------------&ltStatementList&gt<br>
+----------------------------[}]<br>
+-------------------------&ltStatementList&gt<br>
+----------------------[}]<br>
+-------------------&ltStatementList&gt<br>
+--------------------&ltStatement&gt<br>
+---------------------&ltWhileStatement&gt<br>
+----------------------[while]<br>
+----------------------&ltBooleanExpr&gt<br>
+-----------------------[(]<br>
+-----------------------&ltExpr&gt<br>
+------------------------&ltStringExpr&gt<br>
+-------------------------["]<br>
+-------------------------&ltCharList&gt<br>
+--------------------------[string]<br>
+-------------------------["]<br>
+-----------------------&ltBoolOp&gt<br>
+------------------------[==]<br>
+-----------------------&ltExpr&gt<br>
+------------------------&ltId&gt<br>
+-------------------------&ltchar&gt<br>
+--------------------------[a]<br>
+-----------------------[)]<br>
+----------------------&ltBlock&gt<br>
+-----------------------[{]<br>
+-----------------------&ltStatementList&gt<br>
+------------------------&ltStatement&gt<br>
+-------------------------&ltWhileStatement&gt<br>
+--------------------------[while]<br>
+--------------------------&ltBooleanExpr&gt<br>
+---------------------------[(]<br>
+---------------------------&ltExpr&gt<br>
+----------------------------&ltIntExpr&gt<br>
+-----------------------------&ltdigit&gt<br>
+------------------------------[1]<br>
+-----------------------------&ltdigit&gt<br>
+------------------------------[1]<br>
+---------------------------&ltBoolOp&gt<br>
+----------------------------[==]<br>
+---------------------------&ltExpr&gt<br>
+----------------------------&ltBooleanExpr&gt<br>
+-----------------------------&ltBoolVal&gt<br>
+------------------------------[true]<br>
+---------------------------[)]<br>
+--------------------------&ltBlock&gt<br>
+---------------------------[{]<br>
+---------------------------&ltStatementList&gt<br>
+----------------------------&ltStatement&gt<br>
+-----------------------------&ltAssignStatement&gt<br>
+------------------------------&ltId&gt<br>
+-------------------------------&ltchar&gt<br>
+--------------------------------[a]<br>
+------------------------------[=]<br>
+------------------------------&ltExpr&gt<br>
+-------------------------------&ltIntExpr&gt<br>
+--------------------------------&ltdigit&gt<br>
+---------------------------------[1]<br>
+--------------------------------&ltIntOp&gt<br>
+---------------------------------[+]<br>
+--------------------------------&ltExpr&gt<br>
+---------------------------------&ltStringExpr&gt<br>
+----------------------------------["]<br>
+----------------------------------&ltCharList&gt<br>
+-----------------------------------[string]<br>
+----------------------------------["]<br>
+----------------------------&ltStatementList&gt<br>
+---------------------------[}]<br>
+------------------------&ltStatementList&gt<br>
+-----------------------[}]<br>
+--------------------&ltStatementList&gt<br>
+--[}]<br>
+-[$]<br>
+</div>
+</div></body>
+<footer></footer> 
+</html>

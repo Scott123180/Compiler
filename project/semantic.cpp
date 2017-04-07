@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 
-#include "AST.h"
 #include "semantic.h"
 
 Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for verbose
@@ -67,6 +66,29 @@ bool Semantic::term(string tt) //terminal leaf creation
 {
   if (Semantic::tokens[(Semantic::i)].getType() == tt)
   {
+    string data = Semantic::tokens[(Semantic::i)].getData();
+    //time to discriminate and keep what tokens we want
+    if  ((data != "{")
+         && (data != "}")
+         && (data != "(")
+         && (data != ")")
+         && (data != "print")
+         && (data != "while")
+         && (data != "if")
+         && (data != "int")
+         && (data != "string")
+         && (data != "boolean")
+         && (data != "==")
+         && (data != "!=")
+      )
+    {
+      //put token we want on the heap
+      Token* newTerminal = new Token(Semantic::tokens[Semantic::i]);
+      //create leaf
+      newAST.addChild(newTerminal, false, verbose);
+    }
+
+
     ++i; //increment i
     if(verbose)
     {

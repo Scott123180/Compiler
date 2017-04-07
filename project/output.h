@@ -23,6 +23,8 @@ class Output {
 
     void printCST(vector<string> t);
 
+    void printAST(vector<string> t);
+
     void printHTMLFooter();
 
     void printError();
@@ -31,14 +33,15 @@ class Output {
 
     Output();
 
-  void printOutput(vector<Token> stream, vector<string> tree)
+  void printOutput(vector<Token> stream, vector<string> treeCST, vector<string> treeAST)
   {
     clearHTML();
     //clearCST(); if decide to use js tree, implement
     printHTMLHeader();
     printTitle();
     printTokens(stream);
-    printCST(tree);
+    printCST(treeCST);
+    printAST(treeAST);
     printHTMLFooter();
   }
 

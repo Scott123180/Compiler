@@ -128,7 +128,7 @@ void Output::printTokens(vector<Token> stream) {
   return;
 }
 
-void Output::printCST(vector<string> tree)
+void Output::printCST(vector<string> treeCST)
 {
   /*
   modify the cst javascript
@@ -148,9 +148,40 @@ void Output::printCST(vector<string> tree)
     "</div>\n"
     "<div class=\"panel-body\">\n";
   
-  for (vector<string>::size_type a = 0; a < tree.size(); a++)
+  for (vector<string>::size_type a = 0; a < treeCST.size(); a++)
   {
-    outputHTML << tree[a] << "<br>\n";
+    outputHTML << treeCST[a] << "<br>\n";
+  }
+  outputHTML << "</div>\n"
+             "</div>";
+  outputHTML.close();
+
+  return;
+}
+
+void Output::printAST(vector<string> treeAST)
+{
+  /*
+  modify the AST javascript
+  ofstream cstJS;
+  cstJS.open("js/cst.js", std::ios_base::app); //open and append
+  TODO: code for CST tree
+  cstJS.close();
+  */
+
+  //modify the output html
+  ofstream outputHTML;
+  outputHTML.open("output.html", std::ios_base::app); //open and append to file
+
+  outputHTML <<"<div class=\"panel panel-default col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n"
+    "<div class=\"panel-heading\">\n"
+    "<h3 class=\"panel-title\">AST</h3>\n"
+    "</div>\n"
+    "<div class=\"panel-body\">\n";
+
+  for (vector<string>::size_type a = 0; a < treeAST.size(); a++)
+  {
+    outputHTML << treeAST[a] << "<br>\n";
   }
   outputHTML << "</div>\n"
              "</div>";
