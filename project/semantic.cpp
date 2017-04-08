@@ -56,30 +56,23 @@ void Semantic::kick()
     cout << "after kick: " << newAST.curNode->getType() << endl;
   }
 }
-/*
-
- bool term(TOKEN tok) {return *next++ == tok; }
-   returns true if the token we passed in matches the input or no it doesn't
- */
 
 bool Semantic::term(string tt) //terminal leaf creation
 {
   if (Semantic::tokens[(Semantic::i)].getType() == tt)
   {
-    string data = Semantic::tokens[(Semantic::i)].getData();
     //time to discriminate and keep what tokens we want
-    if  ((data != "{")
-         && (data != "}")
-         && (data != "(")
-         && (data != ")")
-         && (data != "print")
-         && (data != "while")
-         && (data != "if")
-         && (data != "int")
-         && (data != "string")
-         && (data != "boolean")
-         && (data != "==")
-         && (data != "!=")
+    if  ((tt != "leftBrace") //don't want these
+         && (tt != "rightBrace")
+         && (tt != "leftParen")
+         && (tt != "rightParen")
+         && (tt != "leftQuote")
+         && (tt != "rightQuote")
+         && (tt != "print")
+         && (tt != "while")
+         && (tt != "if")
+         && (tt != "type")
+         && (tt != "boolOp")
       )
     {
       //put token we want on the heap
@@ -87,15 +80,15 @@ bool Semantic::term(string tt) //terminal leaf creation
       //create leaf
       newAST.addChild(newTerminal, false, verbose);
     }
-
-
-    ++i; //increment i
     if(verbose)
     {
       cout << "hey we matched: " << tt << endl;
     }
+    ++i;  //increment i
     return true;
   }
+
+
   else //no match
   {
     if (verbose)
@@ -197,7 +190,6 @@ bool Semantic::StatementList1() //Statement() StatementList()
   {
     if (StatementList())
     {
-      
       return true;
     }
     else //StatementList()
@@ -220,17 +212,17 @@ bool Semantic::StatementList()
   int save = Semantic::i;
   if(Semantic::i = save, StatementList1())
   {
-    kick(); //kick back
+    //kick()
     return true;
   }
   else if (Semantic::i = save, StatementList2())
   {
-    kick(); //kick back
+    //kick()
     return true;
   }
   else
   {
-    kick(); //kick back
+    //kick()
     return false;
   }
 }
@@ -330,37 +322,37 @@ bool Semantic::Statement()
   int save = Semantic::i;
   if(Semantic::i = save, Statement1())
   {
-    kick(); //kick back
+
     return true;
   }
   else if (Semantic::i = save, Statement2())
   {
-    kick(); //kick back
+
     return true;
   }
   else if (Semantic::i = save, Statement3())
   {
-    kick(); //kick back
+
     return true;
   }
   else if (Semantic::i = save, Statement4())
   {
-    kick(); //kick back
+
     return true;
   }
   else if (Semantic::i = save, Statement5())
   {
-    kick(); //kick back
+
     return true;
   }
   else if (Semantic::i = save, Statement6())
   {
-    kick(); //kick back
+
     return true;
   }
   else
   {
-    kick(); //kick back
+
     return false;
   }
 }
@@ -598,12 +590,15 @@ bool Semantic::IfStatement()
 
 bool Semantic::Expr1()  //IntExpr()
 {
+  Token* newBranch = new Token("IntExpr");
+  newAST.addChild(newBranch, true, verbose);
   if(IntExpr())
   {
     return true;
   }
   else //IntExpr()
   {
+    newAST.deleteNode(newBranch);
     return false;
   }
 }
@@ -636,7 +631,6 @@ bool Semantic::Expr4() //Id()
 {
   if(Id())
   {
-    
     return true;
   }
   else//Id()
@@ -650,27 +644,27 @@ bool Semantic::Expr()
   int save = Semantic::i;
   if( Semantic::i = save, Expr1())
   {
-    kick(); //kick back
+    
     return true;
   }
   else if( Semantic::i = save, Expr2())
   {
-    kick(); //kick back
+    
     return true;
   }
   else if ( Semantic::i = save, Expr3())
   {
-    kick(); //kick back
+
     return true;
   }
   else if( Semantic::i = save, Expr4())
   {
-    kick(); //kick back
+    
     return true;
   }
   else
   {
-    kick(); //kick back
+    
     return false;
   }
 }
@@ -706,7 +700,6 @@ bool Semantic::IntExpr2() //digit()
 {
   if(digit())
   {
-    
     return true;
   }
   else //digit()
@@ -720,17 +713,17 @@ bool Semantic::IntExpr()
   int save = Semantic::i;
   if( Semantic::i = save, IntExpr1())
   {
-    kick(); //kick back
+    kick();
     return true;
   }
   else if( Semantic::i = save, IntExpr2())
   {
-    kick(); //kick back
+    kick();
     return true;
   }
   else
   {
-    kick(); //kick back
+    kick();
     return false;
   }
 }
@@ -768,12 +761,10 @@ bool Semantic::StringExpr()
   int save = Semantic::i;
   if( Semantic::i = save, StringExpr1())
   {
-    kick(); //kick back
     return true;
   }
   else
   {
-    kick(); //kick back
     return false;
   }
 }
@@ -823,6 +814,18 @@ bool Semantic::BooleanExpr2() //boolval()
 {
   if(boolval())
   {
+    cout << "CURRENT NODE:::::::::: " << newAST.curNode->getType()
+         << " DATA::::: " <<newAST.curNode->getData() << endl;
+    cout << "Child NODE :::::::::: " << newAST.curNode->children[0]->getType()
+                                     << " CDATA:::: " << newAST.curNode->children[0]->getData()
+                                                      << endl;
+    //special case, get rid of the boolexpr
+    newAST.deleteNode(newAST.curNode->children[0]);
+    --Semantic::i;
+    kick();
+    newAST.deleteNode(newAST.curNode->children[0]);
+    term("boolVal");
+
     return true;
   }
   else //boolval()
@@ -835,12 +838,12 @@ bool Semantic::BooleanExpr()
   int save = Semantic::i;
   if( Semantic::i = save, BooleanExpr1())
   {
-    kick(); //kick back
+    kick();
     return true;
   }
   else if( Semantic::i = save, BooleanExpr2())
   {
-    kick(); //kick back
+    kick();
     return true;
   }
   else
@@ -867,12 +870,12 @@ bool Semantic::Id()
 {
   int save = Semantic::i; if ( Semantic::i = save, Id1())
   {
-    kick(); //kick back
+    
     return true;
   }
   else
   {
-    kick(); //kick back
+    
     return false;
   }
 }
@@ -899,17 +902,17 @@ bool Semantic::CharList()
   int save = Semantic::i;
   if ( Semantic::i = save, CharList1())
   {
-    kick(); //kick back
+    
     return true;
   }
   else if ( Semantic::i = save, CharList2())
   {
-    kick(); //kick back
+    
     return true;
   }
   else
   {
-    kick(); //kick back
+    
     return false;
   }
 }
@@ -932,12 +935,12 @@ bool Semantic::type()
   int save = Semantic::i;
   if ( Semantic::i = save, type1())
   {
-    kick(); //kick back
+    
     return true;
   }
   else
   {
-    kick(); //kick back
+    
     return false;
   }
 }
@@ -960,12 +963,12 @@ bool Semantic::Char()
   int save = Semantic::i;
   if ( Semantic::i = save, Char1())
   {
-    kick(); //kick back
+    
     return true;
   }
   else
   {
-    kick(); //kick back
+    
     return false;
   }
 }
@@ -988,12 +991,12 @@ bool Semantic::space()
   int save = Semantic::i;
   if ( Semantic::i = save, space1())
   {
-    kick(); //kick back
+    
     return true;
   }
   else
   {
-    kick(); //kick back
+    
     return false;
   }
 }
@@ -1016,12 +1019,12 @@ bool Semantic::digit()
   int save = Semantic::i;
   if( Semantic::i = save, digit1())
   {
-    kick(); //kick back
+    
     return true;
   }
   else
   {
-    kick(); //kick back
+    
     return false;
   }
 }
@@ -1044,12 +1047,10 @@ bool Semantic::boolop()
   int save = Semantic::i;
   if( Semantic::i = save, boolop1())
   {
-    kick(); //kick back
     return true;
   }
   else
   {
-    kick(); //kick back
     return false;
   }
 }
@@ -1072,12 +1073,10 @@ bool Semantic::boolval()
   int save = Semantic::i;
   if( Semantic::i = save, boolval1())
   {
-    kick(); //kick back
     return true;
   }
   else
   {
-    kick(); //kick back
     return false;
   }
 }
@@ -1099,12 +1098,10 @@ bool Semantic::intop()
   int save = Semantic::i;
   if( Semantic::i = save, intop1())
   {
-    kick(); //kick back
     return true;
   }
   else
   {
-    kick(); //kick back
     return false;
   }
 }
