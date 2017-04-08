@@ -71,8 +71,8 @@ bool Semantic::term(string tt) //terminal leaf creation
          && (tt != "print")
          && (tt != "while")
          && (tt != "if")
-         && (tt != "type")
          && (tt != "boolOp")
+         && (tt != "assign")
       )
     {
       //put token we want on the heap
@@ -493,7 +493,7 @@ bool Semantic::WhileStatement1()  //while BoolExpr() Block()
 {
   if(term("while"))
   {
-    Token* newBranchBool = new Token("BooleanExpr");
+    Token* newBranchBool = new Token("Comp");
     newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
     {
@@ -543,7 +543,7 @@ bool Semantic::IfStatement1() //if BooleanExpr() Block()
 {
   if(term("if"))
   {
-    Token* newBranchBool = new Token("BooleanExpr");
+    Token* newBranchBool = new Token("Comp");
     newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
     {
@@ -615,7 +615,7 @@ bool Semantic::Expr2() //StringExpr()
 }
 bool Semantic::Expr3() //BooleanExpr()
 {
-  Token* newBranch = new Token("BooleanExpr");
+  Token* newBranch = new Token("Comp");
   newAST.addChild(newBranch, true, verbose);
   if(BooleanExpr())
   {
@@ -814,17 +814,27 @@ bool Semantic::BooleanExpr2() //boolval()
 {
   if(boolval())
   {
-    cout << "CURRENT NODE:::::::::: " << newAST.curNode->getType()
-         << " DATA::::: " <<newAST.curNode->getData() << endl;
-    cout << "Child NODE :::::::::: " << newAST.curNode->children[0]->getType()
-                                     << " CDATA:::: " << newAST.curNode->children[0]->getData()
-                                                      << endl;
-    //special case, get rid of the boolexpr
-    newAST.deleteNode(newAST.curNode->children[0]);
-    --Semantic::i;
-    kick();
-    newAST.deleteNode(newAST.curNode->children[0]);
-    term("boolVal");
+    /*
+     * Hey future me! This might look confusing at first. Why?!
+     * Basically, an extra BoolExpr prints during BooleanExpr
+     * because a BoolExpr can turn into a boolVal.
+     *
+     * This code below gets rid of the extra BooleanExpr by messing
+     * with pointers. Good luck!
+     */
+
+    //change parent node's grandchild to child
+    newAST.curNode->parent->children.back() = newAST.curNode->children[0];
+    //change parent of grandchild
+    newAST.curNode->children[0]->parent = newAST.curNode->parent;
+    //get rid of reference to child in current node
+    newAST.curNode->children.empty();
+    //make copy of current node so can delete
+    Token* copyCur = newAST.curNode;
+    //switch to parent
+    newAST.curNode = newAST.curNode->parent;
+    //delete child
+    newAST.deleteNode(copyCur);
 
     return true;
   }
@@ -843,7 +853,7 @@ bool Semantic::BooleanExpr()
   }
   else if( Semantic::i = save, BooleanExpr2())
   {
-    kick();
+    //kick();
     return true;
   }
   else
