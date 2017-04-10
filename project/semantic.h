@@ -25,10 +25,8 @@ class Semantic
 
     bool verbose;
 
-    //create initialSymbolTable
-    SymbolTable rootSymbolTable;
-
     //current symbolTable
+    SymbolTable* curSymbolTable;
 
   private:
 

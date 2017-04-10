@@ -10,11 +10,10 @@ using namespace std;
 class StEntry
 {
   public:
-    StEntry(string n, string t, unsigned int s, int l, bool i);
+    StEntry(string n, string t, int l, bool i);
 
     string name;
     string type;
-    unsigned int scope;
     int lineNum;
     bool initialized;
     bool utilized;

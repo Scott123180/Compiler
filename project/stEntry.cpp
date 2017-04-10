@@ -5,6 +5,6 @@
 
 using namespace std;
 
-StEntry::StEntry(string n, string t, unsigned int s, int l, bool i)
-  : name(n), type(t), scope(s), lineNum(l), initialized(i)
+StEntry::StEntry(string n, string t, int l, bool i)
+  : name(n), type(t), lineNum(l), initialized(i)
 {}

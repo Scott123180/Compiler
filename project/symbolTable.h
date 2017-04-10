@@ -11,18 +11,21 @@ using namespace std;
 class SymbolTable
 {
   public:
-    SymbolTable();
+    SymbolTable(unsigned int scope);
 
     SymbolTable* parent;
     vector<SymbolTable*> children;
 
-    unsigned int depth;
+    unsigned int scope;
 
     vector<StEntry> rows;
 
     void declVarTable();
 
     void assignVarTable();
+
+    StEntry lookupEntry(char a);
+    
   private:
 };
 

@@ -11,6 +11,10 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
   //remember, if a process fails, we need to delete all of the children
   Semantic::tokens = stream;
 
+  //initialize symbol table
+  SymbolTable* rootSymbolTable = new SymbolTable(0);
+
+
   if(Program())
   {
     cout << "Successful Semantic Analysis!" << endl;
