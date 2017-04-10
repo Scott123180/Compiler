@@ -7,6 +7,7 @@
 
 #include "token.h"
 #include "cst.h"
+#include "symbolTable.h"
 
 class Semantic
 {
@@ -23,6 +24,11 @@ class Semantic
     void kick();
 
     bool verbose;
+
+    //create initialSymbolTable
+    SymbolTable rootSymbolTable;
+
+    //current symbolTable
 
   private:
 
