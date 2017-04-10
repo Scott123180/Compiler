@@ -688,6 +688,7 @@ bool Semantic::IntExpr1() //digit() intop Expr()
     }
     else //intop
     {
+      
       return false;
     }
   }
@@ -1029,12 +1030,12 @@ bool Semantic::digit()
   int save = Semantic::i;
   if( Semantic::i = save, digit1())
   {
-    
+
     return true;
   }
   else
   {
-    
+
     return false;
   }
 }

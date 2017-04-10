@@ -788,10 +788,16 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
            return false;
          }
       }
-      else //intop
+        ///this is the magical one
+      else //intOp()
       {
         expecting.push_back("Intop()");
         newCST.deleteNode(newBranchIntOp);
+        //curNode at intExpr, but intExpr->digit->num is still there
+        delete newBranchDigit->children.back(); //delete num
+        delete newBranchDigit; //get rid of newBranchDigit
+        newCST.curNode->children.clear(); //clear all children references of intExpr
+
         return false;
       }
     }
