@@ -713,20 +713,16 @@ bool Semantic::IntExpr2() //digit()
      * with pointers. Good luck!
      */
 
-
-    //change parent node's grandchild to child
-    newAST.curNode->parent->children.back() = newAST.curNode->children[0];
-    //change parent of grandchild
-    newAST.curNode->children[0]->parent = newAST.curNode->parent;
-    //get rid of reference to child in current node
-    newAST.curNode->children.empty();
-    //make copy of current node so can delete
     Token* copyCur = newAST.curNode;
-    //switch to parent
-    newAST.curNode = newAST.curNode->parent;
-    //delete child
-    newAST.deleteNode(copyCur);
+    Token* copyChild = newAST.curNode->children.back();
+    newAST.curNode = newAST.curNode->parent; //move to parent
+    
+    copyChild->parent = copyCur->parent; //set parent of copied child
+    newAST.curNode->children.back() = copyChild; //get rid of reference to intExpr
+    delete copyCur; //free up copyCur
+
     return true;
+
   }
   else //digit()
   {
@@ -744,7 +740,7 @@ bool Semantic::IntExpr()
   }
   else if( Semantic::i = save, IntExpr2())
   {
-    kick();
+    //kick();
     return true;
   }
   else
