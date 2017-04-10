@@ -686,9 +686,12 @@ bool Semantic::IntExpr1() //digit() intop Expr()
         return false;
       }
     }
-    else //intop
+      ///get rid of the double
+    else //intOp
     {
-      
+      //curNode at intExpr, but intExpr->num is still there
+      delete newAST.curNode->children.back(); //delete num
+      newAST.curNode->children.clear(); //clear all children references of intExpr
       return false;
     }
   }
@@ -701,6 +704,28 @@ bool Semantic::IntExpr2() //digit()
 {
   if(digit())
   {
+    /*
+     * Hey future me! This might look confusing at first. Why?!
+     * Basically, an unwanted IntExpr prints during IntExpr2
+     * because an intExpr can turn into an intVal.
+     *
+     * This code below gets rid of the extra intExpr by messing
+     * with pointers. Good luck!
+     */
+
+
+    //change parent node's grandchild to child
+    newAST.curNode->parent->children.back() = newAST.curNode->children[0];
+    //change parent of grandchild
+    newAST.curNode->children[0]->parent = newAST.curNode->parent;
+    //get rid of reference to child in current node
+    newAST.curNode->children.empty();
+    //make copy of current node so can delete
+    Token* copyCur = newAST.curNode;
+    //switch to parent
+    newAST.curNode = newAST.curNode->parent;
+    //delete child
+    newAST.deleteNode(copyCur);
     return true;
   }
   else //digit()
