@@ -73,6 +73,7 @@ bool Semantic::term(string tt) //terminal leaf creation
          && (tt != "if")
          && (tt != "boolOp")
          && (tt != "assign")
+         && (tt != "intOp")
       )
     {
       //put token we want on the heap
@@ -590,7 +591,7 @@ bool Semantic::IfStatement()
 
 bool Semantic::Expr1()  //IntExpr()
 {
-  Token* newBranch = new Token("IntExpr");
+  Token* newBranch = new Token("+");
   newAST.addChild(newBranch, true, verbose);
   if(IntExpr())
   {
@@ -716,7 +717,7 @@ bool Semantic::IntExpr2() //digit()
     Token* copyCur = newAST.curNode;
     Token* copyChild = newAST.curNode->children.back();
     newAST.curNode = newAST.curNode->parent; //move to parent
-    
+
     copyChild->parent = copyCur->parent; //set parent of copied child
     newAST.curNode->children.back() = copyChild; //get rid of reference to intExpr
     delete copyCur; //free up copyCur
