@@ -13,7 +13,7 @@ class SymbolTable
   public:
     SymbolTable(unsigned int scope);
 
-    SymbolTable* parent;
+    SymbolTable* parent = nullptr; //initialize with no parent
     vector<SymbolTable*> children;
 
     unsigned int scope;
@@ -22,10 +22,10 @@ class SymbolTable
 
     void declVarTable();
 
-    void assignVarTable();
+    void assignVarTable(StEntry e);
 
-    StEntry lookupEntry(char a);
-    
+    StEntry lookupEntry(char a, SymbolTable* s);
+
   private:
 };
 
