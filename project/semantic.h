@@ -28,6 +28,9 @@ class Semantic
     //current symbolTable
     SymbolTable* curSymbolTable;
 
+    //counter to make every scope have a distinct name
+    static unsigned int uniqueScope = 0;
+
   private:
 
     //recursive decent functions

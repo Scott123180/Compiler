@@ -11,20 +11,20 @@ using namespace std;
 class SymbolTable
 {
   public:
-    SymbolTable(unsigned int scope);
+    SymbolTable(SymbolTable* parent);
 
-    SymbolTable* parent = nullptr; //initialize with no parent
+    SymbolTable* parent; //initialize with no parent
     vector<SymbolTable*> children;
 
     unsigned int scope;
 
     vector<StEntry> rows;
 
-    void declVarTable();
+    void declVarTable(StEntry e, SymbolTable* s);
 
     void assignVarTable(StEntry e);
 
-    StEntry lookupEntry(char a, SymbolTable* s);
+    StEntry& lookupEntry(char a, SymbolTable* s);
 
   private:
 };

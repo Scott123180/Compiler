@@ -10,7 +10,17 @@ using namespace std;
 class StEntry
 {
   public:
+    //Generic - name, type, lineNum, scope, utilized
     StEntry(char n, string t, int l, int s, bool i);
+
+    //Integer - name, type, lineNum, scope, utilized, digit
+    StEntry(char n, string t, int l, int s, bool i, int d);
+
+    //String - name, type, lineNum, scope, utilized, charList
+    StEntry(char n, string t, int l, int s, bool i, string c);
+
+    //Boolean - name, type, lineNum, scope, utilized, boolean
+    StEntry(char n, string t, int l, int s, bool i, bool b);
 
     char name;
     string type;
@@ -34,9 +44,9 @@ class StEntry
   private:
     //these are the possible types, let's control with getters and setters
     //initialize to dummy values
-    int digit = -1;
-    string charList = "\0";
-    bool boolean = false;
+    int digit;
+    string charList;
+    bool boolean;
 };
 
 #endif
