@@ -21,7 +21,9 @@ class Semantic
     //TODO: change CST naming. Lol let's see if I actually get around to doing this
     CST newAST;
 
-    void kick();
+    void kick(); //kick current token parent token
+
+    void kickST(); //kick current symbolTable to parent symboltable
 
     bool verbose;
 
@@ -29,8 +31,9 @@ class Semantic
     SymbolTable* curSymbolTable;
 
     //counter to make every scope have a distinct name
-    unsigned int uniqueScope = 0;
+    static unsigned int uniqueScope = 0;
 
+    //keeps track of type of last token in when declaring variables
     string typeBuffer;
 
     //if in expr, what type of expr is it
@@ -38,8 +41,9 @@ class Semantic
       //because expressions can turn into other expressions
     bool inIntExpr = false;
     bool inBoolExpr = false;
+    bool inStringExpr = false;
 
-    void resetInExpr(){inIntExpr = false; inBoolExpr = false;}
+    void resetInExpr(){inIntExpr = false; inBoolExpr = false; inStringExpr = false;}
 
   private:
 

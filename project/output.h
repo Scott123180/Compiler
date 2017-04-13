@@ -6,6 +6,7 @@
 
 #include "token.h"
 #include "lexer.h"
+#include "symbolTable.h"
 
 using namespace std;
 
@@ -25,6 +26,8 @@ class Output {
 
     void printAST(vector<string> t);
 
+    void printSymbolTable(SymbolTable* s);
+
     void printHTMLFooter();
 
     void printError();
@@ -33,7 +36,8 @@ class Output {
 
     Output();
 
-  void printOutput(vector<Token> stream, vector<string> treeCST, vector<string> treeAST)
+  void printOutput(vector<Token> stream, vector<string> treeCST, vector<string> treeAST,
+    SymbolTable* rootSymbolTable)
   {
     clearHTML();
     //clearCST(); if decide to use js tree, implement

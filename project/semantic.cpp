@@ -46,7 +46,7 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
 
 }
 
-//copy pasta
+//kick nodes in the AST
 void Semantic::kick()
 {
   if (verbose)
@@ -60,6 +60,23 @@ void Semantic::kick()
   if(verbose)
   {
     cout << "after kick: " << newAST.curNode->getType() << endl;
+  }
+}
+
+//kick nodes in the syntax tree
+void Semantic::kickST()
+{
+  if (verbose)
+  {
+    cout << "===Symbol table - before kick: " << curSymbolTable->scope << endl;
+  }
+  if(curSymbolTable->parent) //avoid null ptr
+  {
+    curSymbolTable = curSymbolTable->parent;
+  }
+  if(verbose)
+  {
+    cout << "===Symbol table - after kick: " << curSymbolTable->scope << endl;
   }
 }
 
@@ -89,7 +106,7 @@ bool Semantic::term(string tt) //terminal leaf creation
 
 
       //varDecl handling
-      if(!typeBuffer.empty()) //if typebuffer is set
+      if(!typeBuffer.empty()) //if typebuffer is set thus next val is that type
       {
         //create StEntry to pass on information on from the token
         StEntry t = StEntry(newTerminal->getData()[0],newTerminal->getType(),
@@ -176,6 +193,12 @@ bool Semantic::Block1()  //leftBrace, StatementList(), rightBrace
 {
   if(term("leftBrace"))
   {
+    //Create new symbolTable - no need to check if it'll fail cause we already
+    //ensured it would work in syntax analysis
+    SymbolTable* newScope = new SymbolTable(curSymbolTable);
+    //change current symbol table to newSymbolTable
+    curSymbolTable = newScope;
+
     if(StatementList())
     {
       if(term("rightBrace"))
@@ -200,6 +223,7 @@ bool Semantic::Block()
   if (Semantic::i = save, Block1())
   {
     kick(); //kick back to start
+    kickST(); //left the current block
     return true;
   }
   else
@@ -262,11 +286,12 @@ bool Semantic::Statement1() //PrintStatement()
   newAST.addChild(newBranch, true, verbose);
   if(PrintStatement())
   {
-    
+    resetInExpr(); //reset expression type flags
     return true;
   }
   else //PrintStatement()
   {
+    resetInExpr(); //reset expression type flags
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -277,10 +302,12 @@ bool Semantic::Statement2() //AssignStatement()
   newAST.addChild(newBranch, true, verbose);
   if(AssignmentStatement())
   {
+    resetInExpr(); //reset expression type flags
     return true;
   }
   else //AssignmentStatement()
   {
+    resetInExpr(); //reset expression type flags
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -291,10 +318,12 @@ bool Semantic::Statement3() //VarDecl()
   newAST.addChild(newBranch, true, verbose);
   if(VarDecl())
   {
+    resetInExpr(); //reset expression type flags
     return true;
   }
   else //VarDecl()
   {
+    resetInExpr(); //reset expression type flags
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -305,10 +334,12 @@ bool Semantic::Statement4() //WhileStatement()
   newAST.addChild(newBranch, true, verbose);
   if(WhileStatement())
   {
+    resetInExpr(); //reset expression type flags
     return true;
   }
   else //WhileStatement()
   {
+    resetInExpr(); //reset expression type flags
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -319,11 +350,12 @@ bool Semantic::Statement5() //IfStatement()
   newAST.addChild(newBranch, true, verbose);
   if(IfStatement())
   {
-    
+    resetInExpr();
     return true;
   }
   else //IfStatement()
   {
+    resetInExpr(); //reset expression type flags
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -334,10 +366,12 @@ bool Semantic::Statement6() //Block()
   newAST.addChild(newBranch, true, verbose);
   if(Block())
   {
+    resetInExpr(); //reset expression type flags
     return true;
   }
   else //Block()
   {
+    resetInExpr(); //reset expression type flags
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -759,11 +793,15 @@ bool Semantic::IntExpr2() //digit()
 
 bool Semantic::IntExpr()
 {
-  //make sure expressions decompose to int
+  //make sure expressions are made of just int
   inIntExpr = true;
-  if(inBoolExpr)
+  if(inBoolExpr || inStringExpr)
   {
-    vector<string> errorData = {""};
+    vector<string> errorData;
+    if(inBoolExpr) {errorData.push_back("Int and bool are not type compatible");}
+    else{errorData.push_back("Int and string are not type compatible");}
+
+    //error for types that are not homogeneous
     Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
     Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
   }
@@ -814,6 +852,19 @@ bool Semantic::StringExpr1() //leftQuote CharList() rightQuote
 }
 bool Semantic::StringExpr()
 {
+  //make sure expressions are made of just int
+  inStringExpr = true;
+  if(inBoolExpr || inIntExpr)
+  {
+    vector<string> errorData;
+    if(inBoolExpr) {errorData.push_back("String and bool are not type compatible");}
+      //inStringExpr
+    else{errorData.push_back("String and int are not type compatible");}
+
+    //error for types that are not homogeneous
+    Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
+                 Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
+  }
   int save = Semantic::i;
   if( Semantic::i = save, StringExpr1())
   {
@@ -901,6 +952,19 @@ bool Semantic::BooleanExpr2() //boolval()
 }
 bool Semantic::BooleanExpr()
 {
+  //make sure expressions are made of just int
+  inBoolExpr = true;
+  if(inStringExpr || inIntExpr)
+  {
+    vector<string> errorData;
+    if(inStringExpr) {errorData.push_back("Bool and int are not type compatible");}
+      //inIntExpr
+    else{errorData.push_back("Bool and int are not type compatible");}
+
+    //error for types that are not homogeneous
+    Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
+                 Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
+  }
   int save = Semantic::i;
   if( Semantic::i = save, BooleanExpr1())
   {

@@ -12,6 +12,18 @@ SymbolTable::SymbolTable(SymbolTable* p)
 
 }
 
+unsigned int SymbolTable::calcTableDepth(SymbolTable* a)
+{
+  unsigned int depth = 0;
+  SymbolTable* thisTable = a;
+  //scale up tree
+  while(thisTable->parent) //check for root (nullptr parent)
+  {
+    ++depth;
+    thisTable = thisTable->parent;
+  }
+}
+
 void SymbolTable::declVarTable(StEntry e, SymbolTable* s)
 {
   //check that variable hasn't been declared in scope

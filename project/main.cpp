@@ -33,6 +33,6 @@ int main(int argc, char** argv)
 
 
   Output newOutput;
-  newOutput.printOutput(newLex.stream, newParser.newCST.tree, newSemantic.newAST.tree);
+  newOutput.printOutput(newLex.stream, newParser.newCST.tree, newSemantic.newAST.tree, newSemantic.curSymbolTable);
 
 }

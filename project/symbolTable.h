@@ -16,6 +16,8 @@ class SymbolTable
     SymbolTable* parent; //initialize with no parent
     vector<SymbolTable*> children;
 
+    unsigned int calcTableDepth(SymbolTable* a);
+
     unsigned int scope;
 
     vector<StEntry> rows;

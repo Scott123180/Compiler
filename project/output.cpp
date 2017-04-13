@@ -190,6 +190,21 @@ void Output::printAST(vector<string> treeAST)
   return;
 }
 
+void Output::printSymbolTable(SymbolTable *s)
+{
+  ofstream outputHTML;
+  outputHTML.open("output.html", std::ios_base::app); //open and append to file
+
+  outputHTML <<"<div class=\"panel panel-default col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n"
+      "<div class=\"panel-heading\">\n"
+      "<h3 class=\"panel-title\">Symbol Table</h3>\n"
+      "</div>\n"
+      "<div class=\"panel-body\">\n";
+
+
+  outputHTML.close();
+}
+
 void Output::printError()
 {
   //filestream
