@@ -10,7 +10,17 @@
 
 using namespace std;
 
-Output::Output() {}
+Output::Output(Lexer l, Parser p, Semantic s)
+{
+  //set print variables
+  stream = l.stream;
+
+  treeCST = p.newCST.tree;
+
+  treeAST = s.newAST.tree;
+
+  treeST = s.symbolTableOuput;
+}
 
 void Output::clearHTML()
 {
@@ -90,7 +100,7 @@ void Output::printTitle()
   return;
 }
 
-void Output::printTokens(vector<Token> stream) {
+void Output::printTokens() {
 
   //filestream
   ofstream outputHTML;
@@ -128,7 +138,7 @@ void Output::printTokens(vector<Token> stream) {
   return;
 }
 
-void Output::printCST(vector<string> treeCST)
+void Output::printCST()
 {
   /*
   modify the cst javascript
@@ -159,7 +169,7 @@ void Output::printCST(vector<string> treeCST)
   return;
 }
 
-void Output::printAST(vector<string> treeAST)
+void Output::printAST()
 {
   /*
   modify the AST javascript
@@ -190,7 +200,7 @@ void Output::printAST(vector<string> treeAST)
   return;
 }
 
-void Output::printSymbolTable(SymbolTable *s)
+void Output::printSymbolTable()
 {
   ofstream outputHTML;
   outputHTML.open("output.html", std::ios_base::app); //open and append to file
@@ -201,6 +211,10 @@ void Output::printSymbolTable(SymbolTable *s)
       "</div>\n"
       "<div class=\"panel-body\">\n";
 
+  for(vector<string>::size_type i = 0; i < treeST.size(); i++) //loop through tables
+  {
+    outputHTML << treeST[i] << "\n";
+  }
 
   outputHTML.close();
 }

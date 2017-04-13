@@ -3,6 +3,7 @@
 #include <string>
 
 #include "semantic.h"
+#include "symbolTable.h"
 #include "stEntry.h"
 #include "error.h"
 
@@ -13,8 +14,9 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
   //remember, if a process fails, we need to delete all of the children
   Semantic::tokens = stream;
 
-  //initialize symbol table
-  SymbolTable* rootSymbolTable = new SymbolTable(0);
+  //initialize symbol table; *this is reference to current semantic object
+  SymbolTable* rootSymbolTable = new SymbolTable(0, uniqueScope);
+  ++uniqueScope; //increment unique scope
 
 
   if(Program())
@@ -91,14 +93,6 @@ void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first
   {
     cout << depth << endl;
   }
-  //calculate current token dashes
-  string dashes = "";
-  for(unsigned int d = 0; d < depth; d++)
-  {
-    dashes.append("-");
-  }
-  //reset depth
-  depth = 0;
 
   //table html stuff
   string table;
@@ -122,6 +116,10 @@ void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first
   table.append("</th>\n");
 
   table.append("<th>\n");
+  table.append("Scope Depth");
+  table.append("</th>\n");
+
+  table.append("<th>\n");
   table.append("Initialized");
   table.append("</th>\n");
 
@@ -130,7 +128,7 @@ void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first
   table.append("</th>\n");
 
   table.append("</tr>\n");
-  for(vector<StEntry>::size_type i = 0; i < a->rows.size(), i++)
+  for(vector<StEntry>::size_type i = 0; i < a->rows.size(); i++)
   {
     table.append("<tr>\n");
 
@@ -156,6 +154,11 @@ void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first
     table.append(to_string(a->rows[i].scope));
     table.append("</td>\n");
 
+    //SCOPE DEPTH
+    table.append("<td>\n");
+    table.append(to_string(depth));
+    table.append("</td>\n");
+
     string boolToString;
 
     //INITIALIZED
@@ -176,6 +179,8 @@ void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first
   }
   table.append("</table>");
   //end html
+
+  symbolTableOuput.push_back(table);
 
   //recursive call
   for (auto i = 0; i < a->children.size(); i++) {
@@ -298,7 +303,10 @@ bool Semantic::Block1()  //leftBrace, StatementList(), rightBrace
   {
     //Create new symbolTable - no need to check if it'll fail cause we already
     //ensured it would work in syntax analysis
-    SymbolTable* newScope = new SymbolTable(curSymbolTable);
+    //*this passes reference to current object as a parameter
+    SymbolTable* newScope = new SymbolTable(curSymbolTable, uniqueScope);
+    ++uniqueScope; //increment unique scope
+
     //change current symbol table to newSymbolTable
     curSymbolTable = newScope;
 

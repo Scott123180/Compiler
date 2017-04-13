@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "stEntry.h"
+#include "semantic.h"
 #include "error.h"
 
 using namespace std;
@@ -11,7 +12,7 @@ using namespace std;
 class SymbolTable
 {
   public:
-    SymbolTable(SymbolTable* parent);
+    SymbolTable(SymbolTable* parent, unsigned int uniqueS);
 
     SymbolTable* parent; //initialize with no parent
     vector<SymbolTable*> children;

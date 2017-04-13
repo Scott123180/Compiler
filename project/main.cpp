@@ -32,7 +32,7 @@ int main(int argc, char** argv)
   Semantic newSemantic(newLex.stream, true, 0);
 
 
-  Output newOutput;
-  newOutput.printOutput(newLex.stream, newParser.newCST.tree, newSemantic.newAST.tree, newSemantic.curSymbolTable);
+  Output newOutput(newLex, newParser, newSemantic);
+  newOutput.printOutput();
 
 }

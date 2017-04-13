@@ -6,8 +6,8 @@
 #include "stEntry.h"
 #include "error.h"
 
-SymbolTable::SymbolTable(SymbolTable* p)
-  : scope(Semantic::uniqueScope++), parent(p)
+SymbolTable::SymbolTable(SymbolTable* p, unsigned int uniqueS)
+  : parent(p), scope(uniqueS)
 {
 
 }
@@ -61,7 +61,7 @@ void SymbolTable::assignVarTable(StEntry e)
 {
   StEntry& assignee = this->lookupEntry(e.name, this);
   //check if the assignee was found in scopes
-  if(assignee.name == '')
+  if(assignee.name == '\0')
   {
     vector<string> errorData = {""};
     //throw error UNINITIALIZED VARIABLE
@@ -116,6 +116,6 @@ StEntry& SymbolTable::lookupEntry(char a, SymbolTable* s)
   else
   {
     //make a dud and then return that value
-    StEntry notFound('', "", 0, 0, false);
+    StEntry notFound('\0', "", 0, 0, false);
   }
 }

@@ -3,7 +3,16 @@ CXXFLAGS=-std=c++11
 
 all: lex
 
-lex:  main.o error.o lexer.o output.o token.o parser.o cst.o semantic.o symbolTable.o
+lex:  cst.o \
+      error.o \
+      lexer.o \
+      main.o \
+      output.o \
+      parser.o \
+      semantic.o \
+      stEntry.o \
+      symbolTable.o \
+      token.o
 	$(CXX) $^ -o test1 $(CXXLIBS)
 	
 %.o: %.cpp %.h

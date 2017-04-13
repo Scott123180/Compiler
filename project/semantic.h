@@ -39,7 +39,7 @@ class Semantic
     SymbolTable* curSymbolTable;
 
     //counter to make every scope have a distinct name
-    static unsigned int uniqueScope = 0;
+    unsigned int uniqueScope = 0;
 
     //keeps track of type of last token in when declaring variables
     string typeBuffer;

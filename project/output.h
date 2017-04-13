@@ -6,6 +6,8 @@
 
 #include "token.h"
 #include "lexer.h"
+#include "semantic.h"
+#include "parser.h"
 #include "symbolTable.h"
 
 using namespace std;
@@ -20,32 +22,40 @@ class Output {
 
     void printTitle();
 
-    void printTokens(vector<Token> s);
+    void printTokens();
 
-    void printCST(vector<string> t);
+    void printCST();
 
-    void printAST(vector<string> t);
+    void printAST();
 
-    void printSymbolTable(SymbolTable* s);
+    void printSymbolTable();
 
     void printHTMLFooter();
 
     void printError();
 
+    vector<Token> stream;
+
+    vector<string> treeCST;
+
+    vector<string> treeAST;
+
+    vector<string> treeST;
+
   public:
 
-    Output();
+    Output(Lexer l, Parser p, Semantic s);
 
-  void printOutput(vector<Token> stream, vector<string> treeCST, vector<string> treeAST,
-    SymbolTable* rootSymbolTable)
+  void printOutput()
   {
     clearHTML();
     //clearCST(); if decide to use js tree, implement
     printHTMLHeader();
     printTitle();
-    printTokens(stream);
-    printCST(treeCST);
-    printAST(treeAST);
+    printTokens();
+    printCST();
+    printAST();
+    printSymbolTable();
     printHTMLFooter();
   }
 
