@@ -29,7 +29,17 @@ class Semantic
     SymbolTable* curSymbolTable;
 
     //counter to make every scope have a distinct name
-    static unsigned int uniqueScope = 0;
+    unsigned int uniqueScope = 0;
+
+    string typeBuffer;
+
+    //if in expr, what type of expr is it
+      //so that we can check we're not adding ints to strings or bool
+      //because expressions can turn into other expressions
+    bool inIntExpr = false;
+    bool inBoolExpr = false;
+
+    void resetInExpr(){inIntExpr = false; inBoolExpr = false;}
 
   private:
 

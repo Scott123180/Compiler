@@ -3,6 +3,8 @@
 #include <string>
 
 #include "semantic.h"
+#include "stEntry.h"
+#include "error.h"
 
 Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for verbose
   : verbose(v), i(start)
@@ -84,6 +86,26 @@ bool Semantic::term(string tt) //terminal leaf creation
       Token* newTerminal = new Token(Semantic::tokens[Semantic::i]);
       //create leaf
       newAST.addChild(newTerminal, false, verbose);
+
+
+      //varDecl handling
+      if(!typeBuffer.empty()) //if typebuffer is set
+      {
+        //create StEntry to pass on information on from the token
+        StEntry t = StEntry(newTerminal->getData()[0],newTerminal->getType(),
+        newTerminal->getLine(),curSymbolTable->scope,false);
+
+        //declare the variable in the current scope
+        curSymbolTable->declVarTable(t, curSymbolTable);
+        typeBuffer.clear(); //clear typebuffer
+      }
+      if(tt == "type")
+      {
+        typeBuffer = newTerminal->getData();
+      }
+
+
+
     }
     if(verbose)
     {
@@ -255,7 +277,6 @@ bool Semantic::Statement2() //AssignStatement()
   newAST.addChild(newBranch, true, verbose);
   if(AssignmentStatement())
   {
-    
     return true;
   }
   else //AssignmentStatement()
@@ -482,6 +503,7 @@ bool Semantic::VarDecl()
   int save = Semantic::i;
   if(Semantic::i = save, VarDecl1())
   {
+    //vardecl succeeded
     kick(); //kick back
     return true;
   }
@@ -737,6 +759,14 @@ bool Semantic::IntExpr2() //digit()
 
 bool Semantic::IntExpr()
 {
+  //make sure expressions decompose to int
+  inIntExpr = true;
+  if(inBoolExpr)
+  {
+    vector<string> errorData = {""};
+    Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
+    Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
+  }
   int save = Semantic::i;
   if( Semantic::i = save, IntExpr1())
   {
@@ -765,7 +795,6 @@ bool Semantic::StringExpr1() //leftQuote CharList() rightQuote
     {
       if(term("rightQuote"))
       {
-        
         return true;
       }
       else //rightQuote
