@@ -25,7 +25,15 @@ class Semantic
 
     void kickST(); //kick current symbolTable to parent symboltable
 
+    vector<string> symbolTableOuput;
+
+    //for calculation in dfio
+    SymbolTable* calcDepth = nullptr;
+
     bool verbose;
+
+    //output of symbol table with dashes
+    vector<string> calcSymbolTableOutput(SymbolTable* a, bool verbose);
 
     //current symbolTable
     SymbolTable* curSymbolTable;

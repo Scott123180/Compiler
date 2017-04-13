@@ -80,6 +80,34 @@ void Semantic::kickST()
   }
 }
 
+//calculate the output for the symbol table
+void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first in order
+{
+  //set depth node to curNode
+  calcDepth = a;
+  //calculate depth
+  unsigned int depth = a->calcTableDepth(a);
+  if(verbose)
+  {
+    cout << depth << endl;
+  }
+  //calculate current token dashes
+  string dashes = "";
+  for(unsigned int d = 0; d < depth; d++)
+  {
+    dashes.append("-");
+  }
+  //reset depth
+  depth = 0;
+
+  //table html stuff
+
+  //recursive call
+  for (auto i = 0; i < a->children.size(); i++) {
+    calcSymbolTableOutput(a->children[i], verbose);
+  }
+}
+
 bool Semantic::term(string tt) //terminal leaf creation
 {
   if (Semantic::tokens[(Semantic::i)].getType() == tt)
