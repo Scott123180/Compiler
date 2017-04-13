@@ -33,7 +33,7 @@ class Semantic
     bool verbose;
 
     //output of symbol table with dashes
-    vector<string> calcSymbolTableOutput(SymbolTable* a, bool verbose);
+    void calcSymbolTableOutput(SymbolTable* a, bool verbose);
 
     //current symbolTable
     SymbolTable* curSymbolTable;

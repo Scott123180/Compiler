@@ -27,7 +27,7 @@ class StEntry
     int lineNum;
     int scope;
     bool initialized;
-    bool utilized;
+    bool utilized = false;
 
     //data getters - can control later if want to fancy up
     //let's trust the programmer now lol
