@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "stEntry.h"
-#include "semantic.h"
 #include "error.h"
 
 using namespace std;

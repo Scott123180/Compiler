@@ -40,7 +40,27 @@ Error::Error(bool q, int e, int l, int p, vector<string> d, string m)
       break;
 
     case semantic:
-      cerr << "I don't know how you got here, but thanks for coding for me." << endl;
+
+      if(quit) //fatal error (not a warning)
+      {
+        cerr << "Semantic error: " << line << ":" << pos << endl;
+        cerr << message << endl;
+        for(vector<string>::size_type i = 0; i < data.size(); i++)
+        {
+          cerr << data[i] << endl;
+        }
+        cerr << "Aborting Compilation" << endl;
+      }
+      else //just a warning
+      {
+        cerr << "Semantic warning: " << line << ":" << pos << endl;
+        cerr << message << endl;
+        for(vector<string>::size_type i = 0; i < data.size(); i++)
+        {
+          cerr << data[i] << endl;
+        }
+      }
+
       break;
     case token:
       cerr << "Error at " << line << ":" << pos << endl
@@ -59,10 +79,5 @@ Error::Error(bool q, int e, int l, int p, vector<string> d, string m)
     //exit program with unique error type code (shifted up one to avoid exit(0)
     int typeErr = state + 1;
     exit(typeErr);
-  }
-  else
-  {
-    //exit program either way, can change later if needed
-    exit((99));
   }
 }

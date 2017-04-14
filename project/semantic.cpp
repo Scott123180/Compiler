@@ -40,6 +40,8 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
       }
     }
 
+    calcSymbolTableOutput(rootSymbolTable, false);
+
   }
   else //error
   {
@@ -96,7 +98,7 @@ void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first
 
   //table html stuff
   string table;
-  table.append("<table>\n");
+  table.append("<table class =\"table\">\n");
   table.append("<tr>\n");
 
   table.append("<th>\n");
@@ -282,7 +284,7 @@ bool Semantic::Program1()
 
 bool Semantic::Program()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if (Semantic::i = save, Program1())
   {
     kick(); //kick back to start
@@ -330,7 +332,7 @@ bool Semantic::Block1()  //leftBrace, StatementList(), rightBrace
 
 bool Semantic::Block()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if (Semantic::i = save, Block1())
   {
     kick(); //kick back to start
@@ -371,7 +373,7 @@ bool Semantic::StatementList2() //epsilon
 
 bool Semantic::StatementList()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if(Semantic::i = save, StatementList1())
   {
     //kick()
@@ -490,7 +492,7 @@ bool Semantic::Statement6() //Block()
 
 bool Semantic::Statement()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if(Semantic::i = save, Statement1())
   {
 
@@ -566,7 +568,7 @@ bool Semantic::PrintStatement1() //print leftParen Expr() rightParen
 
 bool Semantic::PrintStatement()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if (Semantic::i = save, PrintStatement1())
   {
     kick(); //kick back
@@ -610,7 +612,7 @@ bool Semantic::AssignmentStatement1()  //Id = Expr()
 
 bool Semantic::AssignmentStatement()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if (Semantic::i = save, AssignmentStatement1())
   {
     kick(); //kick back
@@ -645,7 +647,7 @@ bool Semantic::VarDecl1()
 }
 bool Semantic::VarDecl()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if(Semantic::i = save, VarDecl1())
   {
     //vardecl succeeded
@@ -696,7 +698,7 @@ bool Semantic::WhileStatement1()  //while BoolExpr() Block()
 
 bool Semantic::WhileStatement()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if(Semantic::i = save, WhileStatement1())
   {
     kick(); //kick back
@@ -745,7 +747,7 @@ bool Semantic::IfStatement1() //if BooleanExpr() Block()
 }
 bool Semantic::IfStatement()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if( Semantic::i = save, IfStatement1())
   {
     kick(); //kick back
@@ -813,7 +815,7 @@ bool Semantic::Expr4() //Id()
 
 bool Semantic::Expr()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if( Semantic::i = save, Expr1())
   {
     
@@ -849,6 +851,7 @@ bool Semantic::IntExpr1() //digit() intop Expr()
   {
     if(intop())
     {
+      inIntExpr = true;
       if(Expr())
       {
         return true;
@@ -893,6 +896,7 @@ bool Semantic::IntExpr2() //digit()
     newAST.curNode->children.back() = copyChild; //get rid of reference to intExpr
     delete copyCur; //free up copyCur
 
+    inIntExpr = true;
     return true;
 
   }
@@ -905,7 +909,6 @@ bool Semantic::IntExpr2() //digit()
 bool Semantic::IntExpr()
 {
   //make sure expressions are made of just int
-  inIntExpr = true;
   if(inBoolExpr || inStringExpr)
   {
     vector<string> errorData;
@@ -916,7 +919,7 @@ bool Semantic::IntExpr()
     Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
     Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
   }
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if( Semantic::i = save, IntExpr1())
   {
     kick();
@@ -944,6 +947,7 @@ bool Semantic::StringExpr1() //leftQuote CharList() rightQuote
     {
       if(term("rightQuote"))
       {
+        inStringExpr = true;
         return true;
       }
       else //rightQuote
@@ -964,19 +968,18 @@ bool Semantic::StringExpr1() //leftQuote CharList() rightQuote
 bool Semantic::StringExpr()
 {
   //make sure expressions are made of just int
-  inStringExpr = true;
   if(inBoolExpr || inIntExpr)
   {
     vector<string> errorData;
     if(inBoolExpr) {errorData.push_back("String and bool are not type compatible");}
-      //inStringExpr
+      //inIntExpr
     else{errorData.push_back("String and int are not type compatible");}
 
     //error for types that are not homogeneous
     Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
                  Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
   }
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if( Semantic::i = save, StringExpr1())
   {
     return true;
@@ -997,6 +1000,7 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
     {
       if (boolop())
       {
+        inBoolExpr = true;
         if(Expr())
         {
           if(term("rightParen"))
@@ -1054,6 +1058,8 @@ bool Semantic::BooleanExpr2() //boolval()
     //delete child
     newAST.deleteNode(copyCur);
 
+    inBoolExpr = true;
+
     return true;
   }
   else //boolval()
@@ -1064,7 +1070,6 @@ bool Semantic::BooleanExpr2() //boolval()
 bool Semantic::BooleanExpr()
 {
   //make sure expressions are made of just int
-  inBoolExpr = true;
   if(inStringExpr || inIntExpr)
   {
     vector<string> errorData;
@@ -1076,7 +1081,7 @@ bool Semantic::BooleanExpr()
     Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
                  Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
   }
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if( Semantic::i = save, BooleanExpr1())
   {
     kick();
@@ -1109,7 +1114,7 @@ bool Semantic::Id1() //Char()
 }
 bool Semantic::Id()
 {
-  int save = Semantic::i; if ( Semantic::i = save, Id1())
+  unsigned int save = Semantic::i; if ( Semantic::i = save, Id1())
   {
     
     return true;
@@ -1140,7 +1145,7 @@ bool Semantic::CharList2() //epsilon
 }
 bool Semantic::CharList()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if ( Semantic::i = save, CharList1())
   {
     
@@ -1173,7 +1178,7 @@ bool Semantic::type1() //type
 }
 bool Semantic::type()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if ( Semantic::i = save, type1())
   {
     
@@ -1201,7 +1206,7 @@ bool Semantic::Char1()
 }
 bool Semantic::Char()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if ( Semantic::i = save, Char1())
   {
     
@@ -1229,7 +1234,7 @@ bool Semantic::space1()
 }
 bool Semantic::space()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if ( Semantic::i = save, space1())
   {
     
@@ -1257,7 +1262,7 @@ bool Semantic::digit1()
 }
 bool Semantic::digit()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if( Semantic::i = save, digit1())
   {
 
@@ -1285,7 +1290,7 @@ bool Semantic::boolop1()
 }
 bool Semantic::boolop()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if( Semantic::i = save, boolop1())
   {
     return true;
@@ -1311,7 +1316,7 @@ bool Semantic::boolval1()
 }
 bool Semantic::boolval()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if( Semantic::i = save, boolval1())
   {
     return true;
@@ -1336,7 +1341,7 @@ bool Semantic::intop1() {
 }
 bool Semantic::intop()
 {
-  int save = Semantic::i;
+  unsigned int save = Semantic::i;
   if( Semantic::i = save, intop1())
   {
     return true;

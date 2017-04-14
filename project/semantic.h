@@ -13,6 +13,8 @@ class Semantic
 {
   public:
     Semantic(vector<Token> stream, bool v, unsigned int start);  //v is for verbose
+
+
     unsigned int i;
 
     vector<Token> tokens;
@@ -51,7 +53,13 @@ class Semantic
     bool inBoolExpr = false;
     bool inStringExpr = false;
 
-    void resetInExpr(){inIntExpr = false; inBoolExpr = false; inStringExpr = false;}
+    void resetInExpr(){
+      cout << "========= RESET inExpr" << endl;
+      cout << inIntExpr << inBoolExpr << inStringExpr << endl;
+      inIntExpr = false;
+      inBoolExpr = false;
+      inStringExpr = false;
+    }
 
   private:
 
