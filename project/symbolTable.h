@@ -36,7 +36,7 @@ class SymbolTable
 
     //pass root symbol table and dfio traversal checking for type mismatch
       //(more than one data type assigned to StEntry)
-    void typeMismatch(SymbolTable* a); //error
+    void typeMismatch(); //error
 
   private:
 };

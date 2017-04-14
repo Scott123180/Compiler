@@ -29,6 +29,11 @@ class StEntry
     bool initialized;
     bool utilized = false;
 
+    //keep track of whether or not values have been set
+    bool hasBoolBeenSet = false;
+    bool hasIntBeenSet = false;
+    bool hasStringBeenSet = false;
+
     //data getters - can control later if want to fancy up
     //let's trust the programmer now lol
     int getDigit() {return digit;}
@@ -37,9 +42,21 @@ class StEntry
 
     //data setters - can control later if want to fancy up
     //let's trust the programmer now lol
-    void setDigit(int d) {digit = d;}
-    void setCharList(string s) {charList = s;}
-    void setBoolean(bool b) {boolean = b;}
+    void setDigit(int d)
+    {
+      hasIntBeenSet = true;
+      digit = d;
+    }
+    void setCharList(string s)
+    {
+      hasStringBeenSet = true;
+      charList = s;
+    }
+    void setBoolean(bool b)
+    {
+      hasBoolBeenSet = true;
+      boolean = b;
+    }
 
   private:
     //these are the possible types, let's control with getters and setters

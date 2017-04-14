@@ -3,7 +3,8 @@
   boolean b
   {
     string c
-    a = 5 
+    a = 5
+    a = true 
     b = true
     c = "inta"
     print(c)

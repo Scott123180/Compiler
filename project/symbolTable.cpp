@@ -165,7 +165,22 @@ void SymbolTable::declaredNotUsed()
   }
 }
 
-void typeMismatch(SymbolTable* a)
+//call me in calcSymbolTableOutput. check for type mismatch
+void SymbolTable::typeMismatch()
 {
-
+  SymbolTable a = *this;
+  for(vector<StEntry>::size_type j = 0; j < a.rows.size(); j++)
+  {
+    StEntry curEntry = a.rows[j];
+    vector<string> errorData; //keep track of declared fields
+    if(curEntry.hasIntBeenSet) errorData.push_back("int");
+    if(curEntry.hasStringBeenSet) errorData.push_back("string");
+    if(curEntry.hasBoolBeenSet) errorData.push_back("bool");
+    //check if more than two set
+    if(errorData.size() > 1) //mor than one type set
+    {
+      Error typeMismatch = Error(true, Error::semantic, curEntry.lineNum, 0, errorData
+                                , "Variable can only have one type. Type mismatch: ");
+    }
+  }
 }
