@@ -40,6 +40,9 @@ class Semantic
     //handles the first brace in every program
     bool firstTable = true;
 
+    //used to keep track of var lookups in print statments to check utilization
+    bool inPrintStatement = false;
+
     //for use in matching id's in assign statements
     char charBuffer;
 

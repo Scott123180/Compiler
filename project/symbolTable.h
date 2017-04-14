@@ -28,6 +28,15 @@ class SymbolTable
 
     StEntry* lookupEntry(char a, SymbolTable* s);
 
+    //error checking and warning functions
+    void usedNotDeclared(StEntry* a, SymbolTable* b); //error
+
+    void declaredNotUsed(StEntry* a, SymbolTable* b); //warning
+
+    //pass root symbol table and dfio traversal checking for type mismatch
+      //(more than one data type assigned to StEntry)
+    void typeMismatch(SymbolTable* a); //error
+
   private:
 };
 

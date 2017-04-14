@@ -130,3 +130,4 @@ StEntry* SymbolTable::lookupEntry(char a, SymbolTable* s)
     return notFound;
   }
 }
+

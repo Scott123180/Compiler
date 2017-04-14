@@ -225,6 +225,13 @@ bool Semantic::term(string tt) //terminal leaf creation
       if (newTerminal->getType() == "char")
       {
         charBuffer = newTerminal->getData()[0]; //first letter of name
+
+        if(inPrintStatement)
+        {
+          //change variables in it to utilized
+          StEntry* utilize = curSymbolTable->lookupEntry(charBuffer, curSymbolTable);
+          utilize->utilized = true;
+        }
       }
 
       //varDecl handling
@@ -243,8 +250,6 @@ bool Semantic::term(string tt) //terminal leaf creation
       {
         typeBuffer = newTerminal->getData();
       }
-
-
 
     }
     if(verbose)
@@ -424,11 +429,13 @@ bool Semantic::Statement1() //PrintStatement()
   if(PrintStatement())
   {
     resetInExpr(); //reset expression type flags
+    inPrintStatement = false;
     return true;
   }
   else //PrintStatement()
   {
     resetInExpr(); //reset expression type flags
+    inPrintStatement = false;
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -560,6 +567,8 @@ bool Semantic::PrintStatement1() //print leftParen Expr() rightParen
 {
   if (term("print"))
   {
+    //we know we're in a print statement
+    inPrintStatement = true;
     if (term("leftParen"))
     {
       if (Expr())
