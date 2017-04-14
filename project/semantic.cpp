@@ -15,7 +15,8 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
   Semantic::tokens = stream;
 
   //initialize symbol table; *this is reference to current semantic object
-  SymbolTable* rootSymbolTable = new SymbolTable(0, uniqueScope);
+  SymbolTable* rootSymbolTable = new SymbolTable(nullptr, uniqueScope);
+  curSymbolTable = rootSymbolTable;
   ++uniqueScope; //increment unique scope
 
 
@@ -30,6 +31,8 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
     newAST.calcDepth = newAST.curNode; //set calc depth node
     newAST.dfio(newAST.curNode, verbose);
 
+    calcSymbolTableOutput(rootSymbolTable, false);
+
     //recursively call Semantic if leftover tokens
     if(i != stream.size())
     {
@@ -39,9 +42,6 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
         newAST.tree.push_back(recursiveSemantic.newAST.tree[j]);
       }
     }
-
-    calcSymbolTableOutput(rootSymbolTable, false);
-
   }
   else //error
   {
@@ -87,8 +87,7 @@ void Semantic::kickST()
 //calculate the output for the symbol table
 void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first in order
 {
-  //set depth node to curNode
-  calcDepth = a;
+  cout << "-----------------GOT HERE" << endl;
   //calculate depth
   unsigned int depth = a->calcTableDepth(a);
   if(verbose)
@@ -130,8 +129,11 @@ void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first
   table.append("</th>\n");
 
   table.append("</tr>\n");
+  cout << "-------------BEFORE FOR LOOP" << endl;
+  cout << a->rows.size() << endl;
   for(vector<StEntry>::size_type i = 0; i < a->rows.size(); i++)
   {
+    cout << "-------------FOR LOOP" << endl;
     table.append("<tr>\n");
 
     //NAME
@@ -185,7 +187,7 @@ void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first
   symbolTableOuput.push_back(table);
 
   //recursive call
-  for (auto i = 0; i < a->children.size(); i++) {
+  for (vector<SymbolTable>::size_type i = 0; i < a->children.size(); i++) {
     calcSymbolTableOutput(a->children[i], verbose);
   }
 }
@@ -218,8 +220,12 @@ bool Semantic::term(string tt) //terminal leaf creation
       //varDecl handling
       if(!typeBuffer.empty()) //if typebuffer is set thus next val is that type
       {
+        cout << "<><><><><><><><><>We attempting to add var" << endl;
+        cout << "<><><><><><><><><>" << typeBuffer << " "
+                                     << newTerminal->getData() << " "
+                                     << endl;
         //create StEntry to pass on information on from the token
-        StEntry t = StEntry(newTerminal->getData()[0],newTerminal->getType(),
+        StEntry t = StEntry(newTerminal->getData()[0],typeBuffer,
         newTerminal->getLine(),curSymbolTable->scope,false);
 
         //declare the variable in the current scope
@@ -307,6 +313,7 @@ bool Semantic::Block1()  //leftBrace, StatementList(), rightBrace
     //ensured it would work in syntax analysis
     //*this passes reference to current object as a parameter
     SymbolTable* newScope = new SymbolTable(curSymbolTable, uniqueScope);
+    curSymbolTable = newScope;
     ++uniqueScope; //increment unique scope
 
     //change current symbol table to newSymbolTable

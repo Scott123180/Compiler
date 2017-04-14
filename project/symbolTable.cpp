@@ -38,22 +38,24 @@ void SymbolTable::declVarTable(StEntry e, SymbolTable* s)
       vector<string> errorData = {nameOfVar};
       Error declVarError(true, Error::errorStage::semantic, e.lineNum, 0, errorData, "Variable Redeclaration");
     }
-    else //variable not yet declared
-    {
-      //create StEntry object and push back to symbolTable
-      if(e.type == "int")
-      {
-        s->rows.push_back(StEntry(e.name, e.type, e.lineNum, s->scope, false, e.getDigit()));
-      }
-      else if(e.type == "string")
-      {
-        s->rows.push_back(StEntry(e.name, e.type, e.lineNum, s->scope, false, e.getcharList()));
-      }
-      else //boolean
-      {
-        s->rows.push_back(StEntry(e.name, e.type, e.lineNum, s->scope, false, e.getBoolean()));
-      }
-    }
+  }
+ //variable not yet declared
+  //create StEntry object and push back to symbolTable
+  if(e.type == "int")
+  {
+    StEntry push = StEntry(e.name, e.type, e.lineNum, s->scope, false, e.getDigit());
+    s->rows.push_back(push);
+  }
+  else if(e.type == "string")
+  {
+    StEntry push = StEntry(e.name, e.type, e.lineNum, s->scope, false, e.getcharList());
+    s->rows.push_back(push);
+  }
+  else //boolean
+  {
+    StEntry push = StEntry(e.name, e.type, e.lineNum, s->scope, false, e.getBoolean());
+    s->rows.push_back(push);
+
   }
 }
 

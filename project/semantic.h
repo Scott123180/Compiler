@@ -29,16 +29,13 @@ class Semantic
 
     vector<string> symbolTableOuput;
 
-    //for calculation in dfio
-    SymbolTable* calcDepth = nullptr;
-
     bool verbose;
 
     //output of symbol table with dashes
     void calcSymbolTableOutput(SymbolTable* a, bool verbose);
 
     //current symbolTable
-    SymbolTable* curSymbolTable;
+    SymbolTable* curSymbolTable = nullptr;
 
     //counter to make every scope have a distinct name
     unsigned int uniqueScope = 0;
