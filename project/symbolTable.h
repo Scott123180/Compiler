@@ -24,9 +24,9 @@ class SymbolTable
 
     void declVarTable(StEntry e, SymbolTable* s);
 
-    void assignVarTable(StEntry e);
+    string assignVarTable(StEntry e);
 
-    StEntry& lookupEntry(char a, SymbolTable* s);
+    StEntry* lookupEntry(char a, SymbolTable* s);
 
   private:
 };

@@ -3,6 +3,7 @@ cmake-build-debug/
 *.o
 project/test1
 project/dontrunmeyet
+project/dontRunMeYet
 
 *.swp
 

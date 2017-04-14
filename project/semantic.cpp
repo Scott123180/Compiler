@@ -221,6 +221,11 @@ bool Semantic::term(string tt) //terminal leaf creation
       //create leaf
       newAST.addChild(newTerminal, false, verbose);
 
+      //charbuffer for id's in assign statement
+      if (newTerminal->getType() == "char")
+      {
+        charBuffer = newTerminal->getData()[0]; //first letter of name
+      }
 
       //varDecl handling
       if(!typeBuffer.empty()) //if typebuffer is set thus next val is that type
@@ -610,11 +615,14 @@ bool Semantic::AssignmentStatement1()  //Id = Expr()
     {
       //we know it will be an assign statement at this point. let's do operations
       //get name of variable
-      string varName = Semantic::tokens[(Semantic::i - 1)].getData();
-      char varNameToChar = varName[0];
       //template entry but all we need is line number and name, we lookup the rest later
-      StEntry templateEntry = StEntry(varNameToChar,"", Semantic::tokens[Semantic::i].getLine(),0, false);
-      curSymbolTable->assignVarTable(templateEntry);
+      StEntry templateEntry = StEntry(charBuffer,"", Semantic::tokens[Semantic::i].getLine(),0, false);
+      //assign variable and get the type of the variable that we assigned
+      string typeExpr = curSymbolTable->assignVarTable(templateEntry);
+      if(typeExpr == "int") inIntExpr = true;
+      else if(typeExpr == "string") inStringExpr = true;
+      else inBoolExpr = true;
+      if(Expr())
       {
         return true;
       }
@@ -933,25 +941,36 @@ bool Semantic::IntExpr2() //digit()
 
 bool Semantic::IntExpr()
 {
-  //make sure expressions are made of just int
-  if(inBoolExpr || inStringExpr)
-  {
-    vector<string> errorData;
-    if(inBoolExpr) {errorData.push_back("Int and bool are not type compatible");}
-    else{errorData.push_back("Int and string are not type compatible");}
-
-    //error for types that are not homogeneous
-    Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
-    Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
-  }
   unsigned int save = Semantic::i;
   if( Semantic::i = save, IntExpr1())
   {
+    //make sure expressions are made of just int
+    if(inBoolExpr || inStringExpr)
+    {
+      vector<string> errorData;
+      if(inBoolExpr) {errorData.push_back("Int and bool are not type compatible");}
+      else{errorData.push_back("Int and string are not type compatible");}
+
+      //error for types that are not homogeneous
+      Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
+                   Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
+    }
     kick();
     return true;
   }
   else if( Semantic::i = save, IntExpr2())
   {
+    //make sure expressions are made of just int
+    if(inBoolExpr || inStringExpr)
+    {
+      vector<string> errorData;
+      if(inBoolExpr) {errorData.push_back("Int and bool are not type compatible");}
+      else{errorData.push_back("Int and string are not type compatible");}
+
+      //error for types that are not homogeneous
+      Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
+                   Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
+    }
     //kick();
     return true;
   }
@@ -992,21 +1011,21 @@ bool Semantic::StringExpr1() //leftQuote CharList() rightQuote
 }
 bool Semantic::StringExpr()
 {
-  //make sure expressions are made of just int
-  if(inBoolExpr || inIntExpr)
-  {
-    vector<string> errorData;
-    if(inBoolExpr) {errorData.push_back("String and bool are not type compatible");}
-      //inIntExpr
-    else{errorData.push_back("String and int are not type compatible");}
-
-    //error for types that are not homogeneous
-    Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
-                 Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
-  }
   unsigned int save = Semantic::i;
   if( Semantic::i = save, StringExpr1())
   {
+    //make sure expressions are made of just int
+    if(inBoolExpr || inIntExpr)
+    {
+      vector<string> errorData;
+      if(inBoolExpr) {errorData.push_back("String and bool are not type compatible");}
+        //inIntExpr
+      else{errorData.push_back("String and int are not type compatible");}
+
+      //error for types that are not homogeneous
+      Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
+                   Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
+    }
     return true;
   }
   else
@@ -1094,26 +1113,38 @@ bool Semantic::BooleanExpr2() //boolval()
 }
 bool Semantic::BooleanExpr()
 {
-  //make sure expressions are made of just int
-  if(inStringExpr || inIntExpr)
-  {
-    vector<string> errorData;
-    if(inStringExpr) {errorData.push_back("Bool and int are not type compatible");}
-      //inIntExpr
-    else{errorData.push_back("Bool and int are not type compatible");}
-
-    //error for types that are not homogeneous
-    Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
-                 Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
-  }
   unsigned int save = Semantic::i;
   if( Semantic::i = save, BooleanExpr1())
   {
+    //make sure expressions are made of just boolean
+    if(inStringExpr || inIntExpr)
+    {
+      vector<string> errorData;
+      if(inStringExpr) {errorData.push_back("Bool and int are not type compatible");}
+        //inIntExpr
+      else{errorData.push_back("Bool and int are not type compatible");}
+
+      //error for types that are not homogeneous
+      Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
+                   Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
+    }
     kick();
     return true;
   }
   else if( Semantic::i = save, BooleanExpr2())
   {
+    //make sure expressions are made of just boolean
+    if(inStringExpr || inIntExpr)
+    {
+      vector<string> errorData;
+      if(inStringExpr) {errorData.push_back("Bool and int are not type compatible");}
+        //inIntExpr
+      else{errorData.push_back("Bool and int are not type compatible");}
+
+      //error for types that are not homogeneous
+      Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
+                   Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
+    }
     //kick();
     return true;
   }

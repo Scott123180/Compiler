@@ -40,6 +40,9 @@ class Semantic
     //handles the first brace in every program
     bool firstTable = true;
 
+    //for use in matching id's in assign statements
+    char charBuffer;
+
     //current symbolTable
     SymbolTable* curSymbolTable;
 
