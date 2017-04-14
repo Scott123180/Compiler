@@ -5,6 +5,7 @@
 
 #include "stEntry.h"
 #include "error.h"
+#include "token.h"
 
 using namespace std;
 
@@ -29,9 +30,9 @@ class SymbolTable
     StEntry* lookupEntry(char a, SymbolTable* s);
 
     //error checking and warning functions
-    void usedNotDeclared(StEntry* a, SymbolTable* b); //error
+    void usedNotDeclared(StEntry* a, Token* b); //error
 
-    void declaredNotUsed(StEntry* a, SymbolTable* b); //warning
+    void declaredNotUsed(); //warning
 
     //pass root symbol table and dfio traversal checking for type mismatch
       //(more than one data type assigned to StEntry)

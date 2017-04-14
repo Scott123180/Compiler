@@ -5,6 +5,7 @@
 #include "semantic.h"
 #include "stEntry.h"
 #include "error.h"
+#include "token.h"
 
 SymbolTable::SymbolTable(SymbolTable* p, unsigned int uniqueS)
   : parent(p), scope(uniqueS)
@@ -131,3 +132,40 @@ StEntry* SymbolTable::lookupEntry(char a, SymbolTable* s)
   }
 }
 
+//takes an StEntry and throws an error if it's empty
+void SymbolTable::usedNotDeclared(StEntry *a, Token* b)
+{
+  //null name
+  if(a->name == '\0')
+  {
+    int lineNum = b->getLine();
+    int positionNum = b->getPos();
+    vector<string> errorData = {b->getData()};
+    Error undeclaredId = Error(true, Error::errorStage::semantic, lineNum, positionNum,
+                               errorData, "Undeclared Identifier");
+  }
+}
+
+//create warnings for variables that aren't used in table
+void SymbolTable::declaredNotUsed()
+{
+  SymbolTable b = *this;
+  for(vector<StEntry>::size_type j = 0; j < b.rows.size(); j++)
+  {
+    //unused variable
+    if(! b.rows[j].utilized)
+    {
+      int lineNum = rows[j].lineNum;
+      string charToString;
+      charToString.push_back(b.rows[j].name);
+      vector<string> errorData = {charToString};
+      Error unusedVar = Error(false, Error::errorStage::semantic, lineNum, 0, errorData
+                              , "Warning: variable initialized but never used");
+    }
+  }
+}
+
+void typeMismatch(SymbolTable* a)
+{
+
+}

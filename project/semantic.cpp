@@ -92,6 +92,8 @@ void Semantic::kickST()
 //calculate the output for the symbol table
 void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first in order
 {
+  //perform unused identifier checking
+  a->declaredNotUsed();
 
   //calculate depth
   unsigned int depth = a->calcTableDepth(a);
@@ -134,11 +136,8 @@ void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first
   table.append("</th>\n");
 
   table.append("</tr>\n");
-  cout << "-------------BEFORE FOR LOOP" << endl;
-  cout << a->rows.size() << endl;
   for(vector<StEntry>::size_type i = 0; i < a->rows.size(); i++)
   {
-    cout << "-------------FOR LOOP" << endl;
     table.append("<tr>\n");
 
     //NAME
@@ -230,7 +229,16 @@ bool Semantic::term(string tt) //terminal leaf creation
         {
           //change variables in it to utilized
           StEntry* utilize = curSymbolTable->lookupEntry(charBuffer, curSymbolTable);
+          curSymbolTable->usedNotDeclared(utilize, newTerminal); //check for error
           utilize->utilized = true;
+        }
+        else //handle other usedNotDeclared
+        {
+          if(typeBuffer.empty()) //not about to declare variable
+          {
+            StEntry* check = curSymbolTable->lookupEntry(charBuffer, curSymbolTable);
+            curSymbolTable->usedNotDeclared(check, newTerminal); //check for error
+          }
         }
       }
 

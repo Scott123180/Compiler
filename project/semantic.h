@@ -40,6 +40,9 @@ class Semantic
     //handles the first brace in every program
     bool firstTable = true;
 
+    //handles preventing repetition through recursion of declared not used
+    bool firstCSTOPass = true; //first calculatSymbolTableOutput pass
+
     //used to keep track of var lookups in print statments to check utilization
     bool inPrintStatement = false;
 
