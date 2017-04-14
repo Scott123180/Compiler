@@ -13,7 +13,7 @@ lex:  cst.o \
       stEntry.o \
       symbolTable.o \
       token.o
-	$(CXX) $^ -o test1 $(CXXLIBS)
+	$(CXX) $^ -o dontRunMeYet $(CXXLIBS)
 	
 %.o: %.cpp %.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@

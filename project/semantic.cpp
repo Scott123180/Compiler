@@ -40,7 +40,8 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
       {
         newAST.tree.push_back(recursiveSemantic.newAST.tree[j]);
       }
-      //push back sybol table to original symbol table
+      symbolTableOuput.push_back("</br></br>");
+      //push back symbol table to original symbol table
       for(vector<string>::size_type k = 0 ; k < recursiveSemantic.symbolTableOuput.size(); k++)
       {
         symbolTableOuput.push_back(recursiveSemantic.symbolTableOuput[k]);
@@ -92,7 +93,6 @@ void Semantic::kickST()
 void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first in order
 {
 
-  cout << "-----------------GOT HERE" << endl;
   //calculate depth
   unsigned int depth = a->calcTableDepth(a);
   if(verbose)
@@ -311,14 +311,25 @@ bool Semantic::Block1()  //leftBrace, StatementList(), rightBrace
 {
   if(term("leftBrace"))
   {
-    //Create new symbolTable - no need to check if it'll fail cause we already
-    //ensured it would work in syntax analysis
-    //*this passes reference to current object as a parameter
-    SymbolTable* newScope = new SymbolTable(curSymbolTable, uniqueScope++); //create new table
-    curSymbolTable->children.push_back(newScope); //add table to parent's scope
+    //programs start with brace so don't want to increment root table
+      //(which would make a blank scope)
+    if(firstTable)
+    {
+      //get rid of restriction
+      firstTable = false;
+    }
+    else //no restriction
+    {
+      //Create new symbolTable - no need to check if it'll fail cause we already
+      //ensured it would work in syntax analysis
+      //*this passes reference to current object as a parameter
+      SymbolTable* newScope = new SymbolTable(curSymbolTable, uniqueScope++); //create new table
+      curSymbolTable->children.push_back(newScope); //add table to parent's scope
 
-    //change current symbol table to newSymbolTable
-    curSymbolTable = newScope;
+      //change current symbol table to newSymbolTable
+      curSymbolTable = newScope;
+    }
+
 
     if(StatementList())
     {
@@ -597,7 +608,13 @@ bool Semantic::AssignmentStatement1()  //Id = Expr()
   {
     if(term("assign"))
     {
-      if(Expr())
+      //we know it will be an assign statement at this point. let's do operations
+      //get name of variable
+      string varName = Semantic::tokens[(Semantic::i - 1)].getData();
+      char varNameToChar = varName[0];
+      //template entry but all we need is line number and name, we lookup the rest later
+      StEntry templateEntry = StEntry(varNameToChar,"", Semantic::tokens[Semantic::i].getLine(),0, false);
+      curSymbolTable->assignVarTable(templateEntry);
       {
         return true;
       }

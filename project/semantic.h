@@ -37,6 +37,9 @@ class Semantic
     //root symbol Table
     SymbolTable* rootSymbolTable;
 
+    //handles the first brace in every program
+    bool firstTable = true;
+
     //current symbolTable
     SymbolTable* curSymbolTable;
 
