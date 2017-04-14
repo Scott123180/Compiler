@@ -14,8 +14,8 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
   //remember, if a process fails, we need to delete all of the children
   Semantic::tokens = stream;
 
-  //initialize symbol table; *this is reference to current semantic object
-  SymbolTable* rootSymbolTable = new SymbolTable(nullptr, uniqueScope);
+  //initialize symbol table
+  rootSymbolTable = new SymbolTable(nullptr, uniqueScope);
   curSymbolTable = rootSymbolTable;
   ++uniqueScope; //increment unique scope
 
@@ -87,6 +87,7 @@ void Semantic::kickST()
 //calculate the output for the symbol table
 void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first in order
 {
+
   cout << "-----------------GOT HERE" << endl;
   //calculate depth
   unsigned int depth = a->calcTableDepth(a);
@@ -220,10 +221,6 @@ bool Semantic::term(string tt) //terminal leaf creation
       //varDecl handling
       if(!typeBuffer.empty()) //if typebuffer is set thus next val is that type
       {
-        cout << "<><><><><><><><><>We attempting to add var" << endl;
-        cout << "<><><><><><><><><>" << typeBuffer << " "
-                                     << newTerminal->getData() << " "
-                                     << endl;
         //create StEntry to pass on information on from the token
         StEntry t = StEntry(newTerminal->getData()[0],typeBuffer,
         newTerminal->getLine(),curSymbolTable->scope,false);
@@ -231,6 +228,7 @@ bool Semantic::term(string tt) //terminal leaf creation
         //declare the variable in the current scope
         curSymbolTable->declVarTable(t, curSymbolTable);
         typeBuffer.clear(); //clear typebuffer
+
       }
       if(tt == "type")
       {
@@ -312,9 +310,8 @@ bool Semantic::Block1()  //leftBrace, StatementList(), rightBrace
     //Create new symbolTable - no need to check if it'll fail cause we already
     //ensured it would work in syntax analysis
     //*this passes reference to current object as a parameter
-    SymbolTable* newScope = new SymbolTable(curSymbolTable, uniqueScope);
-    curSymbolTable = newScope;
-    ++uniqueScope; //increment unique scope
+    SymbolTable* newScope = new SymbolTable(curSymbolTable, uniqueScope++); //create new table
+    curSymbolTable->children.push_back(newScope); //add table to parent's scope
 
     //change current symbol table to newSymbolTable
     curSymbolTable = newScope;

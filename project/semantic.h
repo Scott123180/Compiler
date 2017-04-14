@@ -34,8 +34,11 @@ class Semantic
     //output of symbol table with dashes
     void calcSymbolTableOutput(SymbolTable* a, bool verbose);
 
+    //root symbol Table
+    SymbolTable* rootSymbolTable;
+
     //current symbolTable
-    SymbolTable* curSymbolTable = nullptr;
+    SymbolTable* curSymbolTable;
 
     //counter to make every scope have a distinct name
     unsigned int uniqueScope = 0;

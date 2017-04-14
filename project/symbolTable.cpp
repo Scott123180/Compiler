@@ -43,17 +43,17 @@ void SymbolTable::declVarTable(StEntry e, SymbolTable* s)
   //create StEntry object and push back to symbolTable
   if(e.type == "int")
   {
-    StEntry push = StEntry(e.name, e.type, e.lineNum, s->scope, false, e.getDigit());
+    StEntry push = StEntry(e.name, e.type, e.lineNum, s->scope, true, e.getDigit());
     s->rows.push_back(push);
   }
   else if(e.type == "string")
   {
-    StEntry push = StEntry(e.name, e.type, e.lineNum, s->scope, false, e.getcharList());
+    StEntry push = StEntry(e.name, e.type, e.lineNum, s->scope, true, e.getcharList());
     s->rows.push_back(push);
   }
   else //boolean
   {
-    StEntry push = StEntry(e.name, e.type, e.lineNum, s->scope, false, e.getBoolean());
+    StEntry push = StEntry(e.name, e.type, e.lineNum, s->scope, true, e.getBoolean());
     s->rows.push_back(push);
 
   }
