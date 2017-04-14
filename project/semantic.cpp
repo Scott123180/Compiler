@@ -15,10 +15,8 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
   Semantic::tokens = stream;
 
   //initialize symbol table
-  rootSymbolTable = new SymbolTable(nullptr, uniqueScope);
+  rootSymbolTable = new SymbolTable(nullptr, uniqueScope++);
   curSymbolTable = rootSymbolTable;
-  ++uniqueScope; //increment unique scope
-
 
   if(Program())
   {
@@ -37,9 +35,15 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
     if(i != stream.size())
     {
       Semantic recursiveSemantic(stream, verbose, i);
+      //push back ast to original ast
       for(vector<string>::size_type j = 0; j < recursiveSemantic.newAST.tree.size(); j++)
       {
         newAST.tree.push_back(recursiveSemantic.newAST.tree[j]);
+      }
+      //push back sybol table to original symbol table
+      for(vector<string>::size_type k = 0 ; k < recursiveSemantic.symbolTableOuput.size(); k++)
+      {
+        symbolTableOuput.push_back(recursiveSemantic.symbolTableOuput[k]);
       }
     }
   }
