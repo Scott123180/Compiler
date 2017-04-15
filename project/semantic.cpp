@@ -1129,7 +1129,7 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
           if(term("rightParen"))
           {
             bool foundRight = false;
-            backToken = Semantic::i;
+            backToken = Semantic::i; //reset back token to cur token 
             string typeRight;
             while(!foundRight || (secondBackToken != backToken))
             {
