@@ -1,0 +1,7 @@
+{
+  string a
+  a = "false"
+  boolean b
+  b = false
+  if(b == a) {} 
+}$

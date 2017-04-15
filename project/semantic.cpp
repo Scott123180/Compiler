@@ -40,7 +40,7 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
       {
         newAST.tree.push_back(recursiveSemantic.newAST.tree[j]);
       }
-      symbolTableOuput.push_back("</br></br>");
+      symbolTableOuput.push_back("</br></br></br></br>");
       //push back symbol table to original symbol table
       for(vector<string>::size_type k = 0 ; k < recursiveSemantic.symbolTableOuput.size(); k++)
       {
@@ -1082,6 +1082,9 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
     {
       if (boolop())
       {
+        //use as a marker for the right hand expression type checking
+        unsigned int secondBackToken = Semantic::i;
+        string type;
         //check previous token to determine expression type
         unsigned int backToken = Semantic::i;
         bool found = false;
@@ -1093,10 +1096,11 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
           {
             char stringToChar = comparisonToken.getData()[0];
             StEntry* comparisonEntry = curSymbolTable->lookupEntry(stringToChar, curSymbolTable);
-            string type = comparisonEntry->type;
+            type = comparisonEntry->type;
             if(type == "int") inIntExpr = true;
             else if (type == "string") inStringExpr = true;
-            else if (type == "boolVal") inBoolExpr = true;
+              //different name for token values and symboltable entries
+            else if (type == "boolean") inBoolExpr = true;
 
             found = true;
           }
@@ -1120,11 +1124,58 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
             //onto next token
           }
         }
-        Token prevToken = Semantic::tokens[(Semantic::i - 1)];
         if(Expr())
         {
           if(term("rightParen"))
           {
+            bool foundRight = false;
+            backToken = Semantic::i;
+            string typeRight;
+            while(!foundRight || (secondBackToken != backToken))
+            {
+              --backToken;
+              Token comparisonTokenRight = Semantic::tokens[backToken];
+              if(comparisonTokenRight.getType() == "char") //lookup variable types
+              {
+                char stringToChar = comparisonTokenRight.getData()[0];
+                StEntry* comparisonEntryR = curSymbolTable->lookupEntry(stringToChar, curSymbolTable);
+                typeRight = comparisonEntryR->type;
+                if(typeRight == "int") inIntExpr = true;
+                else if (typeRight == "string") inStringExpr = true;
+                  //different name for token values and symboltable entries
+                else if (typeRight == "boolean") inBoolExpr = true;
+
+                foundRight = true;
+              }
+              else if(comparisonTokenRight.getType() == "digit")
+              {
+                inIntExpr = true;
+                foundRight = true;
+              }
+              else if(comparisonTokenRight.getType() == "charList")
+              {
+                inStringExpr = true;
+                foundRight = true;
+              }
+              else if(comparisonTokenRight.getType() == "boolVal")
+              {
+                inBoolExpr = true;
+                foundRight = true;
+              }
+              else
+              {
+                //onto next token
+              }
+            }
+            if(typeRight != type)//error type mismatch
+            {
+              vector<string> errorData = {type, typeRight};
+              int lineNum = Semantic::tokens[Semantic::i].getLine();
+              int position = Semantic::tokens[Semantic::i].getPos();
+              Error typeMismatch = Error(true,Error::semantic,lineNum,position, errorData,
+                "Type mismatch in comparison");
+            }
+
             //end of bool expr
             resetInExpr();
             return true;

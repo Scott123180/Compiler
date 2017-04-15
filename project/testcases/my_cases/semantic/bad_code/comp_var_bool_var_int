@@ -1,0 +1,7 @@
+{
+  boolean b
+  int a
+  a = 0
+  b = false
+  if(b == a) {} 
+}$
