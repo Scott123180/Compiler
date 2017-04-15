@@ -24,6 +24,8 @@ class Token
     int getLine();
     int getPos();
 
+    void setType(string a){type = a;}
+
     string findType();
     
     //for use in trees

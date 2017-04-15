@@ -40,8 +40,6 @@ class Semantic
     //handles the first brace in every program
     bool firstTable = true;
 
-    //buffer for the comparison
-    bool inComparisonBool = false;
 
     //used to keep track of var lookups in print statments to check utilization
     bool inPrintStatement = false;
@@ -57,6 +55,9 @@ class Semantic
 
     //keeps track of type of last token in when declaring variables
     string typeBuffer;
+
+    //holds a Token("Comp") in buffer to be modified by boolexpr once "==" or "!=" is known
+    Token* newCompToken = nullptr;
 
     //if in expr, what type of expr is it
       //so that we can check we're not adding ints to strings or bool

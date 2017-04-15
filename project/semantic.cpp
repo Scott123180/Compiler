@@ -210,8 +210,8 @@ bool Semantic::term(string tt) //terminal leaf creation
          && (tt != "rightQuote")
          && (tt != "print")
          && (tt != "while")
-         && (tt != "if")
          && (tt != "boolOp")
+         && (tt != "if")
          && (tt != "assign")
          && (tt != "intOp")
       )
@@ -261,6 +261,22 @@ bool Semantic::term(string tt) //terminal leaf creation
       }
 
     }
+    //boolOp AST handling
+    if(tt == "boolOp")
+    {
+      string boolOperator = Semantic::tokens[Semantic::i].getData();
+      if(newCompToken) //ensure there is a comp token in buffer
+      {
+        //this comparison token gets destroyed later because of a duplicate
+         //  comparison token problem in the AST, so we will switch to the parent of it
+        newCompToken = newCompToken->parent;
+        newCompToken->setType(boolOperator); //set type of compToken
+
+        //reset compToken
+        newCompToken = nullptr;
+      }
+    }
+
     if(verbose)
     {
       cout << "hey we matched: " << tt << endl;
@@ -720,6 +736,7 @@ bool Semantic::WhileStatement1()  //while BoolExpr() Block()
   {
     Token compTime = Semantic::tokens[Semantic::i];
     Token* newBranchBool = new Token("Comp");
+    newCompToken = newBranchBool;
     newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
     {
@@ -770,6 +787,7 @@ bool Semantic::IfStatement1() //if BooleanExpr() Block()
   if(term("if"))
   {
     Token* newBranchBool = new Token("Comp");
+    newCompToken = newBranchBool;
     newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
     {
@@ -842,6 +860,7 @@ bool Semantic::Expr2() //StringExpr()
 bool Semantic::Expr3() //BooleanExpr()
 {
   Token* newBranch = new Token("Comp");
+  newCompToken = newBranch;
   newAST.addChild(newBranch, true, verbose);
   if(BooleanExpr())
   {
@@ -1102,12 +1121,10 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
           }
         }
         Token prevToken = Semantic::tokens[(Semantic::i - 1)];
-        inComparisonBool = true;
         if(Expr())
         {
           if(term("rightParen"))
           {
-            inComparisonBool = false;
             //end of bool expr
             resetInExpr();
             return true;
