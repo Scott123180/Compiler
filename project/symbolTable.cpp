@@ -23,6 +23,7 @@ unsigned int SymbolTable::calcTableDepth(SymbolTable* a)
     ++depth;
     thisTable = thisTable->parent;
   }
+  return depth;
 }
 
 void SymbolTable::declVarTable(StEntry e, SymbolTable* s)

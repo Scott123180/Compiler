@@ -96,6 +96,7 @@ void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first
   a->declaredNotUsed();
 
   //calculate depth
+
   unsigned int depth = a->calcTableDepth(a);
   if(verbose)
   {
@@ -717,6 +718,7 @@ bool Semantic::WhileStatement1()  //while BoolExpr() Block()
 {
   if(term("while"))
   {
+    Token compTime = Semantic::tokens[Semantic::i];
     Token* newBranchBool = new Token("Comp");
     newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
@@ -1061,11 +1063,14 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
     {
       if (boolop())
       {
-        inBoolExpr = true;
+        inComparisonBool = true;
         if(Expr())
         {
           if(term("rightParen"))
           {
+            inComparisonBool = false;
+            //end of bool expr
+            resetInExpr();
             return true;
           }
           else //rightParen

@@ -4,13 +4,19 @@
   {
     string c
     a = 5
-    a = true 
     b = true
     c = "inta"
+    if(a == true){}
+    {
+      boolean b
+    }
     print(c)
   }
   print(b)
   print(a)
+  {
+    boolean b
+  }
 }$
 
 {
