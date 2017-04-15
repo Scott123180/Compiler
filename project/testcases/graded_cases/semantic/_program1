@@ -6,7 +6,7 @@
     a = 5
     b = true
     c = "inta"
-    if(a == true){}
+    if("fart" == true){}
     {
       boolean b
     }

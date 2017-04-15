@@ -1063,6 +1063,45 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
     {
       if (boolop())
       {
+        //check previous token to determine expression type
+        unsigned int backToken = Semantic::i;
+        bool found = false;
+        while(!found)
+        {
+          --backToken;
+          Token comparisonToken = Semantic::tokens[backToken];
+          if(comparisonToken.getType() == "char") //lookup variable types
+          {
+            char stringToChar = comparisonToken.getData()[0];
+            StEntry* comparisonEntry = curSymbolTable->lookupEntry(stringToChar, curSymbolTable);
+            string type = comparisonEntry->type;
+            if(type == "int") inIntExpr = true;
+            else if (type == "string") inStringExpr = true;
+            else if (type == "boolVal") inBoolExpr = true;
+
+            found = true;
+          }
+          else if(comparisonToken.getType() == "digit")
+          {
+            inIntExpr = true;
+            found = true;
+          }
+          else if(comparisonToken.getType() == "charList")
+          {
+            inStringExpr = true;
+            found = true;
+          }
+          else if(comparisonToken.getType() == "boolVal")
+          {
+            inBoolExpr = true;
+            found = true;
+          }
+          else
+          {
+            //onto next token
+          }
+        }
+        Token prevToken = Semantic::tokens[(Semantic::i - 1)];
         inComparisonBool = true;
         if(Expr())
         {
@@ -1142,7 +1181,7 @@ bool Semantic::BooleanExpr()
     if(inStringExpr || inIntExpr)
     {
       vector<string> errorData;
-      if(inStringExpr) {errorData.push_back("Bool and int are not type compatible");}
+      if(inStringExpr) {errorData.push_back("Bool and string are not type compatible");}
         //inIntExpr
       else{errorData.push_back("Bool and int are not type compatible");}
 
@@ -1159,7 +1198,7 @@ bool Semantic::BooleanExpr()
     if(inStringExpr || inIntExpr)
     {
       vector<string> errorData;
-      if(inStringExpr) {errorData.push_back("Bool and int are not type compatible");}
+      if(inStringExpr) {errorData.push_back("Bool and string are not type compatible");}
         //inIntExpr
       else{errorData.push_back("Bool and int are not type compatible");}
 
