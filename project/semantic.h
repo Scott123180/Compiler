@@ -67,8 +67,6 @@ class Semantic
     bool inStringExpr = false;
 
     void resetInExpr(){
-      cout << "========= RESET inExpr" << endl;
-      cout << inIntExpr << inBoolExpr << inStringExpr << endl;
       inIntExpr = false;
       inBoolExpr = false;
       inStringExpr = false;

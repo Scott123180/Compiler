@@ -111,8 +111,6 @@ StEntry* SymbolTable::lookupEntry(char a, SymbolTable* s)
       //found it- lol pretty sure this is how memory leaks are made
       StEntry* foundStEntry = &s->rows[i];
 
-      cout << foundStEntry->name << " " << foundStEntry->scope << " " << foundStEntry->lineNum << endl;
-      cout << foundStEntry->type << endl;
       return foundStEntry; //return StEntry
     }
   }

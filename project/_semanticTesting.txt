@@ -1,0 +1,11 @@
+Welcome to the semantic testing documentation:
+
+I've written many testcases in the directory project/testcases/my_cases/semantic
+
+There are a few folders with formal files. I've initialized most all of them and run them
+with the expected results for a few hours. I've found that most of my issues were with type
+checking in boolean expressions. Thus, most of my testcases target those. There are a lot
+of possibilities, and so I covered enough to be relatively sure that my program functions
+well.
+
+I've also tested the examples in the rubric and they work as expected.

@@ -1,0 +1,15 @@
+Welcome to the documentation for the semanitic analysis:
+
+Basically, I copied my CST code and used that to create an AST.
+There were a few complications that came with that, like with boolean
+expressions. It may have been easier to deal with them using another
+method to create the AST.
+
+After working on the AST, I decided to edit the same file and build
+the symbol table at the same time. In hindsight, it might have 
+been a lot neater to copy the AST files and generate another AST
+instead of just clouding up the AST file.
+
+To enable verbose mode, go into the main.cpp file and follow the
+instructions in the comments to select what level of
+verbosity you want for each option.
