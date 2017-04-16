@@ -95,6 +95,9 @@ void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first
   //perform unused identifier checking
   a->declaredNotUsed();
 
+  //check for type mismatches (may be redundant)
+  rootSymbolTable->typeMismatch();
+
   //calculate depth
 
   unsigned int depth = a->calcTableDepth(a);

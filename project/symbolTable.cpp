@@ -105,12 +105,9 @@ StEntry* SymbolTable::lookupEntry(char a, SymbolTable* s)
   //loop through vector to find
   for(vector<StEntry>::size_type i = 0; i < s->rows.size(); i++)
   {
-    cout << "<><><><>><>><>><<><<>><><<><><>< loop Are we even getting here" <<endl;
-    cout << s->rows[i].name << " comp " << a << endl;
     //compare names
     if(s->rows[i].name == a)
     {
-      cout << "<><><><>><>><>><<><<>><><<><><>< Are we even getting here" <<endl;
       //found it- lol pretty sure this is how memory leaks are made
       StEntry* foundStEntry = &s->rows[i];
 
