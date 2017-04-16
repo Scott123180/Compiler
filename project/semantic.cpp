@@ -234,6 +234,7 @@ bool Semantic::term(string tt) //terminal leaf creation
           //change variables in it to utilized
           StEntry* utilize = curSymbolTable->lookupEntry(charBuffer, curSymbolTable);
           curSymbolTable->usedNotDeclared(utilize, newTerminal); //check for error
+          curSymbolTable->usedNotInitialized(utilize, newTerminal);
           utilize->utilized = true;
         }
         else //handle other usedNotDeclared

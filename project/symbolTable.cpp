@@ -142,6 +142,22 @@ void SymbolTable::usedNotDeclared(StEntry *a, Token* b)
   }
 }
 
+void SymbolTable::usedNotInitialized(StEntry *a, Token* b)
+{
+  //check if at least one has been set
+  if(a->hasIntBeenSet || a->hasBoolBeenSet || a->hasStringBeenSet)
+  {
+    //good
+  }
+  else
+  {
+    int lineNum = b->getLine();
+    int positionNum = b->getPos();
+    vector<string> errorData = {b->getData()};
+    Error undeclaredId = Error(true, Error::errorStage::semantic, lineNum, positionNum,
+                               errorData, "Uninitialized Identifier");
+  }
+}
 //create warnings for variables that aren't used in table
 void SymbolTable::declaredNotUsed()
 {

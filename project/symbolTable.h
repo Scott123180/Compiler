@@ -32,6 +32,8 @@ class SymbolTable
     //error checking and warning functions
     void usedNotDeclared(StEntry* a, Token* b); //error
 
+    void usedNotInitialized(StEntry *a, Token* b);
+
     void declaredNotUsed(); //warning
 
     //pass root symbol table and dfio traversal checking for type mismatch
