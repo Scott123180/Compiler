@@ -1097,6 +1097,16 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
             char stringToChar = comparisonToken.getData()[0];
             StEntry* comparisonEntry = curSymbolTable->lookupEntry(stringToChar, curSymbolTable);
             type = comparisonEntry->type;
+            //check if been assigned variable
+            if(type == "int" || type == "string" || type == "boolean")
+            {
+              if(!comparisonEntry->hasIntBeenSet)
+              {
+                vector<string> errorData = {type, comparisonToken.getData()};
+                Error usedNotDeclared = Error(true, Error::semantic, comparisonToken.getLine(),
+                                              comparisonToken.getPos(), errorData, "Undeclared Identifier Used ");
+              }
+            }
             if(type == "int") inIntExpr = true;
             else if (type == "string") inStringExpr = true;
               //different name for token values and symboltable entries
@@ -1106,16 +1116,19 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
           }
           else if(comparisonToken.getType() == "digit")
           {
+            type = "int";
             inIntExpr = true;
             found = true;
           }
           else if(comparisonToken.getType() == "charList")
           {
+            type = "string";
             inStringExpr = true;
             found = true;
           }
           else if(comparisonToken.getType() == "boolVal")
           {
+            type = "boolean";
             inBoolExpr = true;
             found = true;
           }
@@ -1129,7 +1142,7 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
           if(term("rightParen"))
           {
             bool foundRight = false;
-            backToken = Semantic::i; //reset back token to cur token 
+            backToken = Semantic::i; //reset back token to cur token
             string typeRight;
             while(!foundRight || (secondBackToken != backToken))
             {
@@ -1139,7 +1152,18 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
               {
                 char stringToChar = comparisonTokenRight.getData()[0];
                 StEntry* comparisonEntryR = curSymbolTable->lookupEntry(stringToChar, curSymbolTable);
+                curSymbolTable->usedNotDeclared(comparisonEntryR, &Semantic::tokens[backToken]);
                 typeRight = comparisonEntryR->type;
+                //check if been assigned variable
+                if(type == "int" || type == "string" || type == "boolean")
+                {
+                  if(!comparisonEntryR->hasIntBeenSet)
+                  {
+                    vector<string> errorData = {type, comparisonTokenRight.getData()};
+                    Error usedNotDeclared = Error(true, Error::semantic, comparisonTokenRight.getLine(),
+                                                  comparisonTokenRight.getPos(), errorData, "Undeclared Identifier Used ");
+                  }
+                }
                 if(typeRight == "int") inIntExpr = true;
                 else if (typeRight == "string") inStringExpr = true;
                   //different name for token values and symboltable entries
@@ -1149,16 +1173,19 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
               }
               else if(comparisonTokenRight.getType() == "digit")
               {
+                typeRight = "int";
                 inIntExpr = true;
                 foundRight = true;
               }
               else if(comparisonTokenRight.getType() == "charList")
               {
+                typeRight = "string";
                 inStringExpr = true;
                 foundRight = true;
               }
               else if(comparisonTokenRight.getType() == "boolVal")
               {
+                typeRight = "boolean";
                 inBoolExpr = true;
                 foundRight = true;
               }
