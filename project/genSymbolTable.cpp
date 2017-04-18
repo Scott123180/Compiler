@@ -12,35 +12,30 @@ GenSymbolTable::GenSymbolTable(Semantic s, bool v)
   rootSymbolTable = new SymbolTable(nullptr, uniqueScope++);
   curSymbolTable = rootSymbolTable;
 
-  //set root and current token
-  rootToken = &tokens[0];
-  curToken = rootToken;
+  //get root tokens
+  vector<Token*> rootTokens = s.newAST.treeRoots;
 
-  //call the function to complete the ST generation
-  produceST();
+  for(vector<Token*>::size_type i = 0; i < rootTokens.size(); i++)
+  {
+    //set curToken for produceST
+    curToken = rootTokens[i];
+    //call the function to complete the ST generation
+    produceST();
+  }
+
 }
 
+//produce symbol table
 void GenSymbolTable::produceST()
 {
-  
+
 }
 
 //calculate the output for the symbol table
 void GenSymbolTable::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first in order
 {
-  //perform unused identifier checking
-  a->declaredNotUsed();
-
-  //check for type mismatches (may be redundant)
-  rootSymbolTable->typeMismatch();
-
-  //calculate depth
 
   unsigned int depth = a->calcTableDepth(a);
-  if(verbose)
-  {
-    cout << depth << endl;
-  }
 
   //table html stuff
   string table;

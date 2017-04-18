@@ -19,6 +19,8 @@ class CST
     Token* curNode;
   
     Token* calcDepth;
+
+    Token* rootToken;
   
     vector<string> tree;
   
@@ -33,12 +35,14 @@ class CST
     //delete the node
     bool deleteNode(Token *a);
 
-    void returnToRoot();
+    Token* returnToRoot();
   
     void dfio(Token* a, bool verbose); //depth-first in order
   
     void calcTokDepth(bool verbose);
-  
+
+    vector<Token*> treeRoots;
+
   private:
     
 };

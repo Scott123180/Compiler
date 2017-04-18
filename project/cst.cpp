@@ -70,13 +70,14 @@ bool CST::deleteNode(Token *a)
   }
 }
 
-void CST::returnToRoot()
+Token* CST::returnToRoot()
 {
   //scale up tree
   while(curNode->parent) //check for root (nullptr parent)
   {
     curNode = curNode->parent;
   }
+  return curNode;
 }
 
 void CST::dfio(Token* a, bool verbose) //depth-first in order

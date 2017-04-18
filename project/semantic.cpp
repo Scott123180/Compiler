@@ -14,9 +14,6 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
   //remember, if a process fails, we need to delete all of the children
   Semantic::tokens = stream;
 
-  //initialize symbol table
-  rootSymbolTable = new SymbolTable(nullptr, uniqueScope++);
-  curSymbolTable = rootSymbolTable;
 
   if(Program())
   {
@@ -25,11 +22,11 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
 
 
     //print out the AST in the command line
-    newAST.returnToRoot();  //go back to the root
+    newAST.rootToken = newAST.returnToRoot();  //go back to the root
     newAST.calcDepth = newAST.curNode; //set calc depth node
     newAST.dfio(newAST.curNode, verbose);
-
-    calcSymbolTableOutput(rootSymbolTable, false);
+    //get first tree root
+    newAST.treeRoots.push_back(newAST.rootToken);
 
     //recursively call Semantic if leftover tokens
     if(i != stream.size())
@@ -40,11 +37,10 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
       {
         newAST.tree.push_back(recursiveSemantic.newAST.tree[j]);
       }
-      symbolTableOuput.push_back("</br></br></br></br>");
-      //push back symbol table to original symbol table
-      for(vector<string>::size_type k = 0 ; k < recursiveSemantic.symbolTableOuput.size(); k++)
+      //push back tree roots to original tree root vector
+      for(vector<Token*>::size_type k = 0; k < recursiveSemantic.newAST.treeRoots.size(); k++)
       {
-        symbolTableOuput.push_back(recursiveSemantic.symbolTableOuput[k]);
+        newAST.treeRoots.push_back(recursiveSemantic.newAST.treeRoots[k]);
       }
     }
   }
@@ -72,134 +68,6 @@ void Semantic::kick()
   }
 }
 
-//kick nodes in the syntax tree
-void Semantic::kickST()
-{
-  if (verbose)
-  {
-    cout << "===Symbol table - before kick: " << curSymbolTable->scope << endl;
-  }
-  if(curSymbolTable->parent) //avoid null ptr
-  {
-    curSymbolTable = curSymbolTable->parent;
-  }
-  if(verbose)
-  {
-    cout << "===Symbol table - after kick: " << curSymbolTable->scope << endl;
-  }
-}
-
-//calculate the output for the symbol table
-void Semantic::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first in order
-{
-  //perform unused identifier checking
-  a->declaredNotUsed();
-
-  //check for type mismatches (may be redundant)
-  rootSymbolTable->typeMismatch();
-
-  //calculate depth
-
-  unsigned int depth = a->calcTableDepth(a);
-  if(verbose)
-  {
-    cout << depth << endl;
-  }
-
-  //table html stuff
-  string table;
-  table.append("<table class =\"table\">\n");
-  table.append("<tr>\n");
-
-  table.append("<th>\n");
-  table.append("Name");
-  table.append("</th>\n");
-
-  table.append("<th>\n");
-  table.append("Type");
-  table.append("</th>\n");
-
-  table.append("<th>\n");
-  table.append("Line Number");
-  table.append("</th>\n");
-
-  table.append("<th>\n");
-  table.append("Scope");
-  table.append("</th>\n");
-
-  table.append("<th>\n");
-  table.append("Scope Depth");
-  table.append("</th>\n");
-
-  table.append("<th>\n");
-  table.append("Initialized");
-  table.append("</th>\n");
-
-  table.append("<th>\n");
-  table.append("Utilized");
-  table.append("</th>\n");
-
-  table.append("</tr>\n");
-  for(vector<StEntry>::size_type i = 0; i < a->rows.size(); i++)
-  {
-    table.append("<tr>\n");
-
-    //NAME
-    table.append("<td>\n");
-    string charToString = "";
-    charToString.push_back(a->rows[i].name);
-    table.append(charToString);
-    table.append("</td>\n");
-
-    //TYPE
-    table.append("<td>\n");
-    table.append(a->rows[i].type);
-    table.append("</td>\n");
-
-    //LINE NUMBER
-    table.append("<td>\n");
-    table.append(to_string(a->rows[i].lineNum));
-    table.append("</td>\n");
-
-    //SCOPE
-    table.append("<td>\n");
-    table.append(to_string(a->rows[i].scope));
-    table.append("</td>\n");
-
-    //SCOPE DEPTH
-    table.append("<td>\n");
-    table.append(to_string(depth));
-    table.append("</td>\n");
-
-    string boolToString;
-
-    //INITIALIZED
-    table.append("<td>\n");
-    if(a->rows[i].initialized) boolToString = "true";
-    else boolToString = "false";
-    table.append(boolToString);
-    table.append("</td>\n");
-
-    //UTILIZED
-    table.append("<td>\n");
-    if(a->rows[i].utilized) boolToString = "true";
-    else boolToString = "false";
-    table.append(boolToString);
-    table.append("</td>\n");
-
-    table.append("</tr>\n");
-  }
-  table.append("</table>");
-  //end html
-
-  symbolTableOuput.push_back(table);
-
-  //recursive call
-  for (vector<SymbolTable>::size_type i = 0; i < a->children.size(); i++) {
-    calcSymbolTableOutput(a->children[i], verbose);
-  }
-}
-
 bool Semantic::term(string tt) //terminal leaf creation
 {
   if (Semantic::tokens[(Semantic::i)].getType() == tt)
@@ -223,46 +91,6 @@ bool Semantic::term(string tt) //terminal leaf creation
       Token* newTerminal = new Token(Semantic::tokens[Semantic::i]);
       //create leaf
       newAST.addChild(newTerminal, false, verbose);
-
-      //charbuffer for id's in assign statement
-      if (newTerminal->getType() == "char")
-      {
-        charBuffer = newTerminal->getData()[0]; //first letter of name
-
-        if(inPrintStatement)
-        {
-          //change variables in it to utilized
-          StEntry* utilize = curSymbolTable->lookupEntry(charBuffer, curSymbolTable);
-          curSymbolTable->usedNotDeclared(utilize, newTerminal); //check for error
-          curSymbolTable->usedNotInitialized(utilize, newTerminal);
-          utilize->utilized = true;
-        }
-        else //handle other usedNotDeclared
-        {
-          if(typeBuffer.empty()) //not about to declare variable
-          {
-            StEntry* check = curSymbolTable->lookupEntry(charBuffer, curSymbolTable);
-            curSymbolTable->usedNotDeclared(check, newTerminal); //check for error
-          }
-        }
-      }
-
-      //varDecl handling
-      if(!typeBuffer.empty()) //if typebuffer is set thus next val is that type
-      {
-        //create StEntry to pass on information on from the token
-        StEntry t = StEntry(newTerminal->getData()[0],typeBuffer,
-        newTerminal->getLine(),curSymbolTable->scope,false);
-
-        //declare the variable in the current scope
-        curSymbolTable->declVarTable(t, curSymbolTable);
-        typeBuffer.clear(); //clear typebuffer
-
-      }
-      if(tt == "type")
-      {
-        typeBuffer = newTerminal->getData();
-      }
 
     }
     //boolOp AST handling
@@ -350,26 +178,6 @@ bool Semantic::Block1()  //leftBrace, StatementList(), rightBrace
 {
   if(term("leftBrace"))
   {
-    //programs start with brace so don't want to increment root table
-      //(which would make a blank scope)
-    if(firstTable)
-    {
-      //get rid of restriction
-      firstTable = false;
-    }
-    else //no restriction
-    {
-      //Create new symbolTable - no need to check if it'll fail cause we already
-      //ensured it would work in syntax analysis
-      //*this passes reference to current object as a parameter
-      SymbolTable* newScope = new SymbolTable(curSymbolTable, uniqueScope++); //create new table
-      curSymbolTable->children.push_back(newScope); //add table to parent's scope
-
-      //change current symbol table to newSymbolTable
-      curSymbolTable = newScope;
-    }
-
-
     if(StatementList())
     {
       if(term("rightBrace"))
@@ -394,7 +202,6 @@ bool Semantic::Block()
   if (Semantic::i = save, Block1())
   {
     kick(); //kick back to start
-    kickST(); //left the current block
     return true;
   }
   else
@@ -457,14 +264,10 @@ bool Semantic::Statement1() //PrintStatement()
   newAST.addChild(newBranch, true, verbose);
   if(PrintStatement())
   {
-    resetInExpr(); //reset expression type flags
-    inPrintStatement = false;
     return true;
   }
   else //PrintStatement()
   {
-    resetInExpr(); //reset expression type flags
-    inPrintStatement = false;
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -475,12 +278,10 @@ bool Semantic::Statement2() //AssignStatement()
   newAST.addChild(newBranch, true, verbose);
   if(AssignmentStatement())
   {
-    resetInExpr(); //reset expression type flags
     return true;
   }
   else //AssignmentStatement()
   {
-    resetInExpr(); //reset expression type flags
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -491,12 +292,10 @@ bool Semantic::Statement3() //VarDecl()
   newAST.addChild(newBranch, true, verbose);
   if(VarDecl())
   {
-    resetInExpr(); //reset expression type flags
     return true;
   }
   else //VarDecl()
   {
-    resetInExpr(); //reset expression type flags
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -507,12 +306,10 @@ bool Semantic::Statement4() //WhileStatement()
   newAST.addChild(newBranch, true, verbose);
   if(WhileStatement())
   {
-    resetInExpr(); //reset expression type flags
     return true;
   }
   else //WhileStatement()
   {
-    resetInExpr(); //reset expression type flags
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -523,12 +320,10 @@ bool Semantic::Statement5() //IfStatement()
   newAST.addChild(newBranch, true, verbose);
   if(IfStatement())
   {
-    resetInExpr();
     return true;
   }
   else //IfStatement()
   {
-    resetInExpr(); //reset expression type flags
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -539,12 +334,10 @@ bool Semantic::Statement6() //Block()
   newAST.addChild(newBranch, true, verbose);
   if(Block())
   {
-    resetInExpr(); //reset expression type flags
     return true;
   }
   else //Block()
   {
-    resetInExpr(); //reset expression type flags
     newAST.deleteNode(newBranch);
     return false;
   }
@@ -596,8 +389,6 @@ bool Semantic::PrintStatement1() //print leftParen Expr() rightParen
 {
   if (term("print"))
   {
-    //we know we're in a print statement
-    inPrintStatement = true;
     if (term("leftParen"))
     {
       if (Expr())
@@ -651,15 +442,6 @@ bool Semantic::AssignmentStatement1()  //Id = Expr()
   {
     if(term("assign"))
     {
-      //we know it will be an assign statement at this point. let's do operations
-      //get name of variable
-      //template entry but all we need is line number and name, we lookup the rest later
-      StEntry templateEntry = StEntry(charBuffer,"", Semantic::tokens[Semantic::i].getLine(),0, false);
-      //assign variable and get the type of the variable that we assigned
-      string typeExpr = curSymbolTable->assignVarTable(templateEntry);
-      if(typeExpr == "int") inIntExpr = true;
-      else if(typeExpr == "string") inStringExpr = true;
-      else inBoolExpr = true;
       if(Expr())
       {
         return true;
@@ -926,7 +708,6 @@ bool Semantic::IntExpr1() //digit() intop Expr()
   {
     if(intop())
     {
-      inIntExpr = true;
       if(Expr())
       {
         return true;
@@ -971,7 +752,6 @@ bool Semantic::IntExpr2() //digit()
     newAST.curNode->children.back() = copyChild; //get rid of reference to intExpr
     delete copyCur; //free up copyCur
 
-    inIntExpr = true;
     return true;
 
   }
@@ -986,33 +766,11 @@ bool Semantic::IntExpr()
   unsigned int save = Semantic::i;
   if( Semantic::i = save, IntExpr1())
   {
-    //make sure expressions are made of just int
-    if(inBoolExpr || inStringExpr)
-    {
-      vector<string> errorData;
-      if(inBoolExpr) {errorData.push_back("Int and bool are not type compatible");}
-      else{errorData.push_back("Int and string are not type compatible");}
-
-      //error for types that are not homogeneous
-      Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
-                   Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
-    }
     kick();
     return true;
   }
   else if( Semantic::i = save, IntExpr2())
   {
-    //make sure expressions are made of just int
-    if(inBoolExpr || inStringExpr)
-    {
-      vector<string> errorData;
-      if(inBoolExpr) {errorData.push_back("Int and bool are not type compatible");}
-      else{errorData.push_back("Int and string are not type compatible");}
-
-      //error for types that are not homogeneous
-      Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
-                   Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
-    }
     //kick();
     return true;
   }
@@ -1033,7 +791,6 @@ bool Semantic::StringExpr1() //leftQuote CharList() rightQuote
     {
       if(term("rightQuote"))
       {
-        inStringExpr = true;
         return true;
       }
       else //rightQuote
@@ -1056,18 +813,6 @@ bool Semantic::StringExpr()
   unsigned int save = Semantic::i;
   if( Semantic::i = save, StringExpr1())
   {
-    //make sure expressions are made of just int
-    if(inBoolExpr || inIntExpr)
-    {
-      vector<string> errorData;
-      if(inBoolExpr) {errorData.push_back("String and bool are not type compatible");}
-        //inIntExpr
-      else{errorData.push_back("String and int are not type compatible");}
-
-      //error for types that are not homogeneous
-      Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
-                   Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
-    }
     return true;
   }
   else
@@ -1086,129 +831,10 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
     {
       if (boolop())
       {
-        //use as a marker for the right hand expression type checking
-        unsigned int secondBackToken = Semantic::i;
-        string type;
-        //check previous token to determine expression type
-        unsigned int backToken = Semantic::i;
-        bool found = false;
-        while(!found)
-        {
-          --backToken;
-          Token comparisonToken = Semantic::tokens[backToken];
-          if(comparisonToken.getType() == "char") //lookup variable types
-          {
-            char stringToChar = comparisonToken.getData()[0];
-            StEntry* comparisonEntry = curSymbolTable->lookupEntry(stringToChar, curSymbolTable);
-            type = comparisonEntry->type;
-            //check if been assigned variable
-            if(type == "int" || type == "string" || type == "boolean")
-            {
-              if(!comparisonEntry->hasIntBeenSet)
-              {
-                vector<string> errorData = {type, comparisonToken.getData()};
-                Error usedNotDeclared = Error(true, Error::semantic, comparisonToken.getLine(),
-                                              comparisonToken.getPos(), errorData, "Undeclared Identifier Used ");
-              }
-            }
-            if(type == "int") inIntExpr = true;
-            else if (type == "string") inStringExpr = true;
-              //different name for token values and symboltable entries
-            else if (type == "boolean") inBoolExpr = true;
-
-            found = true;
-          }
-          else if(comparisonToken.getType() == "digit")
-          {
-            type = "int";
-            inIntExpr = true;
-            found = true;
-          }
-          else if(comparisonToken.getType() == "charList")
-          {
-            type = "string";
-            inStringExpr = true;
-            found = true;
-          }
-          else if(comparisonToken.getType() == "boolVal")
-          {
-            type = "boolean";
-            inBoolExpr = true;
-            found = true;
-          }
-          else
-          {
-            //onto next token
-          }
-        }
         if(Expr())
         {
           if(term("rightParen"))
           {
-            bool foundRight = false;
-            backToken = Semantic::i; //reset back token to cur token
-            string typeRight;
-            while(!foundRight || (secondBackToken != backToken))
-            {
-              --backToken;
-              Token comparisonTokenRight = Semantic::tokens[backToken];
-              if(comparisonTokenRight.getType() == "char") //lookup variable types
-              {
-                char stringToChar = comparisonTokenRight.getData()[0];
-                StEntry* comparisonEntryR = curSymbolTable->lookupEntry(stringToChar, curSymbolTable);
-                curSymbolTable->usedNotDeclared(comparisonEntryR, &Semantic::tokens[backToken]);
-                typeRight = comparisonEntryR->type;
-                //check if been assigned variable
-                if(type == "int" || type == "string" || type == "boolean")
-                {
-                  if(!comparisonEntryR->hasIntBeenSet)
-                  {
-                    vector<string> errorData = {type, comparisonTokenRight.getData()};
-                    Error usedNotDeclared = Error(true, Error::semantic, comparisonTokenRight.getLine(),
-                                                  comparisonTokenRight.getPos(), errorData, "Undeclared Identifier Used ");
-                  }
-                }
-                if(typeRight == "int") inIntExpr = true;
-                else if (typeRight == "string") inStringExpr = true;
-                  //different name for token values and symboltable entries
-                else if (typeRight == "boolean") inBoolExpr = true;
-
-                foundRight = true;
-              }
-              else if(comparisonTokenRight.getType() == "digit")
-              {
-                typeRight = "int";
-                inIntExpr = true;
-                foundRight = true;
-              }
-              else if(comparisonTokenRight.getType() == "charList")
-              {
-                typeRight = "string";
-                inStringExpr = true;
-                foundRight = true;
-              }
-              else if(comparisonTokenRight.getType() == "boolVal")
-              {
-                typeRight = "boolean";
-                inBoolExpr = true;
-                foundRight = true;
-              }
-              else
-              {
-                //onto next token
-              }
-            }
-            if(typeRight != type)//error type mismatch
-            {
-              vector<string> errorData = {type, typeRight};
-              int lineNum = Semantic::tokens[Semantic::i].getLine();
-              int position = Semantic::tokens[Semantic::i].getPos();
-              Error typeMismatch = Error(true,Error::semantic,lineNum,position, errorData,
-                "Type mismatch in comparison");
-            }
-
-            //end of bool expr
-            resetInExpr();
             return true;
           }
           else //rightParen
@@ -1262,8 +888,6 @@ bool Semantic::BooleanExpr2() //boolval()
     //delete child
     newAST.deleteNode(copyCur);
 
-    inBoolExpr = true;
-
     return true;
   }
   else //boolval()
@@ -1276,36 +900,13 @@ bool Semantic::BooleanExpr()
   unsigned int save = Semantic::i;
   if( Semantic::i = save, BooleanExpr1())
   {
-    //make sure expressions are made of just boolean
-    if(inStringExpr || inIntExpr)
-    {
-      vector<string> errorData;
-      if(inStringExpr) {errorData.push_back("Bool and string are not type compatible");}
-        //inIntExpr
-      else{errorData.push_back("Bool and int are not type compatible");}
 
-      //error for types that are not homogeneous
-      Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
-                   Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
-    }
     kick();
     return true;
   }
   else if( Semantic::i = save, BooleanExpr2())
   {
-    //make sure expressions are made of just boolean
-    if(inStringExpr || inIntExpr)
-    {
-      vector<string> errorData;
-      if(inStringExpr) {errorData.push_back("Bool and string are not type compatible");}
-        //inIntExpr
-      else{errorData.push_back("Bool and int are not type compatible");}
-
-      //error for types that are not homogeneous
-      Error noHomo(true, Error::semantic, Semantic::tokens[Semantic::i].getLine(),
-                   Semantic::tokens[Semantic::i].getPos(), errorData, "Type mismatch in expression");
-    }
-    //kick();
+    //kick()
     return true;
   }
   else

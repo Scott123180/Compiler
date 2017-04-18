@@ -25,52 +25,10 @@ class Semantic
 
     void kick(); //kick current token parent token
 
-    void kickST(); //kick current symbolTable to parent symboltable
-
-    vector<string> symbolTableOuput;
-
     bool verbose;
-
-    //output of symbol table with dashes
-    void calcSymbolTableOutput(SymbolTable* a, bool verbose);
-
-    //root symbol Table
-    SymbolTable* rootSymbolTable;
-
-    //handles the first brace in every program
-    bool firstTable = true;
-
-
-    //used to keep track of var lookups in print statments to check utilization
-    bool inPrintStatement = false;
-
-    //for use in matching id's in assign statements
-    char charBuffer;
-
-    //current symbolTable
-    SymbolTable* curSymbolTable;
-
-    //counter to make every scope have a distinct name
-    unsigned int uniqueScope = 0;
-
-    //keeps track of type of last token in when declaring variables
-    string typeBuffer;
 
     //holds a Token("Comp") in buffer to be modified by boolexpr once "==" or "!=" is known
     Token* newCompToken = nullptr;
-
-    //if in expr, what type of expr is it
-      //so that we can check we're not adding ints to strings or bool
-      //because expressions can turn into other expressions
-    bool inIntExpr = false;
-    bool inBoolExpr = false;
-    bool inStringExpr = false;
-
-    void resetInExpr(){
-      inIntExpr = false;
-      inBoolExpr = false;
-      inStringExpr = false;
-    }
 
   private:
 
