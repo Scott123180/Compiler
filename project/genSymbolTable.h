@@ -36,29 +36,34 @@ class GenSymbolTable
 
     vector<string> symbolTableOutput;
 
+    //delete all tables
+    void deleteAllST(SymbolTable* a);
+
     //search through tree dfio
     void produceST(Token* a);
 
-    //process token
-    void processToken(Token* a);
-    //VarDecl
-
-    //Assign
+    bool firstBlock = true;
 
     //Block
-
+    bool blockST();
+    //VarDecl
+    bool varDeclST();
+    //Assign
+    bool assignST();
     //If
-
+    bool ifST();
     //Print
+    bool printST();
 
+    //return types for expressions
     //Expr
-
+    string exprST();
     //BoolExpr
-
+    string boolExprST();
     //IntExpr
-
+    string intExprST();
     //StringExpr
-
+    string stringExprST();
     //output of symbol table with dashes
     void calcSymbolTableOutput(SymbolTable* a, bool verbose);
 

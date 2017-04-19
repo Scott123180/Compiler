@@ -8,36 +8,112 @@ GenSymbolTable::GenSymbolTable(Semantic s, bool v)
 {
   tokens = s.tokens;
 
-  //initialize symbol table
-  rootSymbolTable = new SymbolTable(nullptr, uniqueScope++);
-  curSymbolTable = rootSymbolTable;
-
   //get root tokens
   vector<Token*> rootTokens = s.newAST.treeRoots;
 
   for(vector<Token*>::size_type i = 0; i < rootTokens.size(); i++)
   {
+    //initialize symbol table
+    rootSymbolTable = new SymbolTable(nullptr, uniqueScope++);
+    curSymbolTable = rootSymbolTable;
+
     //set curToken for produceST
     curToken = rootTokens[i];
     //call the function to complete the ST generation
     produceST(curToken);
+    calcSymbolTableOutput(rootSymbolTable, verbose);
+
+    //free up memory
+    deleteAllST(rootSymbolTable);
+
   }
 
+}
+
+void GenSymbolTable::deleteAllST(SymbolTable *a)
+{
+  for(vector<SymbolTable*>::size_type i = 0; i < a->children.size(); i++)
+  {
+    //recursively call for all children
+    deleteAllST(a->children[i]);
+  }
+  delete a;
 }
 
 //produce symbol table
 void GenSymbolTable::produceST(Token* a)
 {
-  for(vector<Token*>::size_type i = 0; i < curToken->children.size(); i++)
-  {
-    processToken(a);
-    produceST(a->children[i]);
-  }
+  //switch to first child of program (block)
+  curToken = curToken->children.front();
+
+  //next token will be block
+  blockST();
 }
 
-void GenSymbolTable::processToken(Token *a)
+bool GenSymbolTable::blockST()
 {
-  
+  if(curToken->getType() == "Block")
+  {
+    if(firstBlock)
+    {
+      //if it's the first block, don't create new symbol table
+
+      firstBlock = false;
+    }
+    else //not first block
+    {
+      //create new symbol table
+      SymbolTable* newScope = new SymbolTable(curSymbolTable, uniqueScope++);
+      newScope->parent = curSymbolTable; //set parent of newScope
+      curSymbolTable = newScope; //set current symbolTable to this
+    }
+    //try other things
+  }
+  else
+  {
+    return false;
+  }
+
+}
+
+bool GenSymbolTable::varDeclST()
+{
+
+}
+
+bool GenSymbolTable::assignST()
+{
+
+}
+
+bool GenSymbolTable::ifST()
+{
+
+}
+
+bool GenSymbolTable::printST()
+{
+
+}
+
+string GenSymbolTable::exprST()
+{
+
+}
+
+string GenSymbolTable::boolExprST()
+{
+
+}
+
+string GenSymbolTable::intExprST()
+{
+
+}
+
+string GenSymbolTable::stringExprST()
+{
+
 }
 
 //calculate the output for the symbol table
@@ -48,6 +124,8 @@ void GenSymbolTable::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth
 
   //table html stuff
   string table;
+
+
   table.append("<table class =\"table\">\n");
   table.append("<tr>\n");
 
@@ -132,6 +210,7 @@ void GenSymbolTable::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth
   table.append("</table>");
   //end html
 
+  //push output to string vector
   symbolTableOuput.push_back(table);
 
   //recursive call
