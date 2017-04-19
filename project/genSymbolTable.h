@@ -37,7 +37,27 @@ class GenSymbolTable
     vector<string> symbolTableOutput;
 
     //search through tree dfio
-    void produceST();
+    void produceST(Token* a);
+
+    //process token
+    void processToken(Token* a);
+    //VarDecl
+
+    //Assign
+
+    //Block
+
+    //If
+
+    //Print
+
+    //Expr
+
+    //BoolExpr
+
+    //IntExpr
+
+    //StringExpr
 
     //output of symbol table with dashes
     void calcSymbolTableOutput(SymbolTable* a, bool verbose);

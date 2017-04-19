@@ -20,15 +20,24 @@ GenSymbolTable::GenSymbolTable(Semantic s, bool v)
     //set curToken for produceST
     curToken = rootTokens[i];
     //call the function to complete the ST generation
-    produceST();
+    produceST(curToken);
   }
 
 }
 
 //produce symbol table
-void GenSymbolTable::produceST()
+void GenSymbolTable::produceST(Token* a)
 {
+  for(vector<Token*>::size_type i = 0; i < curToken->children.size(); i++)
+  {
+    processToken(a);
+    produceST(a->children[i]);
+  }
+}
 
+void GenSymbolTable::processToken(Token *a)
+{
+  
 }
 
 //calculate the output for the symbol table
