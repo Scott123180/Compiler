@@ -71,15 +71,6 @@ class GenSymbolTable
 
     void kickST(); //kick symbol table to parent
 
-    StEntry varLookup(string a, bool utilizeIt)
-    {
-
-    }
-
-    void declVar(string a, string type, int lineNum, int pos);
-
-    void assignVar(Token* a);
-
   private:
 
     vector<Token> tokens;

@@ -170,7 +170,31 @@ bool GenSymbolTable::printST()
 
 string GenSymbolTable::exprST(Token* a)
 {
+  string returnType;
+  //get type of token
+  string tokType;
+    //need to determine variable types if applicable
+  if(a->getType() == "char") //variable
+  {
+    char stringToChar = a->getData()[0]; //get name of var
+    //lookup entry, fail if undeclared
+    StEntry* lookupVar = curSymbolTable->lookupEntry(stringToChar, curSymbolTable, a->getLine()
+      ,a->getPos(),true); //lookup char
+    tokType = lookupVar->type;
+  }
+  else //not a variable
+  {
+    tokType = a->getType();
+  }
 
+  //check if boolExprST
+  if(tokType == "boolVal" || tokType == "==" || tokType == "!=")
+  {
+    boolExprST(a);
+  }
+  //check if intExprST
+  else if(tokType == "digit" || tokType == "intOp"){}
+  else if(tokType == "charList"){}
 }
 
 string GenSymbolTable::boolExprST(Token* a)

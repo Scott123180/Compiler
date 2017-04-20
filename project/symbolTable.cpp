@@ -100,7 +100,7 @@ string SymbolTable::assignVarTable(StEntry e)
 }
 
 //returns an StEntry if found in any scope, otherwise returns a dud StEntry
-StEntry* SymbolTable::lookupEntry(char a, SymbolTable* s)
+StEntry* SymbolTable::lookupEntry(char a, SymbolTable* s, int tokLineNum, int tokLinePos, bool errorOnFail)
 {
   //loop through vector to find
   for(vector<StEntry>::size_type i = 0; i < s->rows.size(); i++)
@@ -118,13 +118,22 @@ StEntry* SymbolTable::lookupEntry(char a, SymbolTable* s)
   if(s->parent) //check if there is a parent scope (check for no nullptr)
   {
     //recursion
-    return s->parent->lookupEntry(a, s->parent);
+    return s->parent->lookupEntry(a, s->parent, tokLineNum, tokLinePos, errorOnFail);
   }
-  else
+  else //fail
   {
-    //make a dud and then return that value
-    StEntry* notFound = new StEntry('\0', "", 0, 0, false);
-    return notFound;
+    if(errorOnFail)
+    {
+      string charToString;
+      charToString.push_back(a);
+      vector<string> errorData = {charToString};
+      Error notFound = Error(true, Error::semantic, tokLineNum, tokLinePos, errorData,
+                             "Error: undeclared Identifier: ");
+    }
+    else //return nullptr
+    {
+      return nullptr;
+    }
   }
 }
 

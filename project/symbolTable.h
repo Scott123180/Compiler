@@ -27,7 +27,7 @@ class SymbolTable
 
     string assignVarTable(StEntry e);
 
-    StEntry* lookupEntry(char a, SymbolTable* s);
+    StEntry* lookupEntry(char a, SymbolTable* s, int tokLineNum, int tokLinePos, bool errorOnFail);
 
     //error checking and warning functions
     void usedNotDeclared(StEntry* a, Token* b); //error
