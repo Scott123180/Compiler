@@ -102,10 +102,10 @@ bool GenSymbolTable::varDeclST()
 {
   if(curToken->getType() == "VarDecl")
   {
-    string type = curToken->children[0]->getType();
-    string name = curToken->children[1]->getData();
+    string varType = curToken->children[0]->getType();
+    string varName = curToken->children[1]->getData();
     //try to initialize variable
-    StEntry variable = StEntry(name, type, curToken->getLine(),
+    StEntry variable = StEntry(varName, varType, curToken->getLine(),
                                curToken->getPos(),curSymbolTable->scope,true);
     return true;
   }
@@ -119,7 +119,16 @@ bool GenSymbolTable::assignST()
 {
   if(curToken->getType() == "AssignStatement")
   {
-    
+    //first child is always variable name
+    string varName = curToken->children[0]->getData();
+    //let exprST handle type checking of expression
+    string exprType = exprST(curToken);
+    //create template entry
+    StEntry assignVar = StEntry(varName,exprType,curToken->children[0]->getLine(), 0,
+      curSymbolTable->scope, false);
+
+    //lookup variable to assign
+    curSymbolTable->assignVarTable(assignVar);
   }
   else //not assign statement
   {
@@ -129,20 +138,42 @@ bool GenSymbolTable::assignST()
 
 bool GenSymbolTable::ifST()
 {
-
+  if(curToken->getType() == "IfStatement")
+  {
+    //type check the boolean expression
+      // -first child will always be the boolexpr branch
+    boolExprST(curToken->children[0]);
+    //handle the block
+    curToken->children[1]; //switch curToken so block can reference
+    blockST();
+    return true;
+  }
+  else //not an if statement
+  {
+    return false;
+  }
 }
 
 bool GenSymbolTable::printST()
 {
-
+  if(curToken->getType() == "PrintStatement")
+  {
+    //type check and utilize expression with first child
+    exprST(curToken->children[0]);
+    return true;
+  }
+  else //not a print statement
+  {
+    return false;
+  }
 }
 
-string GenSymbolTable::exprST()
+string GenSymbolTable::exprST(Token* a)
 {
 
 }
 
-string GenSymbolTable::boolExprST()
+string GenSymbolTable::boolExprST(Token* a)
 {
 
 }

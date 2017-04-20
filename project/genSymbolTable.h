@@ -57,9 +57,9 @@ class GenSymbolTable
 
     //return types for expressions
     //Expr
-    string exprST();
+    string exprST(Token* a);
     //BoolExpr
-    string boolExprST();
+    string boolExprST(Token* a);
     //IntExpr
     string intExprST();
     //StringExpr
