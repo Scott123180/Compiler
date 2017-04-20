@@ -208,9 +208,7 @@ string GenSymbolTable::boolExprST(Token* a)
     leftType = boolExprST(a->children[0]); //left side recursion
     rightType = boolExprST(a->children[1]); //right side recursion
 
-    //check for type mismatch  //don't worry about type checking here, we'll check for it after the symbol
-    //tables have been generated. If a table has more than one value (digit, bool, string)
-    //assigned, then there is a type mismatch
+    //check for type mismatch
     if(leftType != rightType);
   }
   //comparison expression
