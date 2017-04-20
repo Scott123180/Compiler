@@ -45,17 +45,17 @@ void SymbolTable::declVarTable(StEntry e, SymbolTable* s)
   //create StEntry object and push back to symbolTable
   if(e.type == "int")
   {
-    StEntry push = StEntry(e.name, e.type, e.lineNum, s->scope, true, e.getDigit());
+    StEntry push = StEntry(e.name, e.type, e.lineNum, e.position, s->scope, true, e.getDigit());
     s->rows.push_back(push);
   }
   else if(e.type == "string")
   {
-    StEntry push = StEntry(e.name, e.type, e.lineNum, s->scope, true, e.getcharList());
+    StEntry push = StEntry(e.name, e.type, e.lineNum, e.position, s->scope, true, e.getcharList());
     s->rows.push_back(push);
   }
   else //boolean
   {
-    StEntry push = StEntry(e.name, e.type, e.lineNum, s->scope, true, e.getBoolean());
+    StEntry push = StEntry(e.name, e.type, e.lineNum, e.position, s->scope, true, e.getBoolean());
     s->rows.push_back(push);
 
   }
@@ -63,37 +63,25 @@ void SymbolTable::declVarTable(StEntry e, SymbolTable* s)
 
 string SymbolTable::assignVarTable(StEntry e)
 {
-  StEntry* assignee = this->lookupEntry(e.name, this);
-  //check if the assignee was found in scopes
-  if(assignee->name == '\0')
+  StEntry* assignee = this->lookupEntry(e.name, this, e.lineNum, e.position, true);
+
+  if(assignee->type == "int")
   {
-    vector<string> errorData = {""};
-    //throw error UNINITIALIZED VARIABLE
-    Error assignError(true, Error::errorStage::semantic, e.lineNum, 0, errorData, "Variable attempting to assign to has not been declared");
+    assignee->setDigit(e.getDigit()); //assign digit of the template obj
+    assignee->utilized = true;
+    return "int";
   }
-  else  ///FOUND THE VARIABLE
-    //don't worry about type checking here, we'll check for it after the symbol
-      //tables have been generated. If a table has more than one value (digit, bool, string)
-      //assigned, then there is a type mismatch
+  else if(assignee->type == "string")
   {
-    if(assignee->type == "int")
-    {
-      assignee->setDigit(e.getDigit()); //assign digit of the template obj
-      assignee->utilized = true;
-      return "int";
-    }
-    else if(assignee->type == "string")
-    {
-      assignee->setCharList(e.getcharList()); //assign charList of the template obj
-      assignee->utilized = true;
-      return "string";
-    }
-    else //boolean value
-    {
-      assignee->setBoolean(e.getBoolean()); //assign boolean of the template obj
-      assignee->utilized = true;
-      return "boolean";
-    }
+    assignee->setCharList(e.getcharList()); //assign charList of the template obj
+    assignee->utilized = true;
+    return "string";
+  }
+  else //boolean value
+  {
+    assignee->setBoolean(e.getBoolean()); //assign boolean of the template obj
+    assignee->utilized = true;
+    return "boolean";
   }
   //default return value
   return "\0";

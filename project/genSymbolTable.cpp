@@ -199,7 +199,29 @@ string GenSymbolTable::exprST(Token* a)
 
 string GenSymbolTable::boolExprST(Token* a)
 {
+  string tokType = a->getType();
+  string tokVal;
+  if(a->getType() == "==" || a->getType() == "!=")
+  {
+    string leftType; //left hand expression type
+    string rightType; //right hand expression type
+    leftType = boolExprST(a->children[0]); //left side recursion
+    rightType = boolExprST(a->children[1]); //right side recursion
 
+    //check for type mismatch  //don't worry about type checking here, we'll check for it after the symbol
+    //tables have been generated. If a table has more than one value (digit, bool, string)
+    //assigned, then there is a type mismatch
+    if(leftType != rightType);
+  }
+  //comparison expression
+  else if(a->getType() != "boolVal")
+  {
+
+  }
+  else //boolVal (true or false)
+  {
+    return "boolVal";
+  }
 }
 
 string GenSymbolTable::intExprST()

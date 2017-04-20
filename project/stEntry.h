@@ -25,16 +25,16 @@ class StEntry
 
     /* String As Name (need to convert string to character */
     //generic
-    StEntry::StEntry(string n, string t, int l, int p, int s, bool i);
+    StEntry(string n, string t, int l, int p, int s, bool i);
 
     //Integer
-    StEntry::StEntry(string n, string t, int l, int p, int s, bool i, int d);
+    StEntry(string n, string t, int l, int p, int s, bool i, int d);
 
     //String
-    StEntry::StEntry(string n, string t, int l, int p, int s, bool i, string c);
+    StEntry(string n, string t, int l, int p, int s, bool i, string c);
 
     //Boolean
-    StEntry::StEntry(string n, string t, int l, int p, int s, bool i, bool b);
+    StEntry(string n, string t, int l, int p, int s, bool i, bool b);
 
     char name;
     string type;
