@@ -5,6 +5,7 @@ all: lex
 
 lex:  cst.o \
       error.o \
+      genSymbolTable.o \
       lexer.o \
       main.o \
       output.o \

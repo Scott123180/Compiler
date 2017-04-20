@@ -9,6 +9,7 @@
 #include "cst.h"
 #include "symbolTable.h"
 #include "semantic.h"
+#include "genSymbolTable.h"
 
 using namespace std;
 
@@ -30,7 +31,6 @@ int main(int argc, char** argv)
 
   //set boolean to true for verbose, false for not verbose
   Semantic newSemantic(newLex.stream, false, 0);
-
 
   Output newOutput(newLex, newParser, newSemantic);
   newOutput.printOutput();

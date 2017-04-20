@@ -19,7 +19,7 @@ Output::Output(Lexer l, Parser p, Semantic s)
 
   treeAST = s.newAST.tree;
 
-  //treeST = s.symbolTableOuput;
+  treeST = s.genSTOutput;
 }
 
 void Output::clearHTML()

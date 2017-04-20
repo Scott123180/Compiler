@@ -19,6 +19,8 @@ class Semantic
 
     vector<Token> tokens;
 
+    vector<string> genSTOutput;
+
     //I know it's terrible naming, let's get it working before we fix this
     //TODO: change CST naming. Lol let's see if I actually get around to doing this
     CST newAST;

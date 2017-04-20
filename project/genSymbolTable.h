@@ -61,7 +61,7 @@ class GenSymbolTable
     //BoolExpr
     string boolExprST(Token* a);
     //IntExpr
-    string intExprST();
+    string intExprST(Token* a);
     //StringExpr
     string stringExprST();
     //output of symbol table with dashes

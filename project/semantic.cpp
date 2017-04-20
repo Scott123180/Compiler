@@ -6,6 +6,7 @@
 #include "symbolTable.h"
 #include "stEntry.h"
 #include "error.h"
+#include "genSymbolTable.h"
 
 Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for verbose
   : verbose(v), i(start)
@@ -42,6 +43,14 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
       {
         newAST.treeRoots.push_back(recursiveSemantic.newAST.treeRoots[k]);
       }
+    }
+
+    //symbol table generation
+    GenSymbolTable newGen = GenSymbolTable(*this, verbose);
+    //loop through all ST object and extract data to one vector
+    for(vector<string>::size_type i = 0; i < newGen.symbolTableOutput.size(); i++)
+    {
+      genSTOutput.push_back(newGen.symbolTableOutput[i]);
     }
   }
   else //error
