@@ -57,7 +57,6 @@ bool GenSymbolTable::blockST()
     if(firstBlock)
     {
       //if it's the first block, don't create new symbol table
-
       firstBlock = false;
     }
     else //not first block
@@ -67,9 +66,32 @@ bool GenSymbolTable::blockST()
       newScope->parent = curSymbolTable; //set parent of newScope
       curSymbolTable = newScope; //set current symbolTable to this
     }
-    //try other things
+
+    Token* blockBranch = curToken;
+    //loop through children to try other types of statements
+    for(vector<Token*>::size_type i = 0; i < blockBranch->children.size(); i++)
+    {
+      //switch to token
+      curToken = blockBranch->children[i];
+      //try different operations
+      if(blockST());
+      else if(varDeclST());
+      else if(assignST());
+      else if(ifST());
+      else if(printST());
+      else //should be unreachable, but throw an error if we reach it
+      {
+        vector<string> errorData = {curToken->getType()};
+        Error newError = Error(true, Error::semantic,curToken->getLine(), curToken->getPos()
+        , errorData, "You did the impossible and reached an unreachable state. Congrats! : ");
+      }
+
+    }
+
+    kickST(); //move up in symbol table
+    return true;
   }
-  else
+  else //not a block token
   {
     return false;
   }
@@ -78,12 +100,31 @@ bool GenSymbolTable::blockST()
 
 bool GenSymbolTable::varDeclST()
 {
-
+  if(curToken->getType() == "VarDecl")
+  {
+    string type = curToken->children[0]->getType();
+    string name = curToken->children[1]->getData();
+    //try to initialize variable
+    StEntry variable = StEntry(name, type, curToken->getLine(),
+                               curToken->getPos(),curSymbolTable->scope,true);
+    return true;
+  }
+  else //not Variable Declaration
+  {
+    return false;
+  }
 }
 
 bool GenSymbolTable::assignST()
 {
-
+  if(curToken->getType() == "AssignStatement")
+  {
+    
+  }
+  else //not assign statement
+  {
+    return false;
+  }
 }
 
 bool GenSymbolTable::ifST()

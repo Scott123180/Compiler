@@ -10,21 +10,36 @@ using namespace std;
 class StEntry
 {
   public:
+    /* Character As Name (no extra modification needed) */
     //Generic - name, type, lineNum, scope, utilized
-    StEntry(char n, string t, int l, int s, bool i);
+    StEntry(char n, string t, int l, int p, int s, bool i);
 
     //Integer - name, type, lineNum, scope, utilized, digit
-    StEntry(char n, string t, int l, int s, bool i, int d);
+    StEntry(char n, string t, int l, int p, int s, bool i, int d);
 
     //String - name, type, lineNum, scope, utilized, charList
-    StEntry(char n, string t, int l, int s, bool i, string c);
+    StEntry(char n, string t, int l, int p, int s, bool i, string c);
 
     //Boolean - name, type, lineNum, scope, utilized, boolean
-    StEntry(char n, string t, int l, int s, bool i, bool b);
+    StEntry(char n, string t, int l, int p, int s, bool i, bool b);
+
+    /* String As Name (need to convert string to character */
+    //generic
+    StEntry::StEntry(string n, string t, int l, int p, int s, bool i);
+
+    //Integer
+    StEntry::StEntry(string n, string t, int l, int p, int s, bool i, int d);
+
+    //String
+    StEntry::StEntry(string n, string t, int l, int p, int s, bool i, string c);
+
+    //Boolean
+    StEntry::StEntry(string n, string t, int l, int p, int s, bool i, bool b);
 
     char name;
     string type;
     int lineNum;
+    int position;
     int scope;
     bool initialized;
     bool utilized = false;
