@@ -209,16 +209,37 @@ string GenSymbolTable::boolExprST(Token* a)
     rightType = boolExprST(a->children[1]); //right side recursion
 
     //check for type mismatch
-    if(leftType != rightType);
+    if(leftType != rightType)
+    {
+      //error
+      vector<string> errorData = {leftType, rightType};
+      Error typeMismatch = Error(true, Error::semantic, a->getLine(), a->getPos(), errorData,
+        "Type mismatch. These types are not compatible.");
+    }
+    else //no error
+    {
+      return "boolVal";
+    }
   }
-  //comparison expression
-  else if(a->getType() != "boolVal")
+  //boolean
+  else if(tokType == "boolVal")
   {
 
   }
-  else //boolVal (true or false)
+  //integer
+  else if(tokType == "digit" || tokType == "intOp")
   {
-    return "boolVal";
+
+  }
+  //string
+  else if(tokType == "charList")
+  {
+    
+  }
+  else //should not reach this state
+  {
+    cout << "unreachable state" << endl;
+    exit(1);
   }
 }
 
