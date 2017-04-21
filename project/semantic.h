@@ -8,6 +8,7 @@
 #include "token.h"
 #include "cst.h"
 #include "symbolTable.h"
+#include "genSymbolTable.h"
 
 class Semantic
 {
@@ -31,6 +32,9 @@ class Semantic
 
     //holds a Token("Comp") in buffer to be modified by boolexpr once "==" or "!=" is known
     Token* newCompToken = nullptr;
+
+    //generate symbol table obj
+    GenSymbolTable* newGen;
 
   private:
 

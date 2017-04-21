@@ -116,7 +116,7 @@ StEntry* SymbolTable::lookupEntry(char a, SymbolTable* s, int tokLineNum, int to
       charToString.push_back(a);
       vector<string> errorData = {charToString};
       Error notFound = Error(true, Error::semantic, tokLineNum, tokLinePos, errorData,
-                             "Error: undeclared Identifier: ");
+                             "Undeclared Identifier: ");
     }
     else //return nullptr
     {

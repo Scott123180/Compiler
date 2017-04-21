@@ -211,6 +211,7 @@ void Output::printSymbolTable()
       "</div>\n"
       "<div class=\"panel-body\">\n";
 
+  cout << "tree size " << treeST.size() << endl;
   for(vector<string>::size_type i = 0; i < treeST.size(); i++) //loop through tables
   {
     outputHTML << treeST[i] << "\n";

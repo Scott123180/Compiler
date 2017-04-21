@@ -3,30 +3,21 @@
 #include "semantic.h"
 #include "genSymbolTable.h"
 
-GenSymbolTable::GenSymbolTable(Semantic s, bool v)
-  : verbose(v)
+GenSymbolTable::GenSymbolTable(Token* r, bool v)
+  : verbose(v), rootToken(r)
 {
-  tokens = s.tokens;
 
-  //get root tokens
-  vector<Token*> rootTokens = s.newAST.treeRoots;
+  //initialize symbol table
+  rootSymbolTable = new SymbolTable(nullptr, uniqueScope++);
+  curSymbolTable = rootSymbolTable;
 
-  for(vector<Token*>::size_type i = 0; i < rootTokens.size(); i++)
-  {
-    //initialize symbol table
-    rootSymbolTable = new SymbolTable(nullptr, uniqueScope++);
-    curSymbolTable = rootSymbolTable;
+  //set curToken for produceST
+  curToken = rootToken;
 
-    //set curToken for produceST
-    curToken = rootTokens[i];
-    //call the function to complete the ST generation
-    produceST(curToken);
-    calcSymbolTableOutput(rootSymbolTable, verbose);
+  //call the function to complete the ST generation
+  produceST(curToken);
+  calcSymbolTableOutput(rootSymbolTable, verbose);
 
-    //free up memory
-    deleteAllST(rootSymbolTable);
-
-  }
 
 }
 
@@ -69,7 +60,7 @@ bool GenSymbolTable::blockST()
     {
       //create new symbol table
       SymbolTable* newScope = new SymbolTable(curSymbolTable, uniqueScope++);
-      newScope->parent = curSymbolTable; //set parent of newScope
+      curSymbolTable->children.push_back(newScope); //add new scope to children of parent
       curSymbolTable = newScope; //set current symbolTable to this
     }
 
@@ -125,6 +116,7 @@ bool GenSymbolTable::varDeclST()
     //try to initialize variable
     StEntry variable = StEntry(varName, varType, curToken->getLine(),
                                curToken->getPos(),curSymbolTable->scope,true);
+    curSymbolTable->declVarTable(variable, curSymbolTable);
     return true;
   }
   else //not Variable Declaration

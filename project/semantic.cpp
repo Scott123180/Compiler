@@ -15,7 +15,6 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
   //remember, if a process fails, we need to delete all of the children
   Semantic::tokens = stream;
 
-
   if(Program())
   {
     cout << "Successful Semantic Analysis!" << endl;
@@ -26,31 +25,37 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
     newAST.rootToken = newAST.returnToRoot();  //go back to the root
     newAST.calcDepth = newAST.curNode; //set calc depth node
     newAST.dfio(newAST.curNode, verbose);
-    //get first tree root
-    newAST.treeRoots.push_back(newAST.rootToken);
 
+    //symbol table generation
+    newGen = new GenSymbolTable(newAST.rootToken, verbose);
+
+    //push back all ST tables
+    for(vector<string>::size_type l = 0; l < newGen->symbolTableOutput.size(); l++)
+    {
+      genSTOutput.push_back(newGen->symbolTableOutput[l]);
+    }
+    //push break between new tables
+    genSTOutput.push_back("</br></br></br></br></br></br>");
+
+
+    cout << "ABOVE RECURSION" << endl;
     //recursively call Semantic if leftover tokens
     if(i != stream.size())
     {
+      cout << "IN RECURSION" << endl;
       Semantic recursiveSemantic(stream, verbose, i);
+      cout << tokens[i].getType() << " data" << tokens[i].getData() << endl;
+      *recursiveSemantic.newGen = GenSymbolTable(&tokens[i], verbose);
       //push back ast to original ast
       for(vector<string>::size_type j = 0; j < recursiveSemantic.newAST.tree.size(); j++)
       {
         newAST.tree.push_back(recursiveSemantic.newAST.tree[j]);
       }
-      //push back tree roots to original tree root vector
-      for(vector<Token*>::size_type k = 0; k < recursiveSemantic.newAST.treeRoots.size(); k++)
+      //push back the other symbol tables to the original semantic object
+      for(vector<string>::size_type m = 0; m < recursiveSemantic.newGen->symbolTableOutput.size(); m++)
       {
-        newAST.treeRoots.push_back(recursiveSemantic.newAST.treeRoots[k]);
+        genSTOutput.push_back(recursiveSemantic.newGen->symbolTableOutput[m]);
       }
-    }
-
-    //symbol table generation
-    GenSymbolTable newGen = GenSymbolTable(*this, verbose);
-    //loop through all ST object and extract data to one vector
-    for(vector<string>::size_type i = 0; i < newGen.symbolTableOutput.size(); i++)
-    {
-      genSTOutput.push_back(newGen.symbolTableOutput[i]);
     }
   }
   else //error

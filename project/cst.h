@@ -41,8 +41,6 @@ class CST
   
     void calcTokDepth(bool verbose);
 
-    vector<Token*> treeRoots;
-
   private:
     
 };

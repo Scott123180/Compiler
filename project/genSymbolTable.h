@@ -14,7 +14,9 @@ class GenSymbolTable
 {
   public:
     //take in a semantic object
-    GenSymbolTable(Semantic s, bool v);
+    GenSymbolTable(Token* r, bool v);
+
+    Token* rootToken;
 
     bool verbose;
 
@@ -27,9 +29,6 @@ class GenSymbolTable
 
     //current symbolTable
     SymbolTable* curSymbolTable;
-
-    //root token
-    Token* rootToken;
 
     //current token
     Token* curToken;
