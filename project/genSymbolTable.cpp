@@ -107,17 +107,21 @@ bool GenSymbolTable::varDeclST()
   {
     string varType;
     string varName;
+    int varPosition;
+    int varLine;
     if(curToken->children[0]) //handle nullptr
     {
-      varType = curToken->children[0]->getType();
+      varType = curToken->children[0]->getData();
+      varLine = curToken->children[0]->getLine();
+      varPosition = curToken->children[0]->getPos();
     }
     if(curToken->children[1]) //handle nullptr
     {
       varName = curToken->children[1]->getData();
     }
     //try to initialize variable
-    StEntry variable = StEntry(varName, varType, curToken->getLine(),
-                               curToken->getPos(),curSymbolTable->scope,true);
+    StEntry variable = StEntry(varName, varType, varLine,
+                               varPosition,curSymbolTable->scope,true);
     curSymbolTable->declVarTable(variable, curSymbolTable);
     return true;
   }
@@ -208,11 +212,14 @@ string GenSymbolTable::exprST(Token* a)
   cout << "Type " << a->getType() << endl;
   if(a->getType() == "char") //variable
   {
+    cout << "In get type char stmt" << endl;
     char stringToChar = a->getData()[0]; //get name of var
+    cout << "char " << stringToChar << endl;
     //lookup entry, fail if undeclared
     StEntry* lookupVar = curSymbolTable->lookupEntry(stringToChar, curSymbolTable, a->getLine()
       ,a->getPos(),true); //lookup char
     tokType = lookupVar->type;
+    cout << tokType << endl;
     lookupVar->utilized = true;
   }
   else //not a variable
@@ -227,13 +234,14 @@ string GenSymbolTable::exprST(Token* a)
     return boolExprST(a);
   }
   //check if intExprST
-  else if(tokType == "digit" || tokType == "intOp")
+  else if(tokType == "digit" || tokType == "+")
   {
     return intExprST(a);
   }
-  else if(tokType == "charList")
+    //charlist is a raw string, string is the type stored in variable
+  else if(tokType == "string")
   {
-    return "charList";
+    return "string";
   }
 }
 
@@ -280,9 +288,9 @@ string GenSymbolTable::boolExprST(Token* a)
     return intExprST(a);
   }
   //string
-  else if(tokType == "charList")
+  else if(tokType == "string")
   {
-    return "charList";
+    return "string";
   }
   else //should not reach this state
   {
@@ -336,18 +344,27 @@ string GenSymbolTable::intExprST(Token* a)
 
 string GenSymbolTable::stringExprST()
 {
-  return "charList";
+  return "string";
 }
 
 //calculate the output for the symbol table
 void GenSymbolTable::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first in order
 {
-  cout << "Calculating the symboltable with scope " << a->scope << endl;
 
   unsigned int depth = a->calcTableDepth(a);
 
   //table html stuff
   string table;
+
+  //label above each table
+  string tableLabel;
+  //unique scope
+  tableLabel.append("<h4>Symbol Table <span class=\"label label-success\">" + to_string(a->scope)
+                    + "</span>");
+  tableLabel.append("  Scope Depth <span class=\"label label-primary\">" + to_string(depth)
+                    + "</span></h4>");
+
+  table.append(tableLabel);
 
 
   table.append("<table class =\"table\">\n");
@@ -366,14 +383,6 @@ void GenSymbolTable::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth
   table.append("</th>\n");
 
   table.append("<th>\n");
-  table.append("Scope");
-  table.append("</th>\n");
-
-  table.append("<th>\n");
-  table.append("Scope Depth");
-  table.append("</th>\n");
-
-  table.append("<th>\n");
   table.append("Initialized");
   table.append("</th>\n");
 
@@ -382,7 +391,6 @@ void GenSymbolTable::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth
   table.append("</th>\n");
 
   table.append("</tr>\n");
-  cout << "NUM ROWS " << a->rows.size() << endl;
   for(vector<StEntry>::size_type i = 0; i < a->rows.size(); i++)
   {
     table.append("<tr>\n");
@@ -402,16 +410,6 @@ void GenSymbolTable::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth
     //LINE NUMBER
     table.append("<td>\n");
     table.append(to_string(a->rows[i].lineNum));
-    table.append("</td>\n");
-
-    //SCOPE
-    table.append("<td>\n");
-    table.append(to_string(a->rows[i].scope));
-    table.append("</td>\n");
-
-    //SCOPE DEPTH
-    table.append("<td>\n");
-    table.append(to_string(depth));
     table.append("</td>\n");
 
     string boolToString;
@@ -434,7 +432,6 @@ void GenSymbolTable::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth
   }
   table.append("</table>");
   //end html
-  cout << table << "\n\n\n\n\n" << endl;
   //push output to string vector
   symbolTableOutput.push_back(table);
 

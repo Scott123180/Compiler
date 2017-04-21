@@ -29,22 +29,17 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
     //symbol table generator
     newGen = new GenSymbolTable(newAST.rootToken, verbose);
 
-    cout << "CHILDREN OF ROOT TABLE SIZE " << newGen->rootSymbolTable->children.size() << endl;
-    cout << "ROWS OF STOUTPUT" << newGen->symbolTableOutput.size()<< endl;
     //push back all ST tables
     for(vector<string>::size_type l = 0; l < newGen->symbolTableOutput.size(); l++)
     {
       genSTOutput.push_back(newGen->symbolTableOutput[l]);
     }
-    //push break between new tables
-    genSTOutput.push_back("</br></br></br></br></br></br>");
 
-
-    cout << "ABOVE RECURSION" << endl;
     //recursively call Semantic if leftover tokens
     if(i != stream.size())
     {
-      cout << "IN RECURSION" << endl;
+      //push break between new tables
+      genSTOutput.push_back("</br></br></br></br></br></br>");
       Semantic recursiveSemantic(stream, verbose, i);
       cout << tokens[i].getType() << " data" << tokens[i].getData() << endl;
       *recursiveSemantic.newGen = GenSymbolTable(&tokens[i], verbose);
@@ -105,6 +100,11 @@ bool Semantic::term(string tt) //terminal leaf creation
     {
       //put token we want on the heap
       Token* newTerminal = new Token(Semantic::tokens[Semantic::i]);
+      //change charList to string
+      if(newTerminal->getType() == "charList")
+      {
+        newTerminal->setType("string");
+      }
       //create leaf
       newAST.addChild(newTerminal, false, verbose);
 
