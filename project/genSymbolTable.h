@@ -53,6 +53,8 @@ class GenSymbolTable
     //Print
     bool printST();
 
+    bool whileST();
+
     //return types for expressions
     //Expr
     string exprST(Token* a);

@@ -8,6 +8,8 @@
 #include "error.h"
 #include "genSymbolTable.h"
 
+using namespace std;
+
 Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for verbose
   : verbose(v), i(start)
 {
@@ -115,8 +117,32 @@ bool Semantic::term(string tt) //terminal leaf creation
       string boolOperator = Semantic::tokens[Semantic::i].getData();
       if(newCompToken) //ensure there is a comp token in buffer
       {
+        cout << "line " << newCompToken->getLine() << endl;
+        cout << "PARENT'S PARENT " << endl;
+        cout << newCompToken->parent->parent->getType() << endl;
+        cout << newCompToken->parent->parent->getData() << endl;
+
+        cout << "PARENT " << endl;
+        cout << newCompToken->parent->getType() << endl;
+        cout << newCompToken->parent->getData() << endl;
+
+        cout << "CURRENT " << endl;
+        cout << newCompToken->getType() << endl;
+        cout << newCompToken->getData() << endl;
+
+
+        if(newCompToken->children.size() > 0)
+        {
+          cout << "CHILD 0 " << endl;
+          cout << newCompToken->children[0]->getType() << endl;
+          cout << newCompToken->children[0]->getData() << endl;
+        }
+
+        cout << "____________________________________________" << endl;
+        cout << "--------------------------------------------" << endl;
+
         //this comparison token gets destroyed later because of a duplicate
-         //  comparison token problem in the AST, so we will switch to the parent of it
+        //  comparison token problem in the AST, so we will switch to the parent of it
         newCompToken = newCompToken->parent;
         newCompToken->setType(boolOperator); //set type of compToken
 
