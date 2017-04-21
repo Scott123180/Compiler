@@ -22,7 +22,6 @@ class GenSymbolTable
 
     unsigned int uniqueScope = 0;
 
-    vector<string> symbolTableOuput;
 
     //root symbol Table
     SymbolTable* rootSymbolTable;

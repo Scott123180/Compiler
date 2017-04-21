@@ -58,10 +58,12 @@ bool GenSymbolTable::blockST()
     }
     else //not first block
     {
+      cout << "Creating new scope" << endl;
       //create new symbol table
       SymbolTable* newScope = new SymbolTable(curSymbolTable, uniqueScope++);
       curSymbolTable->children.push_back(newScope); //add new scope to children of parent
       curSymbolTable = newScope; //set current symbolTable to this
+      cout << "switched to scope " << curSymbolTable->scope << endl;
     }
 
     Token* blockBranch = curToken;
@@ -340,6 +342,7 @@ string GenSymbolTable::stringExprST()
 //calculate the output for the symbol table
 void GenSymbolTable::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth-first in order
 {
+  cout << "Calculating the symboltable with scope " << a->scope << endl;
 
   unsigned int depth = a->calcTableDepth(a);
 
@@ -379,6 +382,7 @@ void GenSymbolTable::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth
   table.append("</th>\n");
 
   table.append("</tr>\n");
+  cout << "NUM ROWS " << a->rows.size() << endl;
   for(vector<StEntry>::size_type i = 0; i < a->rows.size(); i++)
   {
     table.append("<tr>\n");
@@ -430,9 +434,9 @@ void GenSymbolTable::calcSymbolTableOutput(SymbolTable* a, bool verbose) //depth
   }
   table.append("</table>");
   //end html
-
+  cout << table << "\n\n\n\n\n" << endl;
   //push output to string vector
-  symbolTableOuput.push_back(table);
+  symbolTableOutput.push_back(table);
 
   //recursive call
   for (vector<SymbolTable>::size_type i = 0; i < a->children.size(); i++) {
