@@ -111,45 +111,24 @@ bool Semantic::term(string tt) //terminal leaf creation
       newAST.addChild(newTerminal, false, verbose);
 
     }
+    /*
     //boolOp AST handling
     if(tt == "boolOp")
     {
       string boolOperator = Semantic::tokens[Semantic::i].getData();
-      if(newCompToken) //ensure there is a comp token in buffer
+      if(!newCompToken.empty()) //ensure there is a comp token(s) in buffer
       {
-        cout << "line " << newCompToken->getLine() << endl;
-        cout << "PARENT'S PARENT " << endl;
-        cout << newCompToken->parent->parent->getType() << endl;
-        cout << newCompToken->parent->parent->getData() << endl;
-
-        cout << "PARENT " << endl;
-        cout << newCompToken->parent->getType() << endl;
-        cout << newCompToken->parent->getData() << endl;
-
-        cout << "CURRENT " << endl;
-        cout << newCompToken->getType() << endl;
-        cout << newCompToken->getData() << endl;
-
-
-        if(newCompToken->children.size() > 0)
-        {
-          cout << "CHILD 0 " << endl;
-          cout << newCompToken->children[0]->getType() << endl;
-          cout << newCompToken->children[0]->getData() << endl;
-        }
-
-        cout << "____________________________________________" << endl;
-        cout << "--------------------------------------------" << endl;
 
         //this comparison token gets destroyed later because of a duplicate
         //  comparison token problem in the AST, so we will switch to the parent of it
-        newCompToken = newCompToken->parent;
-        newCompToken->setType(boolOperator); //set type of compToken
+        newCompToken.back() = newCompToken.back()->parent;
+        newCompToken.back()->setType(boolOperator); //set type of compToken
 
         //reset compToken
-        newCompToken = nullptr;
+        newCompToken.pop_back();
       }
-    }
+    }*/
+
 
     if(verbose)
     {
@@ -564,7 +543,7 @@ bool Semantic::WhileStatement1()  //while BoolExpr() Block()
   {
     Token compTime = Semantic::tokens[Semantic::i];
     Token* newBranchBool = new Token("Comp");
-    newCompToken = newBranchBool;
+    newCompToken.push_back(newBranchBool);
     newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
     {
@@ -615,7 +594,7 @@ bool Semantic::IfStatement1() //if BooleanExpr() Block()
   if(term("if"))
   {
     Token* newBranchBool = new Token("Comp");
-    newCompToken = newBranchBool;
+    newCompToken.push_back(newBranchBool);
     newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
     {
@@ -688,7 +667,7 @@ bool Semantic::Expr2() //StringExpr()
 bool Semantic::Expr3() //BooleanExpr()
 {
   Token* newBranch = new Token("Comp");
-  newCompToken = newBranch;
+  newCompToken.push_back(newBranch);
   newAST.addChild(newBranch, true, verbose);
   if(BooleanExpr())
   {

@@ -17,8 +17,8 @@ GenSymbolTable::GenSymbolTable(Token* r, bool v)
   curToken = rootToken;
 
   //call the function to complete the ST generation
-  produceST(curToken);
-  calcSymbolTableOutput(rootSymbolTable, verbose);
+  //produceST(curToken);
+  //calcSymbolTableOutput(rootSymbolTable, verbose);
 
 
 }
@@ -81,26 +81,35 @@ bool GenSymbolTable::blockST()
       if(blockST());
       else if(varDeclST());
       else if(assignST());
-      else if(ifST());
       else if(printST());
+      else if(ifST());
       else if(whileST());
       else //should be unreachable, but throw an error if we reach it
       {
         vector<string> errorData = {curToken->getType()};
-        if(curToken->children[0])
+
+        cout << "Parent " << endl;
+        cout << curToken->parent->getLine() << endl;
+        cout << curToken->parent->getType() << endl;
+        cout << curToken->parent->getData() << endl;
+        cout << "--------------------------------------" << endl;
+
+        cout << "Current " << endl;
+        cout << curToken->getLine() << endl;
+        cout << curToken->getType() << endl;
+        cout << curToken->getData() << endl;
+        cout << "--------------------------------------" << endl;
+
+        for(vector<Token*>::size_type k = 0; k < curToken->children.size(); k++)
         {
-          cout << curToken->children[0]->getLine() << endl;
-          cout << curToken->children[0]->getData() << endl;
-          cout << curToken->children[0]->getType() << endl;
+          cout << "CHILD " << k << endl;
+          cout << curToken->children[k]->getLine() << endl;
+          cout << curToken->children[k]->getType() << endl;
+          cout << curToken->children[k]->getData() << endl;
+          cout << "--------------------------------------" << endl;
         }
-        if(curToken->children[1])
-        {
-          cout << curToken->children[1]->getLine() << endl;
-          cout << curToken->children[1]->getData() << endl;
-          cout << curToken->children[1]->getType() << endl;
-        }
-        Error newError = Error(true, Error::semantic,curToken->getLine(), curToken->getPos()
-        , errorData, "You did the impossible and reached an unreachable state. Congrats! : ");
+        //Error newError = Error(true, Error::semantic,curToken->getLine(), curToken->getPos()
+        //, errorData, "You did the impossible and reached an unreachable state. Congrats! : ");
       }
 
     }
@@ -183,11 +192,15 @@ bool GenSymbolTable::ifST()
     {
       boolExprST(curToken->children[0]);
     }
+
     if(curToken->children[1]) //handle nullptr
     {
       //need to advance token twice because we ignore the comp token but it's still there
-      curToken->children[1];
-      curToken->children[1];
+      cout << "In the if. cur token type" << curToken->getType() << endl;
+      curToken = curToken->children[1];
+      cout << "child[1]. cur token type" << curToken->getType() << endl;
+      curToken = curToken->children[1];
+      cout << "child[1]. cur token type" << curToken->getType() << endl;
     }
     blockST();
     return true;
@@ -298,13 +311,13 @@ string GenSymbolTable::boolExprST(Token* a)
     //we have duplicate comparison tokens and we changed
     //something but didn't get rid of the token so we have to
     //jump over it to get to a "!=" or "=="
-  /*
+
   if(a->getType() == "Comp")
   {
     //switch to only child
     a = a->children[0];
-    cout << "type changed to "<< a->getType() << endl;
-  } */
+    cout << "<><><><><<>><<<<><><<>type changed to "<< a->getType() << endl;
+  }
   string tokType = a->getType();
   string tokVal;
   if(tokType == "==" || tokType == "!=")

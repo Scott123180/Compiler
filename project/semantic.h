@@ -31,7 +31,7 @@ class Semantic
     bool verbose;
 
     //holds a Token("Comp") in buffer to be modified by boolexpr once "==" or "!=" is known
-    Token* newCompToken = nullptr;
+    vector<Token*> newCompToken;
 
     //generate symbol table obj
     GenSymbolTable* newGen;
