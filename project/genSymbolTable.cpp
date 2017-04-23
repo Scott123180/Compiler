@@ -17,8 +17,8 @@ GenSymbolTable::GenSymbolTable(Token* r, bool v)
   curToken = rootToken;
 
   //call the function to complete the ST generation
-  //produceST(curToken);
-  //calcSymbolTableOutput(rootSymbolTable, verbose);
+  produceST(curToken);
+  calcSymbolTableOutput(rootSymbolTable, verbose);
 
 
 }
