@@ -11,7 +11,7 @@
 using namespace std;
 
 Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for verbose
-  : verbose(v), i(start)
+  : verbose(v), i(start), s(start)
 {
 
   //remember, if a process fails, we need to delete all of the children
@@ -22,15 +22,28 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
     cout << "Successful Semantic Analysis!" << endl;
     cout << "Printing SA to output.html" << endl;
 
+    //put here just in case
+    newAST.rootToken = newAST.returnToRoot();  //go back to the root
+
+    //loop through tokens and put comparison tokens in vector
+    for(; s <= i; s++)
+    {
+      if(Semantic::tokens[s].getData() == "==")
+      {
+        comparisons.push_back(true);
+      }
+      else if(Semantic::tokens[s].getData() == "!=")
+      {
+        comparisons.push_back(false);
+      }
+    }
+    //dfio traversal with replacement of comparison tokens in tree
+    traverse(newAST.rootToken);
 
     //print out the AST in the command line
     newAST.rootToken = newAST.returnToRoot();  //go back to the root
     newAST.calcDepth = newAST.curNode; //set calc depth node
     newAST.dfio(newAST.curNode, verbose);
-
-    //loop through tokens and put comparison tokens in vector
-
-    //dfio traversal with replacement of comparison tokens in tree
 
     //symbol table generator
     newGen = new GenSymbolTable(newAST.rootToken, verbose);
@@ -82,6 +95,32 @@ void Semantic::kick()
   if(verbose)
   {
     cout << "after kick: " << newAST.curNode->getType() << endl;
+  }
+}
+
+//replace 'Comp' tokens with actual operators
+void Semantic::traverse(Token *a)
+{
+  string symbolOperator;
+  if(a->getType() == "Comp")
+  {
+    //get the bool from the first element
+    bool symbol = comparisons.at(comparisonsPos);
+    ++comparisonsPos;
+    if(symbol) //"=="
+    {
+      symbolOperator = "==";
+      a->setType(symbolOperator);
+    }
+    else if(!symbol) //"!="
+    {
+      symbolOperator = "!=";
+      a->setType(symbolOperator);
+    }
+  }
+  //recursive call
+  for (vector<Token*>::size_type i = 0; i < a->children.size(); i++) {
+    traverse(a->children[i]);
   }
 }
 

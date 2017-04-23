@@ -25,6 +25,7 @@ class Token
     int getPos();
 
     void setType(string a){type = a;}
+    void setData(string a){data = a;}
 
     string findType();
     

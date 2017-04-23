@@ -18,6 +18,14 @@ class Semantic
 
     unsigned int i;
 
+    //start of tokens in stream
+    unsigned int s;
+
+    unsigned int comparisonsPos = 0;
+
+    //use in replacing the comp operators
+    vector<bool> comparisons = {};
+
     vector<Token> tokens;
 
     vector<string> genSTOutput;
@@ -35,6 +43,8 @@ class Semantic
 
     //generate symbol table obj
     GenSymbolTable* newGen;
+
+    void traverse(Token* a);
 
   private:
 
