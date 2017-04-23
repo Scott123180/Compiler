@@ -24,7 +24,7 @@ class Semantic
     unsigned int comparisonsPos = 0;
 
     //use in replacing the comp operators
-    vector<bool> comparisons = {};
+    vector<bool> comparisons;
 
     vector<Token> tokens;
 

@@ -26,18 +26,18 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
 
   //remember, if a process fails, we need to delete all of the children
   Parser::tokens = stream;
-  
+
   if(Program())
   {
     cout << "Successful Parse!" << endl;
     cout << "Printing parse to output.html" << endl;
-    
-    
+
+
     //print out the cst in the command line
     newCST.returnToRoot();  //go back to the root
     newCST.calcDepth = newCST.curNode; //set calc depth node
     newCST.dfio(newCST.curNode, verbose);
-    
+
     //recursively call parser if leftover tokens
     if(i != stream.size())
     {
@@ -47,7 +47,7 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
         newCST.tree.push_back(recursiveParse.newCST.tree[j]);
       }
     }
-    
+
   }
   else //error
   {
@@ -62,18 +62,28 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
 
   void Parser::kick()
   {
-    if (verbose)
-    {
-      cout << "before kick: " << newCST.curNode->getType() << endl;
-    }
+
     if(newCST.curNode->parent) //avoid null ptr
     {
+      if (verbose)
+      {
+        cout << "before kick: " << newCST.curNode->getType() << endl;
+      }
       newCST.curNode = newCST.curNode->parent;
+
+      if(verbose)
+      {
+        cout << "after kick: " << newCST.curNode->getType() << endl;
+      }
     }
-    if(verbose)
+    else
     {
-      cout << "after kick: " << newCST.curNode->getType() << endl;
+      if (verbose)
+      {
+        cout << "at root, not kicking again" << endl;
+      }
     }
+
   }
 /*
 
@@ -94,7 +104,7 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
       {
         cout << "hey we matched: " << tt << endl;
       }
-      
+
       return true;
     }
     else //no match
@@ -104,7 +114,7 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
         cout << "hey we failed: " << tt << endl;
         cout << "this is the type we couldn't match:  \"" << newCST.curNode->getType() << "\"" << endl;
       }
-      
+
       ++i; //increment i regardless
       return false;
     }
@@ -498,7 +508,7 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
       newCST.deleteNode(newBranchI);
       return false;
     }
-    
+
   }
 
   bool Parser::AssignmentStatement()
