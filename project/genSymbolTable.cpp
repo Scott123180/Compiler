@@ -18,8 +18,11 @@ GenSymbolTable::GenSymbolTable(Token* r, bool v)
 
   //call the function to complete the ST generation
   produceST(curToken);
+
   calcSymbolTableOutput(rootSymbolTable, verbose);
 
+  //dfio search for variables that are declared and not used
+  rootSymbolTable->declaredNotUsed(rootSymbolTable);
 
 }
 
@@ -36,10 +39,10 @@ void GenSymbolTable::deleteAllST(SymbolTable *a)
 //produce symbol table
 void GenSymbolTable::produceST(Token* a)
 {
-  cout << "PRODUCE ST" << endl;
+  if (verbose)cout << "PRODUCE ST" << endl;
   //switch to first child of program (block)
-  cout << "current tok type" << a->getType() << endl;
-  cout << "child tok type" << a->children[0]->getType() << endl;
+  if (verbose)cout << "current tok type" << a->getType() << endl;
+  if (verbose)cout << "child tok type" << a->children[0]->getType() << endl;
   if(a->children[0]) //handle nullptr
   {
     curToken = a->children[0];
@@ -52,7 +55,7 @@ bool GenSymbolTable::blockST()
 {
   if(curToken->getType() == "Block")
   {
-    cout << "BLOCK ST" << endl;
+    if (verbose)cout << "BLOCK ST" << endl;
     if(firstBlock)
     {
       //if it's the first block, don't create new symbol table
@@ -60,12 +63,12 @@ bool GenSymbolTable::blockST()
     }
     else //not first block
     {
-      cout << "Creating new scope" << endl;
+      if (verbose)cout << "Creating new scope" << endl;
       //create new symbol table
       SymbolTable* newScope = new SymbolTable(curSymbolTable, uniqueScope++);
       curSymbolTable->children.push_back(newScope); //add new scope to children of parent
       curSymbolTable = newScope; //set current symbolTable to this
-      cout << "switched to scope " << curSymbolTable->scope << endl;
+      if (verbose)cout << "switched to scope " << curSymbolTable->scope << endl;
     }
 
     Token* blockBranch = curToken;
@@ -88,28 +91,8 @@ bool GenSymbolTable::blockST()
       {
         vector<string> errorData = {curToken->getType()};
 
-        cout << "Parent " << endl;
-        cout << curToken->parent->getLine() << endl;
-        cout << curToken->parent->getType() << endl;
-        cout << curToken->parent->getData() << endl;
-        cout << "--------------------------------------" << endl;
-
-        cout << "Current " << endl;
-        cout << curToken->getLine() << endl;
-        cout << curToken->getType() << endl;
-        cout << curToken->getData() << endl;
-        cout << "--------------------------------------" << endl;
-
-        for(vector<Token*>::size_type k = 0; k < curToken->children.size(); k++)
-        {
-          cout << "CHILD " << k << endl;
-          cout << curToken->children[k]->getLine() << endl;
-          cout << curToken->children[k]->getType() << endl;
-          cout << curToken->children[k]->getData() << endl;
-          cout << "--------------------------------------" << endl;
-        }
-        //Error newError = Error(true, Error::semantic,curToken->getLine(), curToken->getPos()
-        //, errorData, "You did the impossible and reached an unreachable state. Congrats! : ");
+        Error newError = Error(true, Error::semantic,curToken->getLine(), curToken->getPos()
+        , errorData, "You did the impossible and reached an unreachable state. Congrats! : ");
       }
 
     }
@@ -128,7 +111,7 @@ bool GenSymbolTable::varDeclST()
 {
   if(curToken->getType() == "VarDecl")
   {
-    cout << "VARDECL ST" << endl;
+    if (verbose) cout << "VARDECL ST" << endl;
     string varType;
     string varName;
     int varPosition;
@@ -143,9 +126,9 @@ bool GenSymbolTable::varDeclST()
     {
       varName = curToken->children[1]->getData();
     }
-    //try to initialize variable
+    //try to declare variable
     StEntry variable = StEntry(varName, varType, varLine,
-                               varPosition,curSymbolTable->scope,true);
+                               varPosition,curSymbolTable->scope,false);
     curSymbolTable->declVarTable(variable, curSymbolTable);
     return true;
   }
@@ -159,7 +142,7 @@ bool GenSymbolTable::assignST()
 {
   if(curToken->getType() == "AssignStatement")
   {
-    cout << "ASSIGNSTATEMENT ST" << endl;
+    if (verbose) cout << "ASSIGNSTATEMENT ST" << endl;
     string varName;
     if(curToken->children[0])
     {
@@ -185,7 +168,7 @@ bool GenSymbolTable::ifST()
 {
   if(curToken->getType() == "IfStatement")
   {
-    cout << "IF ST" << endl;
+    if (verbose) cout << "IF ST" << endl;
     //type check the boolean expression
       // -first child will always be the boolexpr branch
     if(curToken->children[0]) //handle nullptr
@@ -195,10 +178,9 @@ bool GenSymbolTable::ifST()
 
     if(curToken->children[1]) //handle nullptr
     {
-      //need to advance token twice because we ignore the comp token but it's still there
-      cout << "In the if. cur token type" << curToken->getType() << endl;
+      //advance token to block
+      if (verbose) cout << "In the if. cur token type" << curToken->getType() << endl;
       curToken = curToken->children[1];
-      cout << "child[1]. cur token type" << curToken->getType() << endl;
     }
     blockST();
     return true;
@@ -213,7 +195,7 @@ bool GenSymbolTable::printST()
 {
   if(curToken->getType() == "PrintStatement")
   {
-    cout << "PRINT ST" << endl;
+    if (verbose)cout << "PRINT ST" << endl;
     //type check and utilize expression with first child
     if(curToken->children[0]) //handle nullptr
     {
@@ -232,7 +214,7 @@ bool GenSymbolTable::whileST()
 {
   if(curToken->getType() == "WhileStatement")
   {
-    cout << "WHILE ST" << endl;
+    if (verbose) cout << "WHILE ST" << endl;
     //type check the boolean expression
     // -first child will always be the boolexpr branch
     if(curToken->children[0]) //handle nullptr
@@ -241,8 +223,6 @@ bool GenSymbolTable::whileST()
     }
     if(curToken->children[1]) //handle nullptr
     {
-      //need to advance token twice because we ignore the comp token but it's still there
-      cout << "In the while. cur token type" << curToken->getType() << endl;
       curToken = curToken->children[1];
     }
     blockST();
@@ -256,23 +236,29 @@ bool GenSymbolTable::whileST()
 
 string GenSymbolTable::exprST(Token* a)
 {
-  cout << "EXPR ST" << endl;
+  if(verbose) cout << "EXPR ST" << endl;
 
   string returnType;
   //get type of token
   string tokType;
     //need to determine variable types if applicable
-  cout << "Type " << a->getType() << endl;
+  if(verbose) cout << "Type " << a->getType() << endl;
   if(a->getType() == "char") //variable
   {
-    cout << "In get type char stmt" << endl;
     char stringToChar = a->getData()[0]; //get name of var
-    cout << "char " << stringToChar << endl;
+    if (verbose)cout << "char " << stringToChar << endl;
     //lookup entry, fail if undeclared
     StEntry* lookupVar = curSymbolTable->lookupEntry(stringToChar, curSymbolTable, a->getLine()
       ,a->getPos(),true); //lookup char
+    //check that var has been initialized, warning if not
+    if(!(lookupVar->initialized)) //not initialized
+    {
+      vector<string> errorData = {a->getData()};
+      Error usedNotInitialized = Error(false, Error::semantic,a->getLine(),a->getPos(), errorData,
+                                       "This variable has been declared and used, but not initialized");
+    }
     tokType = lookupVar->type;
-    cout << tokType << endl;
+    if (verbose)cout << tokType << endl;
     lookupVar->utilized = true;
   }
   else //not a variable
@@ -300,19 +286,20 @@ string GenSymbolTable::exprST(Token* a)
 
 string GenSymbolTable::boolExprST(Token* a)
 {
-  cout << "BOOLEXPR ST" << endl;
+  if (verbose)cout << "BOOLEXPR ST" << endl;
 
   //handle Comparison error of wrong child
     //we have duplicate comparison tokens and we changed
     //something but didn't get rid of the token so we have to
     //jump over it to get to a "!=" or "=="
 
+  //this shouldn't be needed anymore
   if(a->getType() == "Comp")
   {
     //switch to only child
     a = a->children[0];
-    cout << "<><><><><<>><<<<><><<>type changed to "<< a->getType() << endl;
   }
+  //^^^^^^^^^^^^^
   string tokType = a->getType();
   string tokVal;
   if(tokType == "==" || tokType == "!=")
@@ -371,7 +358,7 @@ string GenSymbolTable::boolExprST(Token* a)
 
 string GenSymbolTable::intExprST(Token* a)
 {
-  cout << "INTEXPR ST" << endl;
+  if (verbose)cout << "INTEXPR ST" << endl;
   string tokType = a->getType();
   if(tokType == "+")
   {
@@ -523,7 +510,7 @@ void GenSymbolTable::kickST()
 {
   if(curSymbolTable->parent) //make sure no nullptr
   {
-    cout << "kicking to parent scope" << endl;
+    if (verbose)cout << "kicking to parent scope" << endl;
     curSymbolTable = curSymbolTable->parent;
   }
 }

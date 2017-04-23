@@ -45,17 +45,17 @@ void SymbolTable::declVarTable(StEntry e, SymbolTable* s)
   //create StEntry object and push back to symbolTable
   if(e.type == "int")
   {
-    StEntry push = StEntry(e.name, e.type, e.lineNum, e.position, s->scope, true, e.getDigit());
+    StEntry push = StEntry(e.name, e.type, e.lineNum, e.position, s->scope, false, e.getDigit());
     s->rows.push_back(push);
   }
   else if(e.type == "string")
   {
-    StEntry push = StEntry(e.name, e.type, e.lineNum, e.position, s->scope, true, e.getcharList());
+    StEntry push = StEntry(e.name, e.type, e.lineNum, e.position, s->scope, false, e.getcharList());
     s->rows.push_back(push);
   }
   else //boolean
   {
-    StEntry push = StEntry(e.name, e.type, e.lineNum, e.position, s->scope, true, e.getBoolean());
+    StEntry push = StEntry(e.name, e.type, e.lineNum, e.position, s->scope, false, e.getBoolean());
     s->rows.push_back(push);
 
   }
@@ -68,23 +68,21 @@ string SymbolTable::assignVarTable(StEntry e)
   if(assignee->type == "int")
   {
     assignee->setDigit(e.getDigit()); //assign digit of the template obj
-    assignee->utilized = true;
+    assignee->initialized = true;
     return "int";
   }
   else if(assignee->type == "string")
   {
     assignee->setCharList(e.getcharList()); //assign charList of the template obj
-    assignee->utilized = true;
+    assignee->initialized = true;
     return "string";
   }
   else //boolean value
   {
     assignee->setBoolean(e.getBoolean()); //assign boolean of the template obj
-    assignee->utilized = true;
+    assignee->initialized = true;
     return "boolean";
   }
-  //default return value
-  return "\0";
 }
 
 //returns an StEntry if found in any scope, otherwise returns a dud StEntry
@@ -156,21 +154,26 @@ void SymbolTable::usedNotInitialized(StEntry *a, Token* b)
   }
 }
 //create warnings for variables that aren't used in table
-void SymbolTable::declaredNotUsed()
+void SymbolTable::declaredNotUsed(SymbolTable* a)
 {
-  SymbolTable b = *this;
-  for(vector<StEntry>::size_type j = 0; j < b.rows.size(); j++)
+  for(vector<StEntry>::size_type j = 0; j < a->rows.size(); j++)
   {
     //unused variable
-    if(! b.rows[j].utilized)
+    if(! a->rows[j].utilized)
     {
-      int lineNum = rows[j].lineNum;
+      int ln = a->rows[j].lineNum;
+      int ps = a->rows[j].position;
       string charToString;
-      charToString.push_back(b.rows[j].name);
-      vector<string> errorData = {charToString};
-      Error unusedVar = Error(false, Error::errorStage::semantic, lineNum, 0, errorData
-                              , "Warning: variable initialized but never used");
+      charToString.push_back(a->rows[j].name);
+      vector<string> errorData = {a->rows[j].type, charToString};
+      Error unusedVar = Error(false, Error::errorStage::semantic, ln, ps, errorData
+                              , "Warning: variable initialized but never utilized");
     }
+  }
+  //dfio
+  for(vector<SymbolTable*>::size_type k = 0; k < a->children.size(); k++)
+  {
+    a->declaredNotUsed(a->children[k]);
   }
 }
 

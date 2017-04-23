@@ -34,7 +34,7 @@ class SymbolTable
 
     void usedNotInitialized(StEntry *a, Token* b);
 
-    void declaredNotUsed(); //warning
+    void declaredNotUsed(SymbolTable* a); //warning
 
     //pass root symbol table and dfio traversal checking for type mismatch
       //(more than one data type assigned to StEntry)
