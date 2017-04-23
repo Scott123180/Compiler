@@ -38,6 +38,14 @@ Lexer::Lexer(string fileName)
       addToBuffer(curLine[i], lineNum, i, static_cast<int>(curLine.length()));
     }
   }
+
+  //programmer forgot the EOP at the end of the file
+  if(stream.back().getType() != "EOP")
+  {
+    cout << "LEX WARNING. Missing '$' (EOP) marker. Inserting one at end." << endl;
+    //create token with last token as template
+    stream.push_back(Token("$", stream.back().getLine(), (stream.back().getPos() + 1)));
+  }
   
   cout << "Lex: End of program reached. Lex successful!" << endl;
 

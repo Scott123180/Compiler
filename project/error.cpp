@@ -21,6 +21,7 @@ Error::Error(bool q, int e, int l, int p, vector<string> d, string m)
       break;
 
     case parse:
+
       cerr << "Parse error at " << line << ":" << pos << endl
            << "Expecting: ";
       for(auto i = 0; i < d.size(); i++)
@@ -33,7 +34,7 @@ Error::Error(bool q, int e, int l, int p, vector<string> d, string m)
         {
           cerr << d[i] << ", ";
         }
-        
+
       }
       cerr << "Found: " << message << endl;
       cerr << "Aborting Parse." << endl;

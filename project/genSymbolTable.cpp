@@ -199,8 +199,6 @@ bool GenSymbolTable::ifST()
       cout << "In the if. cur token type" << curToken->getType() << endl;
       curToken = curToken->children[1];
       cout << "child[1]. cur token type" << curToken->getType() << endl;
-      curToken = curToken->children[1];
-      cout << "child[1]. cur token type" << curToken->getType() << endl;
     }
     blockST();
     return true;
@@ -246,9 +244,6 @@ bool GenSymbolTable::whileST()
       //need to advance token twice because we ignore the comp token but it's still there
       cout << "In the while. cur token type" << curToken->getType() << endl;
       curToken = curToken->children[1];
-      cout << "child[1]. cur token type" << curToken->getType() << endl;
-      curToken = curToken->children[1];
-      cout << "child[1]. cur token type" << curToken->getType() << endl;
     }
     blockST();
     return true;
