@@ -28,6 +28,10 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
     newAST.calcDepth = newAST.curNode; //set calc depth node
     newAST.dfio(newAST.curNode, verbose);
 
+    //loop through tokens and put comparison tokens in vector
+
+    //dfio traversal with replacement of comparison tokens in tree
+
     //symbol table generator
     newGen = new GenSymbolTable(newAST.rootToken, verbose);
 
@@ -111,24 +115,6 @@ bool Semantic::term(string tt) //terminal leaf creation
       newAST.addChild(newTerminal, false, verbose);
 
     }
-    /*
-    //boolOp AST handling
-    if(tt == "boolOp")
-    {
-      string boolOperator = Semantic::tokens[Semantic::i].getData();
-      if(!newCompToken.empty()) //ensure there is a comp token(s) in buffer
-      {
-
-        //this comparison token gets destroyed later because of a duplicate
-        //  comparison token problem in the AST, so we will switch to the parent of it
-        newCompToken.back() = newCompToken.back()->parent;
-        newCompToken.back()->setType(boolOperator); //set type of compToken
-
-        //reset compToken
-        newCompToken.pop_back();
-      }
-    }*/
-
 
     if(verbose)
     {
