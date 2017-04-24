@@ -107,8 +107,8 @@ void Semantic::kick()
 //replace 'Comp' tokens with actual operators
 void Semantic::traverse(Token* a)
 {
-  //depth-first: if kick and parent is comparison, assign the next
-   //comparison token to that parent
+
+
   string symbolOperator;
   //recursive call
   for (vector<Token*>::size_type i = 0; i < a->children.size(); i++) {
