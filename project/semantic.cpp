@@ -45,7 +45,7 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
       }
     }
     //dfio traversal with replacement of comparison tokens in tree
-    traverse();
+    traverse(newAST.rootToken);
 
     //print out the AST in the command line
     newAST.rootToken = newAST.returnToRoot();  //go back to the root
@@ -105,42 +105,23 @@ void Semantic::kick()
 }
 
 //replace 'Comp' tokens with actual operators
-void Semantic::traverse()
+void Semantic::traverse(Token* a)
 {
-  cout << comparisons.size() << endl;
-  cout << newCompTokens.size() << endl;
-
-  vector<Token*> actualCompTokens;
-  //for some reason, unknown to me, actual comparison tokens have a line number and position
-    //so we'll check for that and then set the token
-  for(vector<Token*>::size_type x = 0; x < newCompTokens.size(); x ++)
-  {
-    cout << newCompTokens[x]->getLine() << ":" << newCompTokens[x]->getPos() << endl;
-
-    //actual comparison token
-    if(newCompTokens[x]->getLine() != 0 && newCompTokens[x]->getPos() != 0)
-    {
-      actualCompTokens.push_back(newCompTokens[x]);
-    }
-  }
-
-  cout << "BOOL Values" << endl;
-  for(unsigned int i = 0; i < comparisons.size(); i++)
-  {
-    cout << comparisons[i] << endl;
-    cout << actualCompTokens[i]->getType() << "  " << actualCompTokens[i]->getData() << endl;
-  }
-
-    //loop through and replace the "Comp" tokens
-  for(unsigned int i = 0; i < comparisons.size(); i++)
-  {
-    string boolToString;
-    if(comparisons[i] == true) boolToString = "==";
-    else boolToString = "!=";
-    actualCompTokens[i]->setType(boolToString);
-  }
-  /*
+  //depth-first: if kick and parent is comparison, assign the next
+   //comparison token to that parent
   string symbolOperator;
+
+  if(a->children[0]->getType() == "Comp")
+  {
+
+  }
+
+  //
+  if(a->children[1]->getType() == "Comp")
+  {
+
+  }
+
   if(a->getType() == "Comp")
   {
     //get the bool from the first element
@@ -160,7 +141,7 @@ void Semantic::traverse()
   //recursive call
   for (vector<Token*>::size_type i = 0; i < a->children.size(); i++) {
     traverse(a->children[i]);
-  } */
+  }
 }
 
 bool Semantic::term(string tt) //terminal leaf creation

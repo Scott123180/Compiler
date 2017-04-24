@@ -46,7 +46,7 @@ class Semantic
     //generate symbol table obj
     GenSymbolTable* newGen;
 
-    void traverse();
+    void traverse(Token* a);
 
   private:
 
