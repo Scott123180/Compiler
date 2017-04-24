@@ -51,6 +51,12 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
   }
   else //error
   {
+    //avoid segmentation fault by exceeding the maximum bound of stream
+    if(i >= stream.size())
+    {
+      //yes I know I'm casting long to int
+      i = static_cast<int>(stream.size() - 1);
+    }
     string found = "TYPE " + stream[Parser::i].getType() + ", VALUE " + stream[Parser::i].getData();
     Error parseError(true, parseError.parse, stream[Parser::i].getLine(),
                      stream[Parser::i].getPos(), Parser::expecting, found);

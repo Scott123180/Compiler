@@ -19,6 +19,13 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
 
   if(Program())
   {
+    //avoid segmentation fault by exceeding the maximum bound of stream
+    if(i >= stream.size())
+    {
+      //yes I know I'm casting long to int
+      i = static_cast<int>(stream.size() - 1);
+    }
+
     cout << "Successful Semantic Analysis!" << endl;
     cout << "Printing SA to output.html" << endl;
 
@@ -53,9 +60,8 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
     {
       genSTOutput.push_back(newGen->symbolTableOutput[l]);
     }
-
     //recursively call Semantic if leftover tokens
-    if(i != stream.size())
+    if(i != (stream.size() -1))
     {
       //push break between new tables
       genSTOutput.push_back("</br></br></br></br></br></br>");
