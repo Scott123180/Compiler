@@ -45,7 +45,7 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
       }
     }
     //dfio traversal with replacement of comparison tokens in tree
-    traverse(newAST.rootToken);
+    traverse();
 
     //print out the AST in the command line
     newAST.rootToken = newAST.returnToRoot();  //go back to the root
@@ -105,8 +105,40 @@ void Semantic::kick()
 }
 
 //replace 'Comp' tokens with actual operators
-void Semantic::traverse(Token *a)
+void Semantic::traverse()
 {
+  cout << comparisons.size() << endl;
+  cout << newCompTokens.size() << endl;
+
+  vector<Token*> actualCompTokens;
+  //for some reason, unknown to me, actual comparison tokens have a line number and position
+    //so we'll check for that and then set the token
+  for(vector<Token*>::size_type x = 0; x < newCompTokens.size(); x ++)
+  {
+    cout << newCompTokens[x]->getLine() << ":" << newCompTokens[x]->getPos() << endl;
+
+    //actual comparison token
+    if(newCompTokens[x]->getLine() == 0 && newCompTokens[x]->getPos() == 0)
+    {
+      actualCompTokens.push_back(newCompTokens[x]);
+    }
+  }
+
+  cout << "BOOL Values" << endl;
+  for(unsigned int i = 0; i < comparisons.size(); i++)
+  {
+    cout << comparisons[i] << endl;
+  }
+
+    //loop through and replace the "Comp" tokens
+  for(unsigned int i = 0; i < comparisons.size(); i++)
+  {
+    string boolToString;
+    if(comparisons[i] == true) boolToString = "==";
+    else boolToString = "!=";
+    actualCompTokens[i]->setType(boolToString);
+  }
+  /*
   string symbolOperator;
   if(a->getType() == "Comp")
   {
@@ -127,7 +159,7 @@ void Semantic::traverse(Token *a)
   //recursive call
   for (vector<Token*>::size_type i = 0; i < a->children.size(); i++) {
     traverse(a->children[i]);
-  }
+  } */
 }
 
 bool Semantic::term(string tt) //terminal leaf creation
@@ -159,6 +191,11 @@ bool Semantic::term(string tt) //terminal leaf creation
       //create leaf
       newAST.addChild(newTerminal, false, verbose);
 
+    }
+    else if(tt == "boolOp")
+    {
+      //push back reference to token in order
+      newCompTokens.push_back(&Semantic::tokens[(Semantic::i)]);
     }
 
     if(verbose)
@@ -574,7 +611,7 @@ bool Semantic::WhileStatement1()  //while BoolExpr() Block()
   {
     Token compTime = Semantic::tokens[Semantic::i];
     Token* newBranchBool = new Token("Comp");
-    newCompToken.push_back(newBranchBool);
+    newCompTokens.push_back(newBranchBool);
     newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
     {
@@ -593,6 +630,7 @@ bool Semantic::WhileStatement1()  //while BoolExpr() Block()
     }
     else //BooleanExpr()
     {
+      newCompTokens.pop_back();
       newAST.deleteNode(newBranchBool);
       return false;
     }
@@ -625,7 +663,7 @@ bool Semantic::IfStatement1() //if BooleanExpr() Block()
   if(term("if"))
   {
     Token* newBranchBool = new Token("Comp");
-    newCompToken.push_back(newBranchBool);
+    newCompTokens.push_back(newBranchBool);
     newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
     {
@@ -644,6 +682,7 @@ bool Semantic::IfStatement1() //if BooleanExpr() Block()
     }
     else //BooleanExpr()
     {
+      newCompTokens.pop_back();
       newAST.deleteNode(newBranchBool);
       return false;
     }
@@ -698,7 +737,7 @@ bool Semantic::Expr2() //StringExpr()
 bool Semantic::Expr3() //BooleanExpr()
 {
   Token* newBranch = new Token("Comp");
-  newCompToken.push_back(newBranch);
+  newCompTokens.push_back(newBranch);
   newAST.addChild(newBranch, true, verbose);
   if(BooleanExpr())
   {
@@ -706,6 +745,7 @@ bool Semantic::Expr3() //BooleanExpr()
   }
   else //BooleanExpr()
   {
+    newCompTokens.pop_back();
     newAST.deleteNode(newBranch);
     return false;
   }

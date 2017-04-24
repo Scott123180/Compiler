@@ -26,6 +26,9 @@ class Semantic
     //use in replacing the comp operators
     vector<bool> comparisons;
 
+    //holds a Token("Comp") in buffer to be modified by boolexpr once "==" or "!=" is known
+    vector<Token*> newCompTokens;
+
     vector<Token> tokens;
 
     vector<string> genSTOutput;
@@ -38,13 +41,12 @@ class Semantic
 
     bool verbose;
 
-    //holds a Token("Comp") in buffer to be modified by boolexpr once "==" or "!=" is known
-    vector<Token*> newCompToken;
+
 
     //generate symbol table obj
     GenSymbolTable* newGen;
 
-    void traverse(Token* a);
+    void traverse();
 
   private:
 
