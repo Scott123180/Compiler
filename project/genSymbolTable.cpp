@@ -306,13 +306,17 @@ string GenSymbolTable::boolExprST(Token* a)
   {
     string leftType; //left hand expression type
     string rightType; //right hand expression type
+
+    cout << "before the children" << endl;
     if(a->children[0]) //handle nullptr
     {
-      leftType = intExprST(a->children[0]); //left side recursion
+      cout << "sending child 0 " << a->children[0]->getType() << " " << a->children[0]->getData() << endl;
+      leftType = exprST(a->children[0]); //left side recursion
     }
     if(a->children[1]) //handle nullptr
     {
-      rightType = intExprST(a->children[1]); //right side recursion
+      cout << "sending child 1 " << a->children[1]->getType() << " " << a->children[1]->getData() << endl;
+      rightType = exprST(a->children[1]); //right side recursion
     }
 
     //check for type mismatch
