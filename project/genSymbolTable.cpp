@@ -260,16 +260,25 @@ string GenSymbolTable::exprST(Token* a)
     tokType = lookupVar->type;
     if (verbose)cout << tokType << endl;
     lookupVar->utilized = true;
+    cout << "Lookup var name " << lookupVar->name << endl;
+    cout << "Lookup var line:pos " << lookupVar->lineNum << ":" << lookupVar->position << endl;
+    cout << "utilized " << lookupVar->utilized << endl;
   }
   else //not a variable
   {
+    cout << "NOT A VAR " << a->getType() << "    " << a->getData() << endl;
     tokType = a->getType();
   }
 
 
   //handle type of expression
-  if(tokType == "boolVal" || tokType == "==" || tokType == "!=")
+  if(tokType == "boolVal" || tokType == "boolean" || tokType == "==" || tokType == "!=")
   {
+    //handle true, false, and var booleans
+    if(tokType == "boolean" || "boolVal")
+    {
+      return "boolVal";
+    }
     return boolExprST(a);
   }
   //check if intExprST
@@ -288,18 +297,6 @@ string GenSymbolTable::boolExprST(Token* a)
 {
   if (verbose)cout << "BOOLEXPR ST" << endl;
 
-  //handle Comparison error of wrong child
-    //we have duplicate comparison tokens and we changed
-    //something but didn't get rid of the token so we have to
-    //jump over it to get to a "!=" or "=="
-
-  //this shouldn't be needed anymore
-  if(a->getType() == "Comp")
-  {
-    //switch to only child
-    a = a->children[0];
-  }
-  //^^^^^^^^^^^^^
   string tokType = a->getType();
   string tokVal;
   if(tokType == "==" || tokType == "!=")
@@ -307,15 +304,15 @@ string GenSymbolTable::boolExprST(Token* a)
     string leftType; //left hand expression type
     string rightType; //right hand expression type
 
-    cout << "before the children" << endl;
+    //cout << "before the children" << endl;
     if(a->children[0]) //handle nullptr
     {
-      cout << "sending child 0 " << a->children[0]->getType() << " " << a->children[0]->getData() << endl;
+      //cout << "sending child 0 " << a->children[0]->getType() << " " << a->children[0]->getData() << endl;
       leftType = exprST(a->children[0]); //left side recursion
     }
     if(a->children[1]) //handle nullptr
     {
-      cout << "sending child 1 " << a->children[1]->getType() << " " << a->children[1]->getData() << endl;
+      //cout << "sending child 1 " << a->children[1]->getType() << " " << a->children[1]->getData() << endl;
       rightType = exprST(a->children[1]); //right side recursion
     }
 
