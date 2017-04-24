@@ -110,38 +110,28 @@ void Semantic::traverse(Token* a)
   //depth-first: if kick and parent is comparison, assign the next
    //comparison token to that parent
   string symbolOperator;
-
-  if(a->children[0]->getType() == "Comp")
-  {
-
-  }
-
-  //
-  if(a->children[1]->getType() == "Comp")
-  {
-
-  }
-
-  if(a->getType() == "Comp")
-  {
-    //get the bool from the first element
-    bool symbol = comparisons.at(comparisonsPos);
-    ++comparisonsPos;
-    if(symbol) //"=="
-    {
-      symbolOperator = "==";
-      a->setType(symbolOperator);
-    }
-    else if(!symbol) //"!="
-    {
-      symbolOperator = "!=";
-      a->setType(symbolOperator);
-    }
-  }
   //recursive call
   for (vector<Token*>::size_type i = 0; i < a->children.size(); i++) {
+    if(a->getType() == "Comp")
+    {
+      //get the bool from the first element
+      bool symbol = comparisons.at(comparisonsPos);
+      ++comparisonsPos;
+      if(symbol) //"=="
+      {
+        symbolOperator = "==";
+        a->setType(symbolOperator);
+      }
+      else if(!symbol) //"!="
+      {
+        symbolOperator = "!=";
+        a->setType(symbolOperator);
+      }
+    }
     traverse(a->children[i]);
   }
+
+
 }
 
 bool Semantic::term(string tt) //terminal leaf creation
