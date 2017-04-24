@@ -118,7 +118,7 @@ void Semantic::traverse()
     cout << newCompTokens[x]->getLine() << ":" << newCompTokens[x]->getPos() << endl;
 
     //actual comparison token
-    if(newCompTokens[x]->getLine() == 0 && newCompTokens[x]->getPos() == 0)
+    if(newCompTokens[x]->getLine() != 0 && newCompTokens[x]->getPos() != 0)
     {
       actualCompTokens.push_back(newCompTokens[x]);
     }
@@ -128,6 +128,7 @@ void Semantic::traverse()
   for(unsigned int i = 0; i < comparisons.size(); i++)
   {
     cout << comparisons[i] << endl;
+    cout << actualCompTokens[i]->getType() << "  " << actualCompTokens[i]->getData() << endl;
   }
 
     //loop through and replace the "Comp" tokens

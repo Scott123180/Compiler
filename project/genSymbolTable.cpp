@@ -17,12 +17,12 @@ GenSymbolTable::GenSymbolTable(Token* r, bool v)
   curToken = rootToken;
 
   //call the function to complete the ST generation
-  produceST(curToken);
+  //produceST(curToken);
 
-  calcSymbolTableOutput(rootSymbolTable, verbose);
+  //calcSymbolTableOutput(rootSymbolTable, verbose);
 
   //dfio search for variables that are declared and not used
-  rootSymbolTable->declaredNotUsed(rootSymbolTable);
+  //rootSymbolTable->declaredNotUsed(rootSymbolTable);
 
 }
 
