@@ -128,6 +128,73 @@ void CST::dfio(Token* a, bool verbose) //depth-first in order
   }
 }
 
+void CST::io(Token *a, vector<bool> e)
+{
+  eqList = e;
+  calcFirstTok();
+  calcLastTok();
+  recurse();
+}
+
+void CST::recurse()
+{
+  if(curNode->getType() == "Comp")
+  {
+    //change type of node to display type
+    curNode->setType(boolToEqSymbol(eqList[eqListPlace++]));
+  }
+
+  //kick back up n times
+
+  //scan children for any unvisited
+
+  //goDeep on children
+
+  //repeat comparison and kicks
+}
+
+void CST::calcFirstTok()
+{
+  //set to root
+  curNode = rootToken;
+
+  //continue until cur node not empty
+  while(!curNode->children.empty())
+  {
+    //change the current node to the first child node of current node
+    curNode = curNode->children.front();
+  }
+}
+
+void CST::calcLastTok()
+{
+  //set to root
+  curNode = rootToken;
+
+  //continue until cur node not empty
+  while(!curNode->children.empty())
+  {
+    //change the current node to the last child node of current node
+    curNode = curNode->children.back();
+  }
+}
+
+void CST::goDeep()
+{
+  //continue until cur node not empty
+  while(!curNode->children.empty())
+  {
+    //change the current node to the first child node of current node
+    curNode = curNode->children.front();
+  }
+}
+
+string CST::boolToEqSymbol(bool b)
+{
+  if(b) return "==";
+  else return "!=";
+}
+
 void CST::calcTokDepth(bool verbose)  //verbose
 {
   //scale up tree

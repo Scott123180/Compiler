@@ -21,6 +21,14 @@ class CST
     Token* calcDepth;
 
     Token* rootToken;
+
+    Token* firstToken;
+
+    Token* lastToken;
+
+    vector<bool> eqList;
+
+    int eqListPlace = 0;
   
     vector<string> tree;
   
@@ -36,8 +44,26 @@ class CST
     bool deleteNode(Token *a);
 
     Token* returnToRoot();
-  
+
+    //depth-first in-order
     void dfio(Token* a, bool verbose); //depth-first in order
+
+    //in-order traversal
+    void io(Token*a, vector<bool> e);
+
+    //call function on the rest of the tree
+    void recurse();
+
+    //use root token to calculate the first token
+    void calcFirstTok();
+
+    //use root token to calculate the last token
+    void calcLastTok();
+
+    //go to the deepest node without visiting
+    void goDeep();
+
+    string boolToEqSymbol(bool b);
   
     void calcTokDepth(bool verbose);
 
