@@ -591,7 +591,6 @@ bool Semantic::WhileStatement1()  //while BoolExpr() Block()
       newAST.addChild(newBranchBlock, true, verbose);
       if(Block())
       {
-        
         return true;
       }
       else //Block()
@@ -643,7 +642,6 @@ bool Semantic::IfStatement1() //if BooleanExpr() Block()
       newAST.addChild(newBranchBlock, true, verbose);
       if(Block())
       {
-        
         return true;
       }
       else //Block()
