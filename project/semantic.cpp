@@ -912,6 +912,7 @@ bool Semantic::BooleanExpr2() //boolval()
     Token* copyCur = newAST.curNode;
     //switch to parent
     newAST.curNode = newAST.curNode->parent;
+    cout << "~~~Current node " << newAST.curNode->getType() << "  " << newAST.curNode->getData() << endl;
     //delete child
     newAST.deleteNode(copyCur);
 
@@ -933,7 +934,7 @@ bool Semantic::BooleanExpr()
   }
   else if( Semantic::i = save, BooleanExpr2())
   {
-    //kick()
+    //kick();
     return true;
   }
   else
@@ -1050,15 +1051,17 @@ bool Semantic::Char1()
 }
 bool Semantic::Char()
 {
+  cout << ":::::::::: This is the character we're at: " << Semantic::tokens[Semantic::i].getType()
+    << "  " << Semantic::tokens[Semantic::i].getData() << endl;
   unsigned int save = Semantic::i;
   if ( Semantic::i = save, Char1())
   {
-    
+    cout << "success, next character : " << Semantic::tokens[Semantic::i].getType()
+         << "  " << Semantic::tokens[Semantic::i].getData() << endl;
     return true;
   }
   else
   {
-    
     return false;
   }
 }
