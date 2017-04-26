@@ -146,7 +146,7 @@ bool Semantic::term(string tt) //terminal leaf creation
 
     if(verbose)
     {
-      cout << "hey we matched: " << tt << endl;
+      cout << "---hey we matched: " << tt << endl;
     }
     ++i;  //increment i
     return true;
@@ -157,7 +157,7 @@ bool Semantic::term(string tt) //terminal leaf creation
   {
     if (verbose)
     {
-      cout << "hey we failed: " << tt << endl;
+      cout << "><><?hey we failed: " << tt << endl;
       cout << "this is the type we couldn't match:  \"" << newAST.curNode->getType() << "\"" << endl;
     }
 

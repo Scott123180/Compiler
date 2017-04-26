@@ -22,16 +22,6 @@ class CST
 
     Token* rootToken;
 
-    /*
-    Token* firstToken;
-
-    Token* lastToken;
-
-    vector<bool> eqList;
-
-    int eqListPlace = 0;
-
-     */
     vector<string> tree;
   
     //keep track of how deep in the tree for printing out

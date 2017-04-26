@@ -17,12 +17,12 @@ GenSymbolTable::GenSymbolTable(Token* r, bool v)
   curToken = rootToken;
 
   //call the function to complete the ST generation
-  produceST(curToken);
+  //produceST(curToken);
 
-  calcSymbolTableOutput(rootSymbolTable, verbose);
+  //calcSymbolTableOutput(rootSymbolTable, verbose);
 
   //dfio search for variables that are declared and not used
-  rootSymbolTable->declaredNotUsed(rootSymbolTable);
+  //rootSymbolTable->declaredNotUsed(rootSymbolTable);
 
 }
 
@@ -75,11 +75,10 @@ bool GenSymbolTable::blockST()
     //loop through children to try other types of statements
     for(vector<Token*>::size_type i = 0; i < blockBranch->children.size(); i++)
     {
-      //switch to token
-      if(blockBranch->children[i]) //handle nullptr
-      {
-        curToken = blockBranch->children[i];
-      }
+
+      //switch to children
+      curToken = blockBranch->children[i];
+
       //try different operations
       if(blockST());
       else if(varDeclST());
@@ -89,7 +88,7 @@ bool GenSymbolTable::blockST()
       else if(whileST());
       else //should be unreachable, but throw an error if we reach it
       {
-        vector<string> errorData = {curToken->getType()};
+        vector<string> errorData = {curToken->getType(), curToken->getData()};
 
         Error newError = Error(true, Error::semantic,curToken->getLine(), curToken->getPos()
         , errorData, "You did the impossible and reached an unreachable state. Congrats! : ");
@@ -97,6 +96,7 @@ bool GenSymbolTable::blockST()
 
     }
 
+    kickTok(); //kick back token to block above
     kickST(); //move up in symbol table
     return true;
   }
@@ -121,11 +121,11 @@ bool GenSymbolTable::varDeclST()
       varType = curToken->children[0]->getData();
       varLine = curToken->children[0]->getLine();
       varPosition = curToken->children[0]->getPos();
-    }
+    } else return false; //if vardecl doesn't have any children it can't be a vardecl
     if(curToken->children[1]) //handle nullptr
     {
       varName = curToken->children[1]->getData();
-    }
+    } else return false; //if vardecl doesn't have a second child, can't be vardecl
     //try to declare variable
     StEntry variable = StEntry(varName, varType, varLine,
                                varPosition,curSymbolTable->scope,false);
@@ -140,6 +140,9 @@ bool GenSymbolTable::varDeclST()
 
 bool GenSymbolTable::assignST()
 {
+  cout << "1111111111"<< endl;
+  cout << "cur token type- " << curToken->getType() << " " << curToken->getData() << endl;
+  cout << "parent token- " << curToken->parent->getType() << " " << curToken->parent->  getData() << endl;
   if(curToken->getType() == "AssignStatement")
   {
     if (verbose) cout << "ASSIGNSTATEMENT ST" << endl;
@@ -181,8 +184,8 @@ bool GenSymbolTable::ifST()
       //advance token to block
       if (verbose) cout << "In the if. cur token type" << curToken->getType() << endl;
       curToken = curToken->children[1];
+      blockST();
     }
-    blockST();
     return true;
   }
   else //not an if statement
@@ -223,9 +226,10 @@ bool GenSymbolTable::whileST()
     }
     if(curToken->children[1]) //handle nullptr
     {
+      //advance token to block
       curToken = curToken->children[1];
+      blockST();
     }
-    blockST();
     return true;
   }
   else //not an if statement
