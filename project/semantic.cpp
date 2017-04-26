@@ -132,6 +132,20 @@ bool Semantic::term(string tt) //terminal leaf creation
 
   else //no match
   {
+    //handle empty charlists
+    if(tt == "charList")
+    {
+      if(Semantic::tokens[(Semantic::i - 1)].getType() == "leftQuote"
+        &&Semantic::tokens[(Semantic::i)].getType() == "rightQuote")
+      {
+        int line = Semantic::tokens[Semantic::i].getLine();
+        int pos = Semantic::tokens[Semantic::i].getPos();
+        Token* emptyCharList = new Token("string","", line, pos);
+        newAST.addChild(emptyCharList, false, verbose);
+        //don't increment i
+        return true;
+      }
+    }
     if (verbose)
     {
       cout << "><><?hey we failed: " << tt << endl;
@@ -931,10 +945,12 @@ bool Semantic::CharList1() //Char() CharList()
 {
   if(term("charList"))
   {
+    cout << "we returned a charlist" << endl;
     return true;
   }
   else
   {
+    cout << "we didn't return a charList" << endl;
     return false;
   }
 }

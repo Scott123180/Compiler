@@ -8,8 +8,7 @@ using namespace std;
 GenSymbolTable::GenSymbolTable(Token* r, bool v)
   : verbose(v), rootToken(r)
 {
-  verbose = true;
-
+  
   //initialize symbol table
   rootSymbolTable = new SymbolTable(nullptr, uniqueScope++);
   curSymbolTable = rootSymbolTable;
@@ -92,7 +91,9 @@ bool GenSymbolTable::blockST()
         vector<string> errorData = {curToken->getType(), curToken->getData()};
 
         Error newError = Error(true, Error::semantic,curToken->getLine(), curToken->getPos()
-        , errorData, "You did the impossible and reached an unreachable state. Congrats! : ");
+        , errorData, "You did the impossible and reached an unreachable state. Congrats! \n"
+                                 "In reality, you probably did nothing wrong, just run make "
+                                 "clean and make all and it should work fine.");
       }
 
     }
@@ -200,6 +201,11 @@ bool GenSymbolTable::printST()
     //type check and utilize expression with first child
     if(curToken->children[0]) //handle nullptr
     {
+      cout << "PRINT STATMEMENT INFO" << endl;
+      cout << "current token" << endl;
+      cout << curToken->getType() << ":" << curToken->getData() << endl;
+      cout << "CHILD 0" << endl;
+      cout << curToken->children[0]->getType() << ":" << curToken->children[0]->getData() << endl;
       exprST(curToken->children[0]);
     }
 
@@ -262,9 +268,12 @@ string GenSymbolTable::exprST(Token* a)
     tokType = lookupVar->type;
     if (verbose)cout << tokType << endl;
     lookupVar->utilized = true;
-    cout << "Lookup var name " << lookupVar->name << endl;
-    cout << "Lookup var line:pos " << lookupVar->lineNum << ":" << lookupVar->position << endl;
-    cout << "utilized " << lookupVar->utilized << endl;
+    if(verbose)
+    {
+      cout << "Lookup var name " << lookupVar->name << endl;
+      cout << "Lookup var line:pos " << lookupVar->lineNum << ":" << lookupVar->position << endl;
+      cout << "utilized " << lookupVar->utilized << endl;
+    }
 
     return tokType;
   }
@@ -278,10 +287,15 @@ string GenSymbolTable::exprST(Token* a)
   //handle type of expression
   if(tokType == "boolVal" || tokType == "boolean" || tokType == "==" || tokType == "!=")
   {
+    //fix boolval and boolean mismatch
+    if(tokType == "boolVal")
+    {
+      a->setType("boolean");
+    }
     //handle true, false, and var booleans
     if(tokType == "boolean" || tokType == "boolVal")
     {
-      return "boolVal";
+      return "boolean";
     }
     return boolExprST(a);
   }
@@ -296,8 +310,13 @@ string GenSymbolTable::exprST(Token* a)
     return intExprST(a);
   }
     //charlist is a raw string, string is the type stored in variable
-  else if(tokType == "string")
+  else if(tokType == "string" || tokType == "charList")
   {
+    //fix charList and make into string
+    if(tokType == "charList")
+    {
+      a->setType("string");
+    }
     return "string";
   }
   else
@@ -305,14 +324,35 @@ string GenSymbolTable::exprST(Token* a)
     cout << "WE FUCKED UP IN HANDLING THIS TOKEN" << endl;
     cout << "\"" << a->getType() << "\"" << endl;
     cout << "\"" << a->getData() << "\"" << endl;
+    cout << a->getLine() << ":" << a->getPos() << endl;
+
+    cout << "PARENT INFORMATION" << endl;
+    cout << "\"" << a->parent->getType() << "\"" << endl;
+    cout << "\"" << a->parent->getData() << "\"" << endl;
+    cout << a->parent->getLine() << ":" << a->parent->getPos() << endl;
+
+    cout << "CHILD 0 INFORMATION" << endl;
+    cout << "\"" << a->children[0]->getType() << "\"" << endl;
+    cout << "\"" << a->children[0]->getData() << "\"" << endl;
+    cout << a->children[0]->getLine() << ":" << a->children[0]->getPos() << endl;
+
+    cout << "CHILD 0 CHILD 0 INFORMATION" << endl;
+    cout << "\"" << a->children[0]->children[0]->getType() << "\"" << endl;
+    cout << "\"" << a->children[0]->children[0]->getData() << "\"" << endl;
+    cout << a->children[0]->children[0]->getLine() << ":" << a->children[0]->children[0]->getPos() << endl;
+
+    exit(1);
   }
 }
 
 string GenSymbolTable::boolExprST(Token* a)
 {
-  if (verbose)cout << "BOOLEXPR ST" << endl;
-  cout << "===========type " << a->getType() << endl;
-  cout << "===========data " << a->getData() << endl;
+  if (verbose)
+  {
+    cout << "BOOLEXPR ST" << endl;
+    cout << "===========type " << a->getType() << endl;
+    cout << "===========data " << a->getData() << endl;
+  }
   string tokType = a->getType();
   string tokVal;
   if(tokType == "==" || tokType == "!=")
@@ -342,13 +382,18 @@ string GenSymbolTable::boolExprST(Token* a)
     }
     else //no error
     {
-      return "boolVal";
+      return "boolean";
     }
   }
   //boolean
-  else if(tokType == "boolVal")
+  else if(tokType == "boolVal" || tokType == "boolean")
   {
-    return "boolVal";
+    //fix boolean and boolVal mismatch
+    if(tokType == "boolVal")
+    {
+      a->setType("boolean");
+    }
+    return "boolean";
   }
   //integer
   else if(tokType == "digit" || tokType == "intOp" || tokType == "int")
