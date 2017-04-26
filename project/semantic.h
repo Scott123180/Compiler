@@ -29,6 +29,8 @@ class Semantic
     //holds a Token("Comp") in buffer to be modified by boolexpr once "==" or "!=" is known
     vector<Token*> newCompTokens;
 
+    int newCompTokenNum = 0;
+
     vector<Token> tokens;
 
     vector<string> genSTOutput;
@@ -123,8 +125,7 @@ class Semantic
     bool digit1();
     bool digit();
 
-    bool boolop1();
-    bool boolop();
+    pair<bool,string> boolop();
 
     bool boolval1();
     bool boolval();

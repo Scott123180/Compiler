@@ -32,6 +32,7 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
     //put here just in case
     newAST.rootToken = newAST.returnToRoot();  //go back to the root
 
+    /*
     //loop through tokens and put comparison tokens in vector
     for(; s <= i; s++)
     {
@@ -43,7 +44,23 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
       {
         comparisons.push_back(false);
       }
+    }*/
+
+    cout << "all our boolOps" << endl;
+    for(vector<bool>::size_type q = 0; q < comparisons.size(); q++)
+    {
+      string outString;
+      if(comparisons[q]) outString = "==";
+      else outString = "!=";
+      cout << outString << endl;
     }
+
+    cout << "New comp tokens left. size " << newCompTokens.size() << endl;
+    for(vector<Token*>::size_type q = 0; q < newCompTokens.size(); q++)
+    {
+      cout << newCompTokens[q]->getType() << endl;
+    }
+
     //dfio traversal with replacement of comparison tokens in tree
     traverse(newAST.rootToken);
 
@@ -108,30 +125,6 @@ void Semantic::kick()
 void Semantic::traverse(Token* a)
 {
 
-
-  string symbolOperator;
-  //recursive call
-  for (vector<Token*>::size_type i = 0; i < a->children.size(); i++) {
-    if(a->getType() == "Comp")
-    {
-      //get the bool from the first element
-      bool symbol = comparisons.at(comparisonsPos);
-      ++comparisonsPos;
-      if(symbol) //"=="
-      {
-        symbolOperator = "==";
-        a->setType(symbolOperator);
-      }
-      else if(!symbol) //"!="
-      {
-        symbolOperator = "!=";
-        a->setType(symbolOperator);
-      }
-    }
-    traverse(a->children[i]);
-  }
-
-
 }
 
 bool Semantic::term(string tt) //terminal leaf creation
@@ -163,11 +156,6 @@ bool Semantic::term(string tt) //terminal leaf creation
       //create leaf
       newAST.addChild(newTerminal, false, verbose);
 
-    }
-    else if(tt == "boolOp")
-    {
-      //push back reference to token in order
-      newCompTokens.push_back(&Semantic::tokens[(Semantic::i)]);
     }
 
     if(verbose)
@@ -581,10 +569,6 @@ bool Semantic::WhileStatement1()  //while BoolExpr() Block()
 {
   if(term("while"))
   {
-    Token compTime = Semantic::tokens[Semantic::i];
-    Token* newBranchBool = new Token("Comp");
-    newCompTokens.push_back(newBranchBool);
-    newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
     {
       Token* newBranchBlock = new Token("Block");
@@ -601,8 +585,6 @@ bool Semantic::WhileStatement1()  //while BoolExpr() Block()
     }
     else //BooleanExpr()
     {
-      newCompTokens.pop_back();
-      newAST.deleteNode(newBranchBool);
       return false;
     }
   }
@@ -633,9 +615,6 @@ bool Semantic::IfStatement1() //if BooleanExpr() Block()
 {
   if(term("if"))
   {
-    Token* newBranchBool = new Token("Comp");
-    newCompTokens.push_back(newBranchBool);
-    newAST.addChild(newBranchBool, true, verbose);
     if(BooleanExpr())
     {
       Token* newBranchBlock = new Token("Block");
@@ -653,7 +632,6 @@ bool Semantic::IfStatement1() //if BooleanExpr() Block()
     else //BooleanExpr()
     {
       newCompTokens.pop_back();
-      newAST.deleteNode(newBranchBool);
       return false;
     }
   }
@@ -706,17 +684,12 @@ bool Semantic::Expr2() //StringExpr()
 }
 bool Semantic::Expr3() //BooleanExpr()
 {
-  Token* newBranch = new Token("Comp");
-  newCompTokens.push_back(newBranch);
-  newAST.addChild(newBranch, true, verbose);
   if(BooleanExpr())
   {
     return true;
   }
   else //BooleanExpr()
   {
-    newCompTokens.pop_back();
-    newAST.deleteNode(newBranch);
     return false;
   }
 }
@@ -889,10 +862,16 @@ bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
 {
   if(term("leftParen"))
   {
+
+    Token* newComparison = new Token("Comp");
+    newAST.addChild(newComparison,true, verbose);
     if(Expr())
     {
-      if (boolop())
+      pair<bool,string> boolOpResults = boolop();
+      if (boolOpResults.first) //boolop succeeded
       {
+        //grab value of it and change comp operator
+        newComparison->setType(boolOpResults.second);
         if(Expr())
         {
           if(term("rightParen"))
@@ -1156,27 +1135,21 @@ bool Semantic::digit()
 
 //BOOLOP================================================================
 
-bool Semantic::boolop1()
-{
-  if(term("boolOp"))
-  {
-    return true;
-  }
-  else //boolop
-  {
-    return false;
-  }
-}
-bool Semantic::boolop()
-{
+pair<bool,string> Semantic::boolop() {
   unsigned int save = Semantic::i;
-  if( Semantic::i = save, boolop1())
+
+  cout << "---------------------At save  " << Semantic::tokens[Semantic::i].getType() <<
+       "  " << Semantic::tokens[Semantic::i].getData() << endl;
+  if (Semantic::i = save, term("boolOp"))
   {
-    return true;
-  }
-  else
+    Semantic::i = save;
+    //grab the token we are comparing
+    string value = Semantic::tokens[Semantic::i].getData();
+    Semantic::i++;  
+    return make_pair(true, value);
+  } else //boolop
   {
-    return false;
+    return make_pair(false, "");
   }
 }
 
