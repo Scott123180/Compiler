@@ -735,7 +735,9 @@ bool Semantic::IntExpr2() //digit()
     /*
      * Hey future me! This might look confusing at first. Why?!
      * Basically, an unwanted IntExpr prints during IntExpr2
-     * because an intExpr can turn into an intVal.
+     * because an intExpr can turn into an intVal. As a result
+     * we would get an extra + over every digit and we don't
+     * want that
      *
      * This code below gets rid of the extra intExpr by messing
      * with pointers. Good luck!
@@ -748,7 +750,6 @@ bool Semantic::IntExpr2() //digit()
 
     copyChild->parent = copyCur->parent; //set parent of copied child
     newAST.curNode->children.back() = copyChild; //get rid of reference to intExpr
-    cout << "~~~Current node " << newAST.curNode->getType() << "  " << newAST.curNode->getData() << endl;
     delete copyCur; //free up copyCur
 
     return true;
@@ -820,7 +821,7 @@ bool Semantic::StringExpr()
   }
 }
 
-//BOOLEANEXPR===========================================================
+//BOOLEANEXPRESSION===========================================================
 
 bool Semantic::BooleanExpr1() //leftParen Expr() boolop() Expr() rightParen
 {
@@ -1004,13 +1005,9 @@ bool Semantic::Char1()
 }
 bool Semantic::Char()
 {
-  cout << ":::::::::: This is the character we're at: " << Semantic::tokens[Semantic::i].getType()
-    << "  " << Semantic::tokens[Semantic::i].getData() << endl;
   unsigned int save = Semantic::i;
   if ( Semantic::i = save, Char1())
   {
-    cout << "success, next character : " << Semantic::tokens[Semantic::i].getType()
-         << "  " << Semantic::tokens[Semantic::i].getData() << endl;
     return true;
   }
   else
