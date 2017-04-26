@@ -32,24 +32,6 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
     //put here just in case
     newAST.rootToken = newAST.returnToRoot();  //go back to the root
 
-    cout << "all our boolOps" << endl;
-    for(vector<bool>::size_type q = 0; q < comparisons.size(); q++)
-    {
-      string outString;
-      if(comparisons[q]) outString = "==";
-      else outString = "!=";
-      cout << outString << endl;
-    }
-
-    cout << "New comp tokens left. size " << newCompTokens.size() << endl;
-    for(vector<Token*>::size_type q = 0; q < newCompTokens.size(); q++)
-    {
-      cout << newCompTokens[q]->getType() << endl;
-    }
-
-    //dfio traversal with replacement of comparison tokens in tree
-    traverse(newAST.rootToken);
-
     //print out the AST in the command line
     newAST.rootToken = newAST.returnToRoot();  //go back to the root
     newAST.calcDepth = newAST.curNode; //set calc depth node
@@ -107,11 +89,6 @@ void Semantic::kick()
   }
 }
 
-//replace 'Comp' tokens with actual operators
-void Semantic::traverse(Token* a)
-{
-
-}
 
 bool Semantic::term(string tt) //terminal leaf creation
 {
@@ -617,7 +594,6 @@ bool Semantic::IfStatement1() //if BooleanExpr() Block()
     }
     else //BooleanExpr()
     {
-      newCompTokens.pop_back();
       return false;
     }
   }
@@ -765,12 +741,14 @@ bool Semantic::IntExpr2() //digit()
      * with pointers. Good luck!
      */
 
+
     Token* copyCur = newAST.curNode;
     Token* copyChild = newAST.curNode->children.back();
     newAST.curNode = newAST.curNode->parent; //move to parent
 
     copyChild->parent = copyCur->parent; //set parent of copied child
     newAST.curNode->children.back() = copyChild; //get rid of reference to intExpr
+    cout << "~~~Current node " << newAST.curNode->getType() << "  " << newAST.curNode->getData() << endl;
     delete copyCur; //free up copyCur
 
     return true;
@@ -893,29 +871,6 @@ bool Semantic::BooleanExpr2() //boolval()
 {
   if(boolval())
   {
-    /*
-     * Hey future me! This might look confusing at first. Why?!
-     * Basically, an extra BoolExpr prints during BooleanExpr
-     * because a BoolExpr can turn into a boolVal.
-     *
-     * This code below gets rid of the extra BooleanExpr by messing
-     * with pointers. Good luck!
-     */
-
-    //change parent node's grandchild to child
-    newAST.curNode->parent->children.back() = newAST.curNode->children[0];
-    //change parent of grandchild
-    newAST.curNode->children[0]->parent = newAST.curNode->parent;
-    //get rid of reference to child in current node
-    newAST.curNode->children.empty();
-    //make copy of current node so can delete
-    Token* copyCur = newAST.curNode;
-    //switch to parent
-    newAST.curNode = newAST.curNode->parent;
-    cout << "~~~Current node " << newAST.curNode->getType() << "  " << newAST.curNode->getData() << endl;
-    //delete child
-    newAST.deleteNode(copyCur);
-
     return true;
   }
   else //boolval()
@@ -934,12 +889,10 @@ bool Semantic::BooleanExpr()
   }
   else if( Semantic::i = save, BooleanExpr2())
   {
-    //kick();
     return true;
   }
   else
   {
-    kick(); //kick back
     return false;
   }
 }

@@ -21,16 +21,6 @@ class Semantic
     //start of tokens in stream
     unsigned int s;
 
-    unsigned int comparisonsPos = 0;
-
-    //use in replacing the comp operators
-    vector<bool> comparisons;
-
-    //holds a Token("Comp") in buffer to be modified by boolexpr once "==" or "!=" is known
-    vector<Token*> newCompTokens;
-
-    int newCompTokenNum = 0;
-
     vector<Token> tokens;
 
     vector<string> genSTOutput;
@@ -48,7 +38,6 @@ class Semantic
     //generate symbol table obj
     GenSymbolTable* newGen;
 
-    void traverse(Token* a);
 
   private:
 
