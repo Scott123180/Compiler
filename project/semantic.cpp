@@ -32,20 +32,6 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
     //put here just in case
     newAST.rootToken = newAST.returnToRoot();  //go back to the root
 
-    /*
-    //loop through tokens and put comparison tokens in vector
-    for(; s <= i; s++)
-    {
-      if(Semantic::tokens[s].getData() == "==")
-      {
-        comparisons.push_back(true);
-      }
-      else if(Semantic::tokens[s].getData() == "!=")
-      {
-        comparisons.push_back(false);
-      }
-    }*/
-
     cout << "all our boolOps" << endl;
     for(vector<bool>::size_type q = 0; q < comparisons.size(); q++)
     {
@@ -1138,14 +1124,12 @@ bool Semantic::digit()
 pair<bool,string> Semantic::boolop() {
   unsigned int save = Semantic::i;
 
-  cout << "---------------------At save  " << Semantic::tokens[Semantic::i].getType() <<
-       "  " << Semantic::tokens[Semantic::i].getData() << endl;
   if (Semantic::i = save, term("boolOp"))
   {
     Semantic::i = save;
     //grab the token we are comparing
     string value = Semantic::tokens[Semantic::i].getData();
-    Semantic::i++;  
+    Semantic::i++;
     return make_pair(true, value);
   } else //boolop
   {
