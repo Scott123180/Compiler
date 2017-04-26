@@ -288,6 +288,11 @@ string GenSymbolTable::exprST(Token* a)
   //check if intExprST
   else if(tokType == "digit" || tokType == "+" || tokType == "int")
   {
+    //fix digit and make it int
+    if(tokType == "digit")
+    {
+      a->setType("int");
+    }
     return intExprST(a);
   }
     //charlist is a raw string, string is the type stored in variable
@@ -346,8 +351,13 @@ string GenSymbolTable::boolExprST(Token* a)
     return "boolVal";
   }
   //integer
-  else if(tokType == "digit" || tokType == "intOp")
+  else if(tokType == "digit" || tokType == "intOp" || tokType == "int")
   {
+    //fix digit and make it int
+    if(tokType == "digit")
+    {
+      a->setType("int");
+    }
     //calculate types and
     return intExprST(a);
   }
@@ -378,6 +388,12 @@ string GenSymbolTable::intExprST(Token* a)
 {
   if (verbose)cout << "INTEXPR ST" << endl;
   string tokType = a->getType();
+
+  //fix digit and make it int
+  if(tokType == "digit")
+  {
+    a->setType("int");
+  }
   if(tokType == "+")
   {
     string leftType; //left-hand expression type
@@ -392,14 +408,14 @@ string GenSymbolTable::intExprST(Token* a)
     }
 
     //check for type mismatch
-    if(leftType != "digit")
+    if(leftType != "int")
     {
       //error
       vector<string> errorData = {leftType};
       Error typeMismatch = Error(true, Error::semantic, a->getLine(), a->getPos(), errorData,
                                  "Type mismatch. This is not a digit.");
     }
-    else if(rightType != "digit")
+    else if(rightType != "int")
     {
       //error
       vector<string> errorData = {rightType};
@@ -408,12 +424,12 @@ string GenSymbolTable::intExprST(Token* a)
     }
     else //no error
     {
-      return "digit";
+      return "int";
     }
   }
   else
   {
-    return "digit";
+    return "int";
   }
 }
 
