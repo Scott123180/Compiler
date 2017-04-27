@@ -945,12 +945,10 @@ bool Semantic::CharList1() //Char() CharList()
 {
   if(term("charList"))
   {
-    cout << "we returned a charlist" << endl;
     return true;
   }
   else
   {
-    cout << "we didn't return a charList" << endl;
     return false;
   }
 }
