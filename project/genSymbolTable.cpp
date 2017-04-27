@@ -8,7 +8,7 @@ using namespace std;
 GenSymbolTable::GenSymbolTable(Token* r, bool v)
   : verbose(v), rootToken(r)
 {
-  
+
   //initialize symbol table
   rootSymbolTable = new SymbolTable(nullptr, uniqueScope++);
   curSymbolTable = rootSymbolTable;
@@ -158,7 +158,15 @@ bool GenSymbolTable::assignST()
       curSymbolTable->scope, false);
 
     //lookup variable to assign
-    curSymbolTable->assignVarTable(assignVar);
+    string lookupType = curSymbolTable->assignVarTable(assignVar);
+    //throw error if different type
+    if(exprType != lookupType)
+    {
+      vector<string> errorData = {lookupType, exprType};
+      Error assignError = Error(true,Error::semantic, curToken->children[0]->getLine(),
+      curToken->children[0]->getPos(), errorData, "Type mismatch in Assign Statment, these types"
+                                  " are not compatible: ");
+    }
   }
   else //not assign statement
   {
@@ -279,7 +287,11 @@ string GenSymbolTable::exprST(Token* a)
   }
   else // not a variable
   {
-    cout << "NOT A VAR " << a->getType() << "    " << a->getData() << endl;
+    if (verbose)
+    {
+      cout << "NOT A VAR " << "\"" << a->getType() << "\"    \"" << a->getData()
+           << "\"" << endl;
+    }
     tokType = a->getType();
   }
 
