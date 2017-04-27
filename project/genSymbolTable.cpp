@@ -457,11 +457,15 @@ string GenSymbolTable::intExprST(Token* a)
     string rightType; //right-hand expression type
     if(a->children[0]) //handle nullptr
     {
+      if(verbose) cout << "Int expression: left child " << a->children[0]->getType() << endl;
       leftType = intExprST(a->children[0]); //left side recursion
+      if(verbose) cout << "Int expression: leftType var " << leftType << endl;
     }
     if(a->children[1]) //handle nullptr
     {
+      if(verbose) cout << "Int expression: right child " << a->children[1]->getType() << endl;
       rightType = intExprST(a->children[1]); //right side recursion
+      if(verbose) cout << "Int expression: rightType var " << rightType << endl;
     }
 
     //check for type mismatch
@@ -469,24 +473,29 @@ string GenSymbolTable::intExprST(Token* a)
     {
       //error
       vector<string> errorData = {leftType};
-      Error typeMismatch = Error(true, Error::semantic, a->getLine(), a->getPos(), errorData,
-                                 "Type mismatch. This is not a digit.");
+      Error typeMismatch = Error(true, Error::semantic, a->children[0]->getLine(),
+                                 a->children[0]->getPos(), errorData,
+                                 "Type mismatch in integer expression. This is not an integer: ");
     }
     else if(rightType != "int")
     {
       //error
       vector<string> errorData = {rightType};
-      Error typeMismatch = Error(true, Error::semantic, a->getLine(), a->getPos(), errorData,
-                                 "Type mismatch. This is not a digit");
+      Error typeMismatch = Error(true, Error::semantic, a->children[1]->getLine(),
+                                 a->children[1]->getPos(), errorData,
+                                 "Type mismatch in integer expression. This is not an integer: ");
     }
     else //no error
     {
       return "int";
     }
+
+
   }
   else
   {
-    return "int";
+    //return the type of the token
+    return a->getType();
   }
 }
 
