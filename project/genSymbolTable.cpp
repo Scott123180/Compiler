@@ -209,11 +209,6 @@ bool GenSymbolTable::printST()
     //type check and utilize expression with first child
     if(curToken->children[0]) //handle nullptr
     {
-      cout << "PRINT STATMEMENT INFO" << endl;
-      cout << "current token" << endl;
-      cout << curToken->getType() << ":" << curToken->getData() << endl;
-      cout << "CHILD 0" << endl;
-      cout << curToken->children[0]->getType() << ":" << curToken->children[0]->getData() << endl;
       exprST(curToken->children[0]);
     }
 
@@ -333,25 +328,10 @@ string GenSymbolTable::exprST(Token* a)
   }
   else
   {
-    cout << "WE FUCKED UP IN HANDLING THIS TOKEN" << endl;
+    cout << "WE DUCKED UP IN HANDLING THIS TOKEN" << endl;
     cout << "\"" << a->getType() << "\"" << endl;
     cout << "\"" << a->getData() << "\"" << endl;
     cout << a->getLine() << ":" << a->getPos() << endl;
-
-    cout << "PARENT INFORMATION" << endl;
-    cout << "\"" << a->parent->getType() << "\"" << endl;
-    cout << "\"" << a->parent->getData() << "\"" << endl;
-    cout << a->parent->getLine() << ":" << a->parent->getPos() << endl;
-
-    cout << "CHILD 0 INFORMATION" << endl;
-    cout << "\"" << a->children[0]->getType() << "\"" << endl;
-    cout << "\"" << a->children[0]->getData() << "\"" << endl;
-    cout << a->children[0]->getLine() << ":" << a->children[0]->getPos() << endl;
-
-    cout << "CHILD 0 CHILD 0 INFORMATION" << endl;
-    cout << "\"" << a->children[0]->children[0]->getType() << "\"" << endl;
-    cout << "\"" << a->children[0]->children[0]->getData() << "\"" << endl;
-    cout << a->children[0]->children[0]->getLine() << ":" << a->children[0]->children[0]->getPos() << endl;
 
     exit(1);
   }
@@ -458,13 +438,13 @@ string GenSymbolTable::intExprST(Token* a)
     if(a->children[0]) //handle nullptr
     {
       if(verbose) cout << "Int expression: left child " << a->children[0]->getType() << endl;
-      leftType = intExprST(a->children[0]); //left side recursion
+      leftType = exprST(a->children[0]); //left side recursion
       if(verbose) cout << "Int expression: leftType var " << leftType << endl;
     }
     if(a->children[1]) //handle nullptr
     {
       if(verbose) cout << "Int expression: right child " << a->children[1]->getType() << endl;
-      rightType = intExprST(a->children[1]); //right side recursion
+      rightType = exprST(a->children[1]); //right side recursion
       if(verbose) cout << "Int expression: rightType var " << rightType << endl;
     }
 
