@@ -966,7 +966,6 @@ bool Semantic::CharList()
   }
   else if ( Semantic::i = save, CharList2())
   {
-    
     return true;
   }
   else
