@@ -16,13 +16,13 @@ class CodeGen
     ///op code section
 
     //load the accumulator with a constant
-    string LDA_C = "A9";
+    const string LDA_C = "A9";
     //load the accumulator from memory
-    string LDA_M = "AD";
+    const string LDA_M = "AD";
     //store the accumulator in memory
-    string STA = "AD";
+    const string STA = "AD";
     //Add with carry
-    string ADC = "6D";
+    const string ADC = "6D";
     //load the X register with a constant
 
     //load the X register from memory
