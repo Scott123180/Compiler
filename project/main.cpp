@@ -36,7 +36,7 @@ int main(int argc, char** argv)
   //generate code from AST and symbolTable
   CodeGen newCodeGen(newSemantic.newAST, newSemantic.newGen->rootSymbolTable);
 
-  Output newOutput(newLex, newParser, newSemantic);
+  Output newOutput(newLex, newParser, newSemantic, newCodeGen);
   newOutput.printOutput();
 
 }

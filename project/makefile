@@ -3,14 +3,17 @@ CXXFLAGS=-std=c++11
 
 all: lex
 
-lex:  cst.o \
+lex:  codeGen.o \
+      cst.o \
       error.o \
       genSymbolTable.o \
+      jumps.o \
       lexer.o \
       main.o \
       output.o \
       parser.o \
       semantic.o \
+      staticData.o \
       stEntry.o \
       symbolTable.o \
       token.o

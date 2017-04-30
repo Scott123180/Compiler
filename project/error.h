@@ -17,7 +17,7 @@ class Error
     vector<string> data;
 
   public:
-    enum errorStage {fileInput, lex, parse, semantic, token};
+    enum errorStage {fileInput, lex, parse, semantic, token, codeGen};
 
     //create and assign error object
     Error(bool q, int e, int l, int p, vector<string> d, string m);

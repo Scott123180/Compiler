@@ -9,6 +9,7 @@
 #include "semantic.h"
 #include "parser.h"
 #include "symbolTable.h"
+#include "codeGen.h"
 
 using namespace std;
 
@@ -30,6 +31,8 @@ class Output {
 
     void printSymbolTable();
 
+    void printCodeGen();
+
     void printHTMLFooter();
 
     void printError();
@@ -42,24 +45,27 @@ class Output {
 
     vector<string> treeST;
 
+    string codeGen[256];
+
   public:
 
-    Output(Lexer l, Parser p, Semantic s);
+    Output(Lexer l, Parser p, Semantic s, CodeGen c);
 
-  void printOutput()
-  {
-    clearHTML();
-    //clearCST(); if decide to use js tree, implement
-    printHTMLHeader();
-    printTitle();
-    printTokens();
-    printCST();
-    printAST();
-    printSymbolTable();
-    printHTMLFooter();
-  }
+    void printOutput()
+    {
+      clearHTML();
+      //clearCST(); if decide to use js tree, implement
+      printHTMLHeader();
+      printTitle();
+      printTokens();
+      printCST();
+      printAST();
+      printSymbolTable();
+      printCodeGen();
+      printHTMLFooter();
+    }
 
-  void printErrors()
+    void printErrors()
     {
       clearHTML();
       printHTMLHeader();

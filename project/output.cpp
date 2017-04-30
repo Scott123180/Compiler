@@ -10,7 +10,7 @@
 
 using namespace std;
 
-Output::Output(Lexer l, Parser p, Semantic s)
+Output::Output(Lexer l, Parser p, Semantic s, CodeGen c)
 {
   //set print variables
   stream = l.stream;
@@ -20,6 +20,12 @@ Output::Output(Lexer l, Parser p, Semantic s)
   treeAST = s.newAST.tree;
 
   treeST = s.genSTOutput;
+
+  //assign values to array
+  for(int i = 0; i <= 255; i++)
+  {
+    codeGen[i] = c.output[i];
+  }
 }
 
 void Output::clearHTML()
@@ -218,6 +224,39 @@ void Output::printSymbolTable()
   }
 
   outputHTML.close();
+}
+
+void Output::printCodeGen()
+{
+  //modify the output html
+  ofstream outputHTML;
+  outputHTML.open("output.html", std::ios_base::app); //open and append to file
+
+  outputHTML <<"<div class=\"panel panel-default col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n"
+    "<div class=\"panel-heading\">\n"
+    "<h3 class=\"panel-title\">Code Gen</h3>\n"
+    "</div>\n"
+    "<div class=\"panel-body\">\n";
+
+
+  //rows
+  for(int i = 0, n = 0; i < 8; i++, n++)
+  {
+    //columns
+    outputHTML << "<p>\n";
+    for(int j = 0; j < 32; j++, n++)
+    {
+      outputHTML << codeGen[n] << " ";
+    }
+    outputHTML << "</p>\n";
+  }
+
+  outputHTML << "</div>\n"
+    "</div>";
+
+  outputHTML.close();
+
+  return;
 }
 
 void Output::printError()

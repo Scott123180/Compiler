@@ -294,6 +294,24 @@ string GenSymbolTable::exprST(Token* a)
   //handle type of expression
   if(tokType == "boolVal" || tokType == "boolean" || tokType == "==" || tokType == "!=")
   {
+    //check for boolean hell so I can throw error in code gen
+    if(tokType == "==" || tokType == "!=")
+    {
+      string type1 = a->children[0]->getType();
+      string type2 = a->children[1]->getType();
+      //if children are comparitor operators too
+      if(type1 == "!=" || type1 == "==" || type2 == "!=" || type2 == "==")
+      {
+        //propagate boolean hell error to root symbol table
+        SymbolTable* returnToRoot = curSymbolTable;
+        while(returnToRoot->parent)
+        {
+          returnToRoot = returnToRoot->parent;
+        }
+        returnToRoot->booleanHell = true;
+      }
+    }
+
     //fix boolval and boolean mismatch
     if(tokType == "boolVal")
     {

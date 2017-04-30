@@ -68,6 +68,12 @@ Error::Error(bool q, int e, int l, int p, vector<string> d, string m)
            << message << "\"" << data[0] << "\"" << endl
            << "Aborting Lex." << endl;
       break;
+
+    case codeGen:
+      cerr << message << endl
+           << "Aborting codeGen" << endl;
+
+      break;
     default:
       cerr << "Unknown error at " << line << ":" << pos << endl
            << message << data[0] << endl

@@ -40,6 +40,7 @@ class SymbolTable
       //(more than one data type assigned to StEntry)
     void typeMismatch(); //error
 
+    bool booleanHell = false;
 
   private:
 };

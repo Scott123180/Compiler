@@ -11,7 +11,18 @@ class CodeGen
   public:
     CodeGen(CST ast, SymbolTable* st);
 
+    string output[256];
+
   private:
+
+    CST cgAST;
+
+    SymbolTable* cgSymbolTable;
+
+    //keep track of program exceeding 256 bytes
+    bool overFlow = false;
+
+    void process();
 
     ///op code section
 
