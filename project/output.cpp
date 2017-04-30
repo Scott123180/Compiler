@@ -24,8 +24,11 @@ Output::Output(Lexer l, Parser p, Semantic s, CodeGen c)
   //assign values to array
   for(int i = 0; i <= 255; i++)
   {
-    codeGen[i] = c.output[i];
+    cgOutput[i] = c.output[i];
   }
+
+  //print boolean hell
+  cgPrintBoolHell = c.printBoolHell;
 }
 
 void Output::clearHTML()
@@ -223,6 +226,10 @@ void Output::printSymbolTable()
     outputHTML << treeST[i] << "\n";
   }
 
+
+  outputHTML << "</div>\n"
+    "</div>";
+
   outputHTML.close();
 }
 
@@ -238,6 +245,15 @@ void Output::printCodeGen()
     "</div>\n"
     "<div class=\"panel-body\">\n";
 
+  if(cgPrintBoolHell)
+  {
+    outputHTML <<
+     "<div class=\"jumbotron\">\n"
+       "  <h1>No code for you!</h1>\n"
+       "  <p>Nested boolean expressions not accepted.</p>\n"
+       "  <p><a class=\"btn btn-primary btn-lg\" href=\"https://youtu.be/srZnENbdwDI?t=1m37s\" role=\"button\" target=\"_blank\">Learn more</a></p>\n"
+       "</div>\n";
+  }
 
   //rows
   for(int i = 0, n = 0; i < 8; i++, n++)
@@ -246,7 +262,7 @@ void Output::printCodeGen()
     outputHTML << "<p>\n";
     for(int j = 0; j < 32; j++, n++)
     {
-      outputHTML << codeGen[n] << " ";
+      outputHTML << cgOutput[n] << " ";
     }
     outputHTML << "</p>\n";
   }

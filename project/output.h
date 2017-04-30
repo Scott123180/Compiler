@@ -45,7 +45,9 @@ class Output {
 
     vector<string> treeST;
 
-    string codeGen[256];
+    string cgOutput[256];
+
+    bool cgPrintBoolHell = false;
 
   public:
 

@@ -71,7 +71,7 @@ Error::Error(bool q, int e, int l, int p, vector<string> d, string m)
 
     case codeGen:
       cerr << message << endl
-           << "Aborting codeGen" << endl;
+           << "Aborting codeGen." << endl;
 
       break;
     default:

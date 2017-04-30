@@ -13,6 +13,13 @@ class CodeGen
 
     string output[256];
 
+    //for use in printing bool hell warning
+    bool printBoolHell = false;
+
+    int curIndex = 0;
+
+    void loop(Token* a);
+
   private:
 
     CST cgAST;
