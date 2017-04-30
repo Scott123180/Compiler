@@ -2,5 +2,5 @@
 
 CodeGen::CodeGen(CST ast, SymbolTable *st)
 {
-  
+
 }
