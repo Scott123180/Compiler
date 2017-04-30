@@ -10,6 +10,7 @@
 #include "symbolTable.h"
 #include "semantic.h"
 #include "genSymbolTable.h"
+#include "codeGen.h"
 
 using namespace std;
 
@@ -31,6 +32,9 @@ int main(int argc, char** argv)
 
   //set boolean to true for verbose, false for not verbose
   Semantic newSemantic(newLex.stream, false, 0);
+
+  //generate code from AST and symbolTable
+  CodeGen newCodeGen(newSemantic.newAST, newSemantic.newGen->rootSymbolTable);
 
   Output newOutput(newLex, newParser, newSemantic);
   newOutput.printOutput();
