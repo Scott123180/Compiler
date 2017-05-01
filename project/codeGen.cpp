@@ -22,7 +22,7 @@ CodeGen::CodeGen(CST ast, SymbolTable* st)
   else
   {
     //process the code
-    process();
+    //process();
 
     //check for overflow after execution
     if(overFlow)
@@ -51,9 +51,37 @@ void CodeGen::loop(Token *a)
   if(!a->getData().empty()) //(not a branch node)
   {
     //check parent
-    string parent = a->parent->getType();
+    string parentType = a->parent->getType();
 
-    //check for 
+    //if first child, check what type parent is
+    if(a->parent->children[0] == a)
+    {
+      if(parentType == "VarDecl")
+      {
+
+      }
+      else if(parentType == "AssignStatement")
+      {
+
+      }
+      else if(parentType == "==" || parentType == "!=")
+      {
+
+      }
+      else if(parentType == "PrintStatement")
+      {
+
+      }
+      else //unreachable unless I forgot something
+      {
+        cout << "Please edit the code to include this type" << endl;
+        cout << parentType << endl;
+      }
+    }
+    else
+    {
+      //do nothing
+    }
   }
 
   //recursion
