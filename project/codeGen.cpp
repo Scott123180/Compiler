@@ -48,6 +48,13 @@ void CodeGen::process()
 void CodeGen::loop(Token *a)
 {
   //check for leaf node
+  if(!a->getData().empty()) //(not a branch node)
+  {
+    //check parent
+    string parent = a->parent->getType();
+
+    //check for 
+  }
 
   //recursion
   for(vector<Token*>::size_type i = 0; i < a->children.size(); i++)
