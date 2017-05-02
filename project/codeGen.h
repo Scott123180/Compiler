@@ -26,6 +26,10 @@ class CodeGen
 
     SymbolTable* cgSymbolTable;
 
+    StaticData sdTable = StaticData();
+
+    Jumps jTable = Jumps();
+
     //keep track of program exceeding 256 bytes
     bool overFlow = false;
 

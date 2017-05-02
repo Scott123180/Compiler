@@ -63,7 +63,7 @@ void CodeGen::loop(Token *a)
         output[curIndex++] = STA; //8D
 
         //fill with temp memory location
-
+        sdTable.addRow(a->getData(),a->scope);
 
       }
       else if(parentType == "AssignStatement")

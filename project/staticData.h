@@ -1,6 +1,9 @@
 #ifndef COMPILER_STATICDATA_H
 #define COMPILER_STATICDATA_H
 
+#include <string>
+
+using namespace std;
 
 class StaticData {
 
@@ -9,7 +12,7 @@ class StaticData {
       //temp, var, scope, offset
     StaticData() {};
 
-    void addRow(char var, unsigned int scope, unsigned int offset);
+    void addRow(string var, unsigned int scope);
 
   private:
 

@@ -1,6 +1,8 @@
 #include "staticData.h"
 
-void StaticData::addRow(char var, unsigned int scope, unsigned int offset)
+using namespace std;
+
+void StaticData::addRow(string var, unsigned int scope)
 {
 
 }

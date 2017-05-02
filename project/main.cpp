@@ -33,7 +33,8 @@ int main(int argc, char** argv)
   //set boolean to true for verbose, false for not verbose
   Semantic newSemantic(newLex.stream, false, 0);
 
-  //generate code from AST and symbolTable
+  //generate code from AST
+  // (scope is stored in tokens of var, boolean hell error detection stored in ST)
   CodeGen newCodeGen(newSemantic.newAST, newSemantic.newGen->rootSymbolTable);
 
   Output newOutput(newLex, newParser, newSemantic, newCodeGen);
