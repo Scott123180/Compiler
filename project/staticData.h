@@ -9,8 +9,13 @@ class StaticData {
       //temp, var, scope, offset
     StaticData() {};
 
-    void addRow(unsigned int temp, char var, unsigned int scope, unsigned int offset);
+    void addRow(char var, unsigned int scope, unsigned int offset);
+
   private:
+
+
+    //holds the number of the current temporary variable for static var table
+    int tempNum = 0;
 };
 
 

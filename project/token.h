@@ -33,8 +33,7 @@ class Token
     Token* parent;
     vector<Token*> children;
 
-    //for use in in-order traversal
-    bool visited = false;
+    int scope = -1;
 
   private:
     string type;

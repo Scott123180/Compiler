@@ -132,6 +132,8 @@ bool GenSymbolTable::varDeclST()
     StEntry variable = StEntry(varName, varType, varLine,
                                varPosition,curSymbolTable->scope,false);
     curSymbolTable->declVarTable(variable, curSymbolTable);
+    //assign child variable scope (for use in code gen)
+    curToken->children[1]->scope = curSymbolTable->scope;
     return true;
   }
   else //not Variable Declaration
@@ -150,6 +152,8 @@ bool GenSymbolTable::assignST()
     {
       //first child is always variable name
       varName = curToken->children[0]->getData();
+      //assign child variable scope (for use in code gen)
+      curToken->children[0]->scope = curSymbolTable->scope;
     }
     //let exprST handle type checking of expression
     string exprType = exprST(curToken->children[1]);
@@ -271,6 +275,9 @@ string GenSymbolTable::exprST(Token* a)
     tokType = lookupVar->type;
     if (verbose)cout << tokType << endl;
     lookupVar->utilized = true;
+
+    //assign variable value of current scope (for use in code gen)
+    a->scope = curSymbolTable->scope;
     if(verbose)
     {
       cout << "Lookup var name " << lookupVar->name << endl;

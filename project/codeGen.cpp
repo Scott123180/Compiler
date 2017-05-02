@@ -22,7 +22,7 @@ CodeGen::CodeGen(CST ast, SymbolTable* st)
   else
   {
     //process the code
-    //process();
+    process();
 
     //check for overflow after execution
     if(overFlow)
@@ -53,11 +53,17 @@ void CodeGen::loop(Token *a)
     //check parent
     string parentType = a->parent->getType();
 
-    //if first child, check what type parent is
+    //if the token we're looking at is the first child
     if(a->parent->children[0] == a)
     {
       if(parentType == "VarDecl")
       {
+        output[curIndex++] = LDA_C; //A9
+        output[curIndex++] = BRK; //00
+        output[curIndex++] = STA; //8D
+
+        //fill with temp memory location
+
 
       }
       else if(parentType == "AssignStatement")

@@ -38,7 +38,7 @@ class CodeGen
     //load the accumulator from memory
     const string LDA_M = "AD";
     //store the accumulator in memory
-    const string STA = "AD";
+    const string STA = "8D";
     //Add with carry
     const string ADC = "6D";
     //load the X register with a constant
