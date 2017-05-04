@@ -20,7 +20,7 @@ lex:  codeGen.o \
 	$(CXX) $^ -o test1 $(CXXLIBS)
 	
 %.o: %.cpp %.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c -g $< -o $@
 	
 clean:
 	rm *.o

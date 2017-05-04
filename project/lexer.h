@@ -13,6 +13,7 @@ class Lexer
   public:
 
   Lexer(string fileName);
+  ~Lexer();
   vector<Token> stream;
 
   private:

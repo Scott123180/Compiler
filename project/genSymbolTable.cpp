@@ -91,9 +91,7 @@ bool GenSymbolTable::blockST()
         vector<string> errorData = {curToken->getType(), curToken->getData()};
 
         Error newError = Error(true, Error::semantic,curToken->getLine(), curToken->getPos()
-        , errorData, "You did the impossible and reached an unreachable state. Congrats! \n"
-                                 "In reality, you probably did nothing wrong, just run make "
-                                 "clean and make all and it should work fine.");
+        , errorData, "Memory problem. Try recompiling as that might fix it.");
       }
 
     }

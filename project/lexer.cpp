@@ -29,7 +29,7 @@ Lexer::Lexer(string fileName)
     string curLine;
     getline(input, curLine);
 
-    buffer = "";
+    buffer.clear();
 
     //loop through string
     for(int i = 0; i < curLine.length(); i++)
@@ -52,6 +52,11 @@ Lexer::Lexer(string fileName)
   return;
 }
 
+Lexer::~Lexer()
+{
+
+}
+
 //attempts to add token to buffer, if fails, generates error
 void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
 {
@@ -67,7 +72,7 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
         if(c != '=')
         {
           stream.push_back(Token(buffer, line, pos));
-          buffer = "";
+          buffer.clear();
         }
       }
     } //continue processing
@@ -126,25 +131,26 @@ void Lexer::addToBuffer(char c, int line, int pos, int curLineLen)
 
     else if(c == '=')
     {
-      if(buffer.back() == '=') //   ==
+      //avoid invalid read size with !buffer.empty()
+      if(!buffer.empty() && buffer.back() == '=') //   ==
       {
         stream.push_back(Token("==", line, pos));
-        buffer = "";
+        buffer.clear();
         return;
       }
-      else if(buffer.back() == '!') //   !=
+      //avoid invalid read size with !buffer.empty()
+      else if(!buffer.empty() && buffer.back() == '!') //   !=
       {
         stream.push_back(Token("!=", line, pos));
-        buffer = "";
+        buffer.clear();
         return;
       }
-
       else //don't know yet
       {
         if(!(buffer.empty())) //create token from buffer
         {
           stream.push_back(Token(buffer, line, pos));
-          buffer = "";
+          buffer.clear();
         }
         buffer.push_back(c); //put '=' in buffer
         return;
