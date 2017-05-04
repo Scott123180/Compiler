@@ -86,13 +86,15 @@ bool GenSymbolTable::blockST()
       else if(printST());
       else if(ifST());
       else if(whileST());
+
+        /*
       else //should be unreachable, but throw an error if we reach it
       {
         vector<string> errorData = {curToken->getType(), curToken->getData()};
 
         Error newError = Error(true, Error::semantic,curToken->getLine(), curToken->getPos()
         , errorData, "Memory problem. Try recompiling as that might fix it.");
-      }
+      } */
 
     }
 
@@ -378,12 +380,12 @@ string GenSymbolTable::boolExprST(Token* a)
     //cout << "before the children" << endl;
     if(a->children[0]) //handle nullptr
     {
-      cout << "sending child 0 " << a->children[0]->getType() << " " << a->children[0]->getData() << endl;
+      if(verbose)cout << "sending child 0 " << a->children[0]->getType() << " " << a->children[0]->getData() << endl;
       leftType = exprST(a->children[0]); //left side recursion
     }
     if(a->children[1]) //handle nullptr
     {
-      cout << "sending child 1 " << a->children[1]->getType() << " " << a->children[1]->getData() << endl;
+      if(verbose)cout << "sending child 1 " << a->children[1]->getType() << " " << a->children[1]->getData() << endl;
       rightType = exprST(a->children[1]); //right side recursion
     }
 
