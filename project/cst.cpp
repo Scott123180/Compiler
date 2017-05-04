@@ -14,8 +14,16 @@ CST::CST()
   //new root node
   Token* root = new Token("Program");
   root->parent = nullptr;
-  curNode = root;
+  curNode = root; //set current node
+  rootToken = root; //set root token
   depth = 0; //initialize depth to root
+}
+
+CST::~CST()
+{
+  //delete all children of
+  deleteTreeChildren(rootToken);
+  delete(rootToken);
 }
 
 void CST::addChild(Token *t, bool changeToChild, bool verbose)
@@ -51,6 +59,23 @@ void CST::addChild(Token *t, bool changeToChild, bool verbose)
   return;
 }
 
+void CST::deleteTreeChildren(Token* a)
+{
+  while(a->children.size() > 0)
+  {
+    //call on children
+    deleteTreeChildren(a->children.back());
+
+    Token* deleteThis = a->children.back();
+
+    //get rid of reference and decrement size
+    a->children.pop_back();
+
+    //free memory
+    deleteNode(deleteThis);
+  }
+}
+
 bool CST::deleteNode(Token *a)
 {
   //if it has children, don't allow
@@ -66,6 +91,13 @@ bool CST::deleteNode(Token *a)
   }
   else
   {
+    cout << "ERROR in deleting child node of tree" << endl;
+    if(a->parent)
+    {
+      cout << "Parent: " << a->parent->getType() << " " << a->parent->getData() << endl;
+    }
+    cout << "This token: " << a->getType() << " " << a->getData() << endl;
+
     return false;
   }
 }

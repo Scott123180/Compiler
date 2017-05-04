@@ -31,6 +31,7 @@ int main(int argc, char** argv)
   //set boolean to true for verbose, false for not verbose
   Parser newParser(newLex.stream, false,0);
 
+
   /*
   //set boolean to true for verbose, false for not verbose
   Semantic newSemantic(newLex.stream, false, 0);

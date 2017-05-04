@@ -17,6 +17,7 @@ Lexer::Lexer(string fileName)
 
   if (input.fail()) //check for error in file reading
   {
+    input.close();
     vector<string> f = {fileName}; //create string vector of filename
     Error newError(true, newError.fileInput, 0, 0, f, "Error opening the filename specified: ");
   }
@@ -48,6 +49,8 @@ Lexer::Lexer(string fileName)
   }
   
   cout << "Lex: End of program reached. Lex successful!" << endl;
+
+  input.close();
 
   return;
 }
