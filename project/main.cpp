@@ -27,22 +27,25 @@ int main(int argc, char** argv)
 
   Lexer newLex(fileName);
 
-
   //set boolean to true for verbose, false for not verbose
   Parser newParser(newLex.stream, false,0);
-
-
 
   //set boolean to true for verbose, false for not verbose
   Semantic newSemantic(newLex.stream, false, 0);
 
-  /*
+  cout << "-->Before CodeGen" << endl;
   //generate code from AST
   // (scope is stored in tokens of var, boolean hell error detection stored in ST)
   CodeGen newCodeGen(newSemantic.newAST, newSemantic.newGen->rootSymbolTable);
 
+  cout << "->After CodeGen" << endl;
+  cout << "->Before output" << endl;
+
+
   Output newOutput(newLex, newParser, newSemantic, newCodeGen);
   newOutput.printOutput();
-  */
+
+  cout << "->After output"<< endl;
+
 
 }

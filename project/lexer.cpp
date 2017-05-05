@@ -12,6 +12,8 @@ using namespace std;
 Lexer::Lexer(string fileName)
 {
 
+  cout << "Lexer Constructor Called" << endl;
+
   ifstream input;
   input.open(fileName); //open file
 
@@ -55,9 +57,8 @@ Lexer::Lexer(string fileName)
   return;
 }
 
-Lexer::~Lexer()
-{
-
+Lexer::~Lexer() {
+  cout << "Lexer Destructor Called" << endl;
 }
 
 //attempts to add token to buffer, if fails, generates error

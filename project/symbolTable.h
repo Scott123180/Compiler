@@ -14,6 +14,8 @@ class SymbolTable
   public:
     SymbolTable(SymbolTable* parent, unsigned int uniqueS);
 
+    ~SymbolTable();
+
     SymbolTable* parent; //initialize with no parent
     vector<SymbolTable*> children;
 

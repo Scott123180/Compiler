@@ -4,8 +4,9 @@
 using namespace std;
 
 CodeGen::CodeGen(CST ast, SymbolTable* st)
-  :cgAST(ast), cgSymbolTable(st)
+  : cgAST(ast), cgSymbolTable(st)
 {
+  cout << "CodeGen constructor called" << endl;
   //initialize output array to 00's
   for(int i = 0; i < 256; i++)
   {
@@ -36,9 +37,15 @@ CodeGen::CodeGen(CST ast, SymbolTable* st)
 
 }
 
+CodeGen::~CodeGen()
+{
+  cout << "CodeGen Destructor Called" << endl;
+}
+
 //start processing tokens
 void CodeGen::process()
 {
+  cout << "-------Got to process " << endl;
   //ensure we're at the root token
   cgAST.returnToRoot();
   loop(cgAST.rootToken);

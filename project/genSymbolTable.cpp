@@ -9,6 +9,7 @@ GenSymbolTable::GenSymbolTable(Token* r, bool v)
   : verbose(v), rootToken(r)
 {
 
+  cout << "GenSymbolTable constructor called" << endl;
   //initialize symbol table
   rootSymbolTable = new SymbolTable(nullptr, uniqueScope++);
   curSymbolTable = rootSymbolTable;
@@ -28,25 +29,30 @@ GenSymbolTable::GenSymbolTable(Token* r, bool v)
 
 GenSymbolTable::~GenSymbolTable()
 {
-  deleteAllSTChildren(rootSymbolTable);
-  delete(rootSymbolTable);
+  cout << "GenSymbolTable Destructor Called" << endl;
+  //deleteAllSTChildren(rootSymbolTable);
+  //delete(rootSymbolTable);
 }
 
-void GenSymbolTable::deleteAllSTChildren(SymbolTable *a)
+void GenSymbolTable::deleteAllSTChildren(SymbolTable* a)
 {
-  while(a->children.size() > 0)
+  if(!a->children.empty()) //prevent empty children problems
   {
-    //call on children
-    deleteAllSTChildren(a->children.back());
+    while(a->children.size() > 0)
+    {
+      //call on children
+      deleteAllSTChildren(a->children.back());
 
-    SymbolTable* deleteThis = a->children.back();
+      SymbolTable* deleteThis = a->children.back();
 
-    //get rid of reference and decrement size
-    a->children.pop_back();
+      //get rid of reference and decrement size
+      a->children.pop_back();
 
-    //free memory
-    delete(deleteThis);
+      //free memory
+      delete(deleteThis);
+    }
   }
+
 }
 
 //produce symbol table

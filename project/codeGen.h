@@ -11,6 +11,8 @@ class CodeGen
   public:
     CodeGen(CST ast, SymbolTable* st);
 
+    ~CodeGen();
+
     string output[256];
 
     //for use in printing bool hell warning

@@ -11,6 +11,7 @@ using namespace std;
 
 CST::CST()
 {
+  cout << "CST Constructor Called" << endl;
   //new root node
   Token* root = new Token("Program");
   root->parent = nullptr;
@@ -21,9 +22,10 @@ CST::CST()
 
 CST::~CST()
 {
+  cout << "CST Destructor Called" << endl;
   //delete all children of
-  deleteTreeChildren(rootToken);
-  delete(rootToken);
+  //deleteTreeChildren(rootToken);
+  //delete(rootToken);
 }
 
 void CST::addChild(Token *t, bool changeToChild, bool verbose)
@@ -61,19 +63,23 @@ void CST::addChild(Token *t, bool changeToChild, bool verbose)
 
 void CST::deleteTreeChildren(Token* a)
 {
-  while(a->children.size() > 0)
+  if(!a->children.empty()) //prevent empty children problems
   {
-    //call on children
-    deleteTreeChildren(a->children.back());
+    while(a->children.size() > 0)
+    {
+      //call on children
+      deleteTreeChildren(a->children.back());
 
-    Token* deleteThis = a->children.back();
+      Token* deleteThis = a->children.back();
 
-    //get rid of reference and decrement size
-    a->children.pop_back();
+      //get rid of reference and decrement size
+      a->children.pop_back();
 
-    //free memory
-    deleteNode(deleteThis);
+      //free memory
+      deleteNode(deleteThis);
+    }
   }
+
 }
 
 bool CST::deleteNode(Token *a)

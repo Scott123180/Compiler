@@ -15,6 +15,7 @@ class Semantic
   public:
     Semantic(vector<Token> stream, bool v, unsigned int start);  //v is for verbose
 
+    ~Semantic();
 
     unsigned int i;
 
@@ -32,7 +33,6 @@ class Semantic
     void kick(); //kick current token parent token
 
     bool verbose;
-
 
 
     //generate symbol table obj

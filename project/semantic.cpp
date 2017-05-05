@@ -64,13 +64,17 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
         genSTOutput.push_back(recursiveSemantic.newGen->symbolTableOutput[m]);
       }
     }
-    delete(newGen);
   }
   else //error
   {
     //TODO: deal with error
   }
 
+}
+
+Semantic::~Semantic()
+{
+  //delete newGen;
 }
 
 //kick nodes in the AST

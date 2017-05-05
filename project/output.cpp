@@ -255,8 +255,10 @@ void Output::printCodeGen()
        "</div>\n";
   }
 
+  //total times printing in the loop
+  int n = 0;
   //rows
-  for(int i = 0, n = 0; i < 8; i++, n++)
+  for(int i = 0; i < 8; i++)
   {
     //columns
     outputHTML << "<p>\n";

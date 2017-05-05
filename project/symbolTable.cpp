@@ -10,7 +10,12 @@
 SymbolTable::SymbolTable(SymbolTable* p, unsigned int uniqueS)
   : parent(p), scope(uniqueS)
 {
+  cout << "Symbol Table Constructor Called" << endl;
+}
 
+SymbolTable::~SymbolTable()
+{
+  cout << "Symbol Table Destructor Called" << endl;
 }
 
 unsigned int SymbolTable::calcTableDepth(SymbolTable* a)

@@ -10,6 +10,8 @@ using namespace std;
 Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verbose
   : verbose(v), i(start)
 {
+
+  cout << "Parser Constructor Called" << endl;
   /*
    * next is the current token we're working with, we increment it every time just
    * in case we find a match, but then set it back if we have to check again if a term
@@ -65,6 +67,11 @@ Parser::Parser(vector<Token> stream, bool v, unsigned int start) //v is for verb
 
 
 }
+
+  Parser::~Parser()
+  {
+    cout << "Parser Destructor Called" << endl;
+  }
 
   void Parser::kick()
   {
