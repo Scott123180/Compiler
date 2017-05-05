@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "token.h"
+#include "staticDataRow.h"
 
 using namespace std;
 
@@ -16,6 +17,8 @@ class StaticData {
     StaticData() {};
 
     string addRow(Token* a);
+
+    vector<StaticDataRow> data = {};
 
   private:
 

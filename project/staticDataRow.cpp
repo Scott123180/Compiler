@@ -19,3 +19,7 @@ int StaticDataRow::getVariableScope() const {
 int StaticDataRow::getVariableOffset() const {
   return variableOffset;
 }
+
+void StaticDataRow::setTemporary(const string &temporary) {
+  StaticDataRow::temporary = temporary;
+}

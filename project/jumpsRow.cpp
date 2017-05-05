@@ -11,3 +11,7 @@ const string &JumpsRow::getTemporary() const {
 int JumpsRow::getDistance() const {
   return distance;
 }
+
+void JumpsRow::setTemporary(const string &temporary) {
+  JumpsRow::temporary = temporary;
+}

@@ -70,7 +70,7 @@ void CodeGen::loop(Token *a)
         output[curIndex++] = STA; //8D
 
         //fill with temp memory location
-        string tempVar = sdTable.addRow(a->getData(),a->scope);
+        string tempVar = sdTable.addRow(a);
 
         output[curIndex++] = tempVar;
         output[curIndex++] = "XX";

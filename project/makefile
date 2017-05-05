@@ -8,12 +8,14 @@ lex:  codeGen.o \
       error.o \
       genSymbolTable.o \
       jumps.o \
+      jumpsRow.o \
       lexer.o \
       main.o \
       output.o \
       parser.o \
       semantic.o \
       staticData.o \
+      staticDataRow.o \
       stEntry.o \
       symbolTable.o \
       token.o

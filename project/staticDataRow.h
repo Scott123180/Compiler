@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "staticDataRow.h"
+
 using namespace std;
 
 class StaticDataRow {
@@ -10,9 +12,6 @@ class StaticDataRow {
   public:
     StaticDataRow(string temp, string var, int scope, int offset);
 
-  private:
-    string temporary;
-  public:
     const string &getTemporary() const;
 
     const string &getVariable() const;
@@ -21,7 +20,10 @@ class StaticDataRow {
 
     int getVariableOffset() const;
 
+    void setTemporary(const string &temporary);
+
   private:
+    string temporary;
     string variable;
     int variableScope;
     int variableOffset;

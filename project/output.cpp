@@ -261,7 +261,7 @@ void Output::printCodeGen()
   for(int i = 0; i < 8; i++)
   {
     //columns
-    outputHTML << "<p>\n";
+    outputHTML << "<p style=\"font-family:Courier;\">\n";
     for(int j = 0; j < 32; j++, n++)
     {
       outputHTML << cgOutput[n] << " ";
