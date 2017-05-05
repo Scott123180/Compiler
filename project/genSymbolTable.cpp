@@ -26,14 +26,27 @@ GenSymbolTable::GenSymbolTable(Token* r, bool v)
 
 }
 
-void GenSymbolTable::deleteAllST(SymbolTable *a)
+GenSymbolTable::~GenSymbolTable()
 {
-  for(vector<SymbolTable*>::size_type i = 0; i < a->children.size(); i++)
+  deleteAllSTChildren(rootSymbolTable);
+  delete(rootSymbolTable);
+}
+
+void GenSymbolTable::deleteAllSTChildren(SymbolTable *a)
+{
+  while(a->children.size() > 0)
   {
-    //recursively call for all children
-    deleteAllST(a->children[i]);
+    //call on children
+    deleteAllSTChildren(a->children.back());
+
+    SymbolTable* deleteThis = a->children.back();
+
+    //get rid of reference and decrement size
+    a->children.pop_back();
+
+    //free memory
+    delete(deleteThis);
   }
-  delete a;
 }
 
 //produce symbol table
@@ -86,15 +99,6 @@ bool GenSymbolTable::blockST()
       else if(printST());
       else if(ifST());
       else if(whileST());
-
-        /*
-      else //should be unreachable, but throw an error if we reach it
-      {
-        vector<string> errorData = {curToken->getType(), curToken->getData()};
-
-        Error newError = Error(true, Error::semantic,curToken->getLine(), curToken->getPos()
-        , errorData, "Memory problem. Try recompiling as that might fix it.");
-      } */
 
     }
 

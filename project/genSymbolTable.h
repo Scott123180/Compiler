@@ -16,6 +16,8 @@ class GenSymbolTable
     //take in a semantic object
     GenSymbolTable(Token* r, bool v);
 
+    ~GenSymbolTable();
+
     Token* rootToken;
 
     bool verbose;
@@ -34,7 +36,7 @@ class GenSymbolTable
     vector<string> symbolTableOutput;
 
     //delete all tables
-    void deleteAllST(SymbolTable* a);
+    void deleteAllSTChildren(SymbolTable* a);
 
     //search through tree dfio
     void produceST(Token* a);
