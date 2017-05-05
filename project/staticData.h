@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "token.h"
+
 using namespace std;
 
 class StaticData {
@@ -13,7 +15,7 @@ class StaticData {
       //temp, var, scope, offset
     StaticData() {};
 
-    string addRow(string var, unsigned int scope);
+    string addRow(Token* a);
 
   private:
 

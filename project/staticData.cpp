@@ -3,9 +3,8 @@
 using namespace std;
 
 //return temporary memory value
-string StaticData::addRow(string var, unsigned int scope)
+string StaticData::addRow(Token* a)
 {
-  //TODO: write method to add rows
 
   string tempVarNum;
 
