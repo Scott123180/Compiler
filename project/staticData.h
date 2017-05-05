@@ -2,6 +2,7 @@
 #define COMPILER_STATICDATA_H
 
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -12,13 +13,10 @@ class StaticData {
       //temp, var, scope, offset
     StaticData() {};
 
-    void addRow(string var, unsigned int scope);
+    string addRow(string var, unsigned int scope);
 
   private:
 
-
-    //holds the number of the current temporary variable for static var table
-    int tempNum = 0;
 };
 
 
