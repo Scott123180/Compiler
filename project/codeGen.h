@@ -20,7 +20,7 @@ class CodeGen
 
     int curIndex = 0;
 
-    void loop(Token* a);
+    vector<string> segment(Token* a);
 
   private:
 
@@ -35,7 +35,18 @@ class CodeGen
     //keep track of program exceeding 256 bytes
     bool overFlow = false;
 
+    void checkForOverFlow();
+
+    //set this after codeGen
+    int stackHead;
+
+    //set this to end of bytes and decrement when get to strings
+    int heapHead = 255;
+
+    void backPatching();
+
     void process();
+
 
     ///op code section
 

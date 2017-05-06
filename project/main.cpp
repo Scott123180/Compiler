@@ -47,5 +47,7 @@ int main(int argc, char** argv)
 
   cout << "->After output"<< endl;
 
+  /* CleanUp Objects and Pointers */
+
 
 }

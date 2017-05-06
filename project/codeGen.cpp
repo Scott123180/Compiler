@@ -33,8 +33,6 @@ CodeGen::CodeGen(CST ast, SymbolTable* st)
       "Overflow error: program output code longer than 256 bytes.");
     }
   }
-
-
 }
 
 CodeGen::~CodeGen()
@@ -45,15 +43,20 @@ CodeGen::~CodeGen()
 //start processing tokens
 void CodeGen::process()
 {
-  cout << "-------Got to process " << endl;
   //ensure we're at the root token
   cgAST.returnToRoot();
-  loop(cgAST.rootToken);
+  segment(cgAST.rootToken);
 
 }
 
-void CodeGen::loop(Token *a)
+//returns a segment of code and appends it to the segment that called it
+  //information that is also passed (in vector size) is how many instructions
+  //it contains(useful in jumps)
+vector<string> CodeGen::segment(Token *a)
 {
+  //initialize the segment that we'll return
+  vector<string> returnSegment = {};
+
   //check for leaf node
   if(!a->getData().empty()) //(not a branch node)
   {
@@ -65,15 +68,15 @@ void CodeGen::loop(Token *a)
     {
       if(parentType == "VarDecl")
       {
-        output[curIndex++] = LDA_C; //A9
-        output[curIndex++] = BRK; //00
-        output[curIndex++] = STA; //8D
+        returnSegment.push_back(LDA_C); //A9
+        returnSegment.push_back(BRK); //00
+        returnSegment.push_back(STA); //8D
 
         //fill with temp memory location
         string tempVar = sdTable.addRow(a);
 
-        output[curIndex++] = tempVar;
-        output[curIndex++] = "XX";
+        returnSegment.push_back(tempVar);
+        returnSegment.push_back("XX");
       }
       else if(parentType == "AssignStatement")
       {
@@ -93,15 +96,72 @@ void CodeGen::loop(Token *a)
         cout << parentType << endl;
       }
     }
-    else
+    else //token we're looking at is not the first child
     {
-      //do nothing
+      //do nothing because we don't want to process the tree twice
     }
-  }
 
-  //recursion
-  for(vector<Token*>::size_type i = 0; i < a->children.size(); i++)
+    //check for EOP
+    if(a->getData() == "$")
+    {
+      //wrap up and do back patching
+      //TODO: implement back-patching
+    }
+
+    //recursion
+    for(vector<Token*>::size_type i = 0; i < a->children.size(); i++)
+    {
+      //store recursion results in string vector
+      vector<string> recursionSegment = segment(a->children[i]);
+      //push each string to the back of the vector, in order
+      for(vector<string>::size_type j = 0; j < recursionSegment.size(); j++)
+      {
+        returnSegment.push_back(recursionSegment[j]);
+      }
+    }
+
+    //return the result of the segment
+    return returnSegment;
+
+
+
+  }
+  else //token is a branch node
   {
-    loop(a->children[i]);
+    //if we reach an if statement, then handle a jump and call segment on it's children
+    if(a->getType() == "IfStatement")
+    {
+      //process conditional
+
+      //run segment on ifBlock children
+      vector<string> ifBlock = segment(a->children[1]);
+
+      //Jump stuff, I don't think I really need it with my method
+      unsigned int jumpDistance = static_cast<unsigned int>(ifBlock.size());
+      //create new jump
+      jTable.addRow(jumpDistance);
+
+      //push back segment to return segment
+      for(vector<string>::size_type i = 0; i < ifBlock.size(); i++)
+      {
+        returnSegment.push_back(ifBlock[i]);
+      }
+    }
+
+    return returnSegment;
+
   }
 }
+
+//compare stack head and heap head and make sure there is not an overflow
+void CodeGen::checkForOverFlow()
+{
+
+}
+
+//replace temporary variable and jump names with actual memory locations
+void CodeGen::backPatching()
+{
+
+}
+

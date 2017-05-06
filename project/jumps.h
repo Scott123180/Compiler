@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <utility>
+#include <string>
 
 using namespace std;
 
@@ -13,7 +14,7 @@ class Jumps {
       //temp, distance
     Jumps() {};
 
-    void addRow(unsigned int temp, unsigned int dist);
+    string addRow(unsigned int dist);
   private:
     //pair<temp, dist>
     vector<pair<int, int>> rows;

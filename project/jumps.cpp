@@ -2,8 +2,21 @@
 
 using namespace std;
 
-void Jumps::addRow(unsigned int temp, unsigned int dist)
+//returns id of jump
+string Jumps::addRow(unsigned int dist)
 {
+  unsigned long jumpID;
+  if(rows.empty())
+  {
+    jumpID = 0;
+  }
+  else
+  {
+    jumpID = rows.size();
+  }
   //push back a new row
-  rows.push_back(make_pair(temp, dist));
+  rows.push_back(make_pair(jumpID, dist));
+
+  string jumpReturn = "J" + to_string(jumpID);
+
 }

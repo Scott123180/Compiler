@@ -8,7 +8,6 @@ lex:  codeGen.o \
       error.o \
       genSymbolTable.o \
       jumps.o \
-      jumpsRow.o \
       lexer.o \
       main.o \
       output.o \
