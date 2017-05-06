@@ -50,11 +50,21 @@ void CodeGen::process()
   cout << "before code segment return" << endl;
 
   //calculate and store the stack in a string vector
-  vector<string> code = segment(cgAST.rootToken);
+  code = segment(cgAST.rootToken);
 
+  //precaution for no code
+  if(code.empty()) //no code, so set code size to 0
+  {
+    codeSize = 0;
+  }
+  else //code, so set size to code vector
+  {
+    codeSize = code.size();
+    cout << "<><><>code size: " << codeSize << endl;
+  }
   cout << "before print code" << endl;
   //print code to output
-  printCode(code);
+  printCode();
 
   cout << "before overflow" << endl;
   checkForOverFlow();
@@ -64,6 +74,8 @@ void CodeGen::process()
   backPatching();
   cout << "after backpatching" << endl;
 }
+
+
 
 //returns a segment of code and appends it to the segment that called it
   //information that is also passed (in vector size) is how many instructions
@@ -90,6 +102,7 @@ vector<string> CodeGen::segment(Token *a)
 
         //fill with temp memory location
         string tempVar = sdTable.addRow(a);
+        cout << "tempVar: "<< tempVar << endl;
 
         returnSegment.push_back(tempVar);
         returnSegment.push_back("XX");
@@ -141,8 +154,6 @@ vector<string> CodeGen::segment(Token *a)
         returnSegment.push_back(ifBlock[i]);
       }
     }
-    //return return segment before reaching other recursion below
-    return returnSegment;
   }
 
   //recursion
@@ -158,6 +169,7 @@ vector<string> CodeGen::segment(Token *a)
   }
 
   //return the segment (works for end of program)
+  cout << "~~~return segment regular" << endl;
   return returnSegment;
 }
 
@@ -173,24 +185,19 @@ void CodeGen::checkForOverFlow()
   }
 }
 
+
+
 //print the code to output
-void CodeGen::printCode(vector<string> c)
+void CodeGen::printCode()
 {
-  //precaution for no code
-  if(c.empty()) //no code, so set code size to 0
-  {
-    codeSize = 0;
-  }
-  else //code, so set size to code vector
-  {
-    codeSize = c.size();
-  }
   //loop through vector and replace output tokens
   for(vector<string>::size_type i = 0; i < codeSize; i++)
   {
-    output[i] = c.at(i);
+    output[i] = code.at(i);
   }
 }
+
+
 
 //replace temporary variable and jump names with actual memory locations
 void CodeGen::backPatching()
@@ -209,12 +216,16 @@ void CodeGen::backPatching()
 
 }
 
+
+
 //calculate stack size and set the staticDataRows actual memory addresses
 void CodeGen::allocateMemoryOnStack()
 {
   //find end of code and set the head of the stack to that
   int stackHead = static_cast<int>(codeSize);
+  cout << "STACKHEAD: " << endl;
   string stackHeadHex = intToHex(stackHead);
+  cout << "intToHex results: " << endl;
 
   //calculate size of stack (for use in overflows later)
     //precaution for no stack being used
@@ -225,10 +236,11 @@ void CodeGen::allocateMemoryOnStack()
   else //stack used, set to number of rows in data
   {
     stackSize = sdTable.data.size(); //each var takes up one byte of space
+    cout << "------stack size: " << stackSize << endl;
   }
 
   //loop through every data row to set memory location on the stack
-  for(vector<StaticDataRow>::size_type i = 0; i < sdTable.data.size(); i++)
+  for(vector<StaticDataRow>::size_type i = 0; i < stackSize; i++)
   {
     //set the data row's actual memory location
     sdTable.data[i].setActualMemoryAddress(stackHeadHex);
@@ -245,6 +257,8 @@ void CodeGen::allocateMemoryOnStack()
 
   }
 }
+
+
 
 //find and replace temporary memory addresses in the code portion
 void CodeGen::replaceTemporaryMemoryAddresses()
@@ -286,9 +300,20 @@ vector<string> CodeGen::stringToHexChars(string a)
 
 string CodeGen::intToHex(int a)
 {
+  cout << "INT A: " << endl;
   string hexValue;
   stringstream ss;
-  ss << std::hex << a;
+  ss << std::uppercase << std::hex << a;
+  hexValue = ss.str();
+  
+  //add leading zero if only one size
+  if(hexValue.size() == 1)
+  {
+    hexValue.push_back(' ');
+    hexValue[1] = hexValue[0];
+    hexValue[0] = '0';
+  }
+  cout << "HEX VALUE INT TO HEX: " << endl;
   return hexValue;
 }
 

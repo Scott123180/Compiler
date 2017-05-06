@@ -2,6 +2,7 @@
 #define COMPILER_CODEGEN_H
 
 #include <sstream>
+#include <iomanip>
 
 #include "cst.h"
 #include "symbolTable.h"
@@ -36,6 +37,8 @@ class CodeGen
 
     Jumps jTable = Jumps();
 
+    vector<string> code = {};
+
     unsigned long int codeSize;
 
     vector<string> stack = {};
@@ -51,7 +54,7 @@ class CodeGen
       //heaphead keeps index of the last character written to heap
     int heapHead = 255;
 
-    void printCode(vector<string> c);
+    void printCode();
 
     void backPatching();
 
