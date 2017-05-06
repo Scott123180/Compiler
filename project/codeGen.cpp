@@ -80,7 +80,9 @@ vector<string> CodeGen::segment(Token *a)
       }
       else if(parentType == "AssignStatement")
       {
+        //retrieve the temp variable information from staticData table
 
+        //code for evaluating expression below
       }
       else if(parentType == "==" || parentType == "!=")
       {
@@ -108,23 +110,6 @@ vector<string> CodeGen::segment(Token *a)
       //TODO: implement back-patching
     }
 
-    //recursion
-    for(vector<Token*>::size_type i = 0; i < a->children.size(); i++)
-    {
-      //store recursion results in string vector
-      vector<string> recursionSegment = segment(a->children[i]);
-      //push each string to the back of the vector, in order
-      for(vector<string>::size_type j = 0; j < recursionSegment.size(); j++)
-      {
-        returnSegment.push_back(recursionSegment[j]);
-      }
-    }
-
-    //return the result of the segment
-    return returnSegment;
-
-
-
   }
   else //token is a branch node
   {
@@ -147,10 +132,23 @@ vector<string> CodeGen::segment(Token *a)
         returnSegment.push_back(ifBlock[i]);
       }
     }
-
+    //return return segment before reaching other recursion below
     return returnSegment;
-
   }
+
+  //recursion
+  for(vector<Token*>::size_type i = 0; i < a->children.size(); i++)
+  {
+    //store recursion results in string vector
+    vector<string> recursionSegment = segment(a->children[i]);
+    //push each string to the back of the vector, in order
+    for(vector<string>::size_type j = 0; j < recursionSegment.size(); j++)
+    {
+      returnSegment.push_back(recursionSegment[j]);
+    }
+  }
+
+  return returnSegment;
 }
 
 //compare stack head and heap head and make sure there is not an overflow
