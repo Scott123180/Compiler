@@ -43,19 +43,26 @@ CodeGen::~CodeGen()
 //start processing tokens
 void CodeGen::process()
 {
+  cout << "got to process" << endl;
   //ensure we're at the root token
   cgAST.returnToRoot();
+
+  cout << "before code segment return" << endl;
 
   //calculate and store the stack in a string vector
   vector<string> code = segment(cgAST.rootToken);
 
+  cout << "before print code" << endl;
   //print code to output
   printCode(code);
 
+  cout << "before overflow" << endl;
   checkForOverFlow();
 
+  cout << "before backpatching" << endl;
   //implement back-patching
   backPatching();
+  cout << "after backpatching" << endl;
 }
 
 //returns a segment of code and appends it to the segment that called it
@@ -188,11 +195,15 @@ void CodeGen::printCode(vector<string> c)
 //replace temporary variable and jump names with actual memory locations
 void CodeGen::backPatching()
 {
+  cout << "before allocate memory" << endl;
   //set the actual memory addresses of the rows on the stack
   allocateMemoryOnStack();
 
+  cout << "before replace memory" << endl;
   //find and replace the temporary memory addresses in the code
   replaceTemporaryMemoryAddresses();
+
+  cout << "after replace memory" << endl;
 
   //handle jumps
 
@@ -238,12 +249,12 @@ void CodeGen::allocateMemoryOnStack()
 //find and replace temporary memory addresses in the code portion
 void CodeGen::replaceTemporaryMemoryAddresses()
 {
-  unsigned long codeEnd = codeSize - 1;
+  int codeEnd = static_cast<int>(codeSize) - 1;
   //loop through every address
   for(int i = 0; i <= codeEnd; i++)
   {
     //check for temporary variable
-    if(output[i].at(0) == 'T') //if first character of location is T (temporary)
+    if(output[i].front() == 'T') //if first character of location is T (temporary)
     {
       //if so, replace with actual address
       string address = sdTable.lookupRow(output[i]); //lookup hex address on stack
