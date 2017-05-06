@@ -45,8 +45,19 @@ void CodeGen::process()
 {
   //ensure we're at the root token
   cgAST.returnToRoot();
-  segment(cgAST.rootToken);
 
+  //calculate and store the stack in a string vector
+  code = segment(cgAST.rootToken);
+
+  //check for stack overflow
+  codeSize = code.size(); //update stack size
+
+  //set the stack size to the number of static data variables
+  stackSize = sdTable.data.size();
+
+  checkForOverFlow();
+
+  //implement back-patching
 }
 
 //returns a segment of code and appends it to the segment that called it
@@ -103,13 +114,6 @@ vector<string> CodeGen::segment(Token *a)
       //do nothing because we don't want to process the tree twice
     }
 
-    //check for EOP
-    if(a->getData() == "$")
-    {
-      //wrap up and do back patching
-      //TODO: implement back-patching
-    }
-
   }
   else //token is a branch node
   {
@@ -148,18 +152,127 @@ vector<string> CodeGen::segment(Token *a)
     }
   }
 
+  //return the segment (works for end of program)
   return returnSegment;
 }
 
 //compare stack head and heap head and make sure there is not an overflow
 void CodeGen::checkForOverFlow()
 {
-
+  if((stackSize + codeSize) > (heapHead+1)) //heapHead is an index
+  {
+    //stack overflow - throw error
+    vector<string> errorData = {};
+    Error stackOverflow = Error(true,Error::codeGen, 0, 0, errorData,
+                                "Error In code generation. Stack overflow detected.");
+  }
 }
 
 //replace temporary variable and jump names with actual memory locations
 void CodeGen::backPatching()
 {
 
+}
+
+//convert a string to null terminated hex array
+vector<string> stringToHexChars(string a)
+{
+  vector<string> hexVals = {};
+  for(string::size_type i = 0; i < a.size(); i++)
+  {
+    string push;
+    switch(a[i])
+    {
+      case 'a':
+        push = "61";
+        break;
+      case 'b':
+        push = "62";
+        break;
+      case 'c':
+        push = "63";
+        break;
+      case 'd':
+        push = "64";
+        break;
+      case 'e':
+        push = "65";
+        break;
+      case 'f':
+        push = "66";
+        break;
+      case 'g':
+        push = "67";
+        break;
+      case 'h':
+        push = "68";
+        break;
+      case 'i':
+        push = "69";
+        break;
+      case 'j':
+        push = "6A";
+        break;
+      case 'k':
+        push = "6B";
+        break;
+      case 'l':
+        push = "6C";
+        break;
+      case 'm':
+        push = "6D";
+        break;
+      case 'n':
+        push = "6E";
+        break;
+      case 'o':
+        push = "6F";
+        break;
+      case 'p':
+        push = "70";
+        break;
+      case 'q':
+        push = "71";
+        break;
+      case 'r':
+        push = "72";
+        break;
+      case 's':
+        push = "73";
+        break;
+      case 't':
+        push = "74";
+        break;
+      case 'u':
+        push = "75";
+        break;
+      case 'v':
+        push = "76";
+        break;
+      case 'w':
+        push = "77";
+        break;
+      case 'x':
+        push = "78";
+        break;
+      case 'y':
+        push = "79";
+        break;
+      case 'z':
+        push = "7A";
+        break;
+      case ' ':
+        push = "20";
+        break;
+      default:
+        break;
+    }
+
+    //null terminator
+    hexVals.push_back("00");
+    hexVals.push_back(push);
+  }
+
+  return hexVals;
 }
 

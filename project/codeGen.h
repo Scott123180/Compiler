@@ -5,6 +5,7 @@
 #include "symbolTable.h"
 #include "jumps.h"
 #include "staticData.h"
+#include "error.h"
 
 class CodeGen
 {
@@ -32,18 +33,25 @@ class CodeGen
 
     Jumps jTable = Jumps();
 
+    vector<string> code = {};
+
+    unsigned long int codeSize;
+
+    vector<string> stack = {};
+
+    unsigned long stackSize;
+
     //keep track of program exceeding 256 bytes
     bool overFlow = false;
 
     void checkForOverFlow();
 
-    //set this after codeGen
-    int stackHead;
-
     //set this to end of bytes and decrement when get to strings
     int heapHead = 255;
 
     void backPatching();
+
+    vector<string> stringToHexChars(string a);
 
     void process();
 
