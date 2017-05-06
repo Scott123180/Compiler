@@ -175,104 +175,34 @@ void CodeGen::backPatching()
 }
 
 //convert a string to null terminated hex array
-vector<string> stringToHexChars(string a)
+vector<string> CodeGen::stringToHexChars(string a)
 {
   vector<string> hexVals = {};
+
+  //convert each character to hex value
   for(string::size_type i = 0; i < a.size(); i++)
   {
-    string push;
-    switch(a[i])
-    {
-      case 'a':
-        push = "61";
-        break;
-      case 'b':
-        push = "62";
-        break;
-      case 'c':
-        push = "63";
-        break;
-      case 'd':
-        push = "64";
-        break;
-      case 'e':
-        push = "65";
-        break;
-      case 'f':
-        push = "66";
-        break;
-      case 'g':
-        push = "67";
-        break;
-      case 'h':
-        push = "68";
-        break;
-      case 'i':
-        push = "69";
-        break;
-      case 'j':
-        push = "6A";
-        break;
-      case 'k':
-        push = "6B";
-        break;
-      case 'l':
-        push = "6C";
-        break;
-      case 'm':
-        push = "6D";
-        break;
-      case 'n':
-        push = "6E";
-        break;
-      case 'o':
-        push = "6F";
-        break;
-      case 'p':
-        push = "70";
-        break;
-      case 'q':
-        push = "71";
-        break;
-      case 'r':
-        push = "72";
-        break;
-      case 's':
-        push = "73";
-        break;
-      case 't':
-        push = "74";
-        break;
-      case 'u':
-        push = "75";
-        break;
-      case 'v':
-        push = "76";
-        break;
-      case 'w':
-        push = "77";
-        break;
-      case 'x':
-        push = "78";
-        break;
-      case 'y':
-        push = "79";
-        break;
-      case 'z':
-        push = "7A";
-        break;
-      case ' ':
-        push = "20";
-        break;
-      default:
-        break;
-    }
-
-    //null terminator
-    hexVals.push_back("00");
-    hexVals.push_back(push);
+    stringstream ss;
+    ss << std::hex << (int)a[i];
+    hexVals.push_back(ss.str());
   }
 
+  //null terminator
+  hexVals.push_back("00");
   return hexVals;
 }
 
+string CodeGen::intToHex(int a)
+{
+  string hexValue;
+  stringstream ss;
+  ss << std::hex << a;
+  return hexValue;
+}
+
+int CodeGen::hexToInt(string hexValue)
+{
+  int n;
+  istringstream(hexValue) >> std::hex >> n; //convert
+  return n;
+}

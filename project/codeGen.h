@@ -1,11 +1,14 @@
 #ifndef COMPILER_CODEGEN_H
 #define COMPILER_CODEGEN_H
 
+#include <sstream>
+
 #include "cst.h"
 #include "symbolTable.h"
 #include "jumps.h"
 #include "staticData.h"
 #include "error.h"
+
 
 class CodeGen
 {
@@ -52,6 +55,10 @@ class CodeGen
     void backPatching();
 
     vector<string> stringToHexChars(string a);
+
+    string intToHex(int a);
+
+    int hexToInt(string hexValue);
 
     void process();
 
