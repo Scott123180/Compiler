@@ -12,13 +12,16 @@ using namespace std;
 class StaticData {
 
   public:
+
+    vector<StaticDataRow> data = {};
+
     //table for holding static information for vars
       //temp, var, scope, offset
     StaticData() {};
 
     string addRow(Token* a);
 
-    vector<StaticDataRow> data = {};
+    string lookupRow(string varName, int uniqueScope);
 
   private:
 

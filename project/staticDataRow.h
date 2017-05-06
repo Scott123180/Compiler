@@ -14,7 +14,7 @@ class StaticDataRow {
 
     const string &getTemporary() const;
 
-    const string &getVariable() const;
+    const string &getVariableName() const;
 
     int getVariableScope() const;
 
@@ -24,7 +24,7 @@ class StaticDataRow {
 
   private:
     string temporary;
-    string variable;
+    string variableName;
     int variableScope;
     int variableOffset;
 };

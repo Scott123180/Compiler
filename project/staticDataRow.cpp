@@ -1,15 +1,15 @@
 #include "staticDataRow.h"
 
 StaticDataRow::StaticDataRow(string temp, string var, int scope, int offset)
-  : temporary(temp), variable(var), variableScope(scope), variableOffset(offset)
+  : temporary(temp), variableName(var), variableScope(scope), variableOffset(offset)
 {}
 
 const string &StaticDataRow::getTemporary() const {
   return temporary;
 }
 
-const string &StaticDataRow::getVariable() const {
-  return variable;
+const string &StaticDataRow::getVariableName() const {
+  return variableName;
 }
 
 int StaticDataRow::getVariableScope() const {

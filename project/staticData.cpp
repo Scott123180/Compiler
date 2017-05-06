@@ -34,3 +34,21 @@ string StaticData::addRow(Token* a)
 
   return temp;
 }
+
+string StaticData::lookupRow(string varName, int uniqueScope)
+{
+  for(vector<StaticDataRow>::size_type i = 0; i < data.size(); i++)
+  {
+    //same variable name and unique scope means they are the same variable
+    if(varName == data[i].getVariableName() && uniqueScope == data[i].getVariableScope())
+    {
+      //return the temporary name of that variable
+      return data[i].getTemporary();
+    }
+  }
+
+  //return null string if not found, indicating false
+  return "\0";
+
+}
+

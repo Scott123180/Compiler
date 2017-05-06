@@ -159,7 +159,7 @@ vector<string> CodeGen::segment(Token *a)
 //compare stack head and heap head and make sure there is not an overflow
 void CodeGen::checkForOverFlow()
 {
-  if((stackSize + codeSize) > (heapHead+1)) //heapHead is an index
+  if((stackSize + codeSize) > (heapHead)) //heapHead is an index and will always be at least 1
   {
     //stack overflow - throw error
     vector<string> errorData = {};
@@ -171,7 +171,7 @@ void CodeGen::checkForOverFlow()
 //replace temporary variable and jump names with actual memory locations
 void CodeGen::backPatching()
 {
-
+  
 }
 
 //convert a string to null terminated hex array

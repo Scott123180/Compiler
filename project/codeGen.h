@@ -49,7 +49,8 @@ class CodeGen
 
     void checkForOverFlow();
 
-    //set this to end of bytes and decrement when get to strings
+    //heap will always at least be size of one because it's easier to implement
+      //heaphead keeps index of the last character written to heap
     int heapHead = 255;
 
     void backPatching();
