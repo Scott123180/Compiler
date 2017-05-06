@@ -23,3 +23,11 @@ int StaticDataRow::getVariableOffset() const {
 void StaticDataRow::setTemporary(const string &temporary) {
   StaticDataRow::temporary = temporary;
 }
+
+void StaticDataRow::setActualMemoryAddress(const string &actualMemoryAddress) {
+  StaticDataRow::actualMemoryAddress = actualMemoryAddress;
+}
+
+const string &StaticDataRow::getActualMemoryAddress() const {
+  return actualMemoryAddress;
+}

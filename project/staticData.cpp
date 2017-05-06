@@ -3,7 +3,8 @@
 
 using namespace std;
 
-//return temporary memory value
+//return temporary memory value of added row
+  //only called in varDecl
 string StaticData::addRow(Token* a)
 {
   int numRows;
@@ -35,19 +36,20 @@ string StaticData::addRow(Token* a)
   return temp;
 }
 
-string StaticData::lookupRow(string varName, int uniqueScope)
+//return the actual memory address on stack of a given variable
+string StaticData::lookupRow(string tempName)
 {
   for(vector<StaticDataRow>::size_type i = 0; i < data.size(); i++)
   {
     //same variable name and unique scope means they are the same variable
-    if(varName == data[i].getVariableName() && uniqueScope == data[i].getVariableScope())
+    if(tempName == data[i].getTemporary())
     {
       //return the temporary name of that variable
-      return data[i].getTemporary();
+      return data[i].getActualMemoryAddress();
     }
   }
 
-  //return null string if not found, indicating false
+  //this won't ever happen but we have to return something or compiler will complain
   return "\0";
 
 }

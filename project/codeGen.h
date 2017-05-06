@@ -36,8 +36,6 @@ class CodeGen
 
     Jumps jTable = Jumps();
 
-    vector<string> code = {};
-
     unsigned long int codeSize;
 
     vector<string> stack = {};
@@ -53,7 +51,13 @@ class CodeGen
       //heaphead keeps index of the last character written to heap
     int heapHead = 255;
 
+    void printCode(vector<string> c);
+
     void backPatching();
+
+    void allocateMemoryOnStack();
+
+    void replaceTemporaryMemoryAddresses();
 
     vector<string> stringToHexChars(string a);
 

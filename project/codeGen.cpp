@@ -47,17 +47,15 @@ void CodeGen::process()
   cgAST.returnToRoot();
 
   //calculate and store the stack in a string vector
-  code = segment(cgAST.rootToken);
+  vector<string> code = segment(cgAST.rootToken);
 
-  //check for stack overflow
-  codeSize = code.size(); //update stack size
-
-  //set the stack size to the number of static data variables
-  stackSize = sdTable.data.size();
+  //print code to output
+  printCode(code);
 
   checkForOverFlow();
 
   //implement back-patching
+  backPatching();
 }
 
 //returns a segment of code and appends it to the segment that called it
@@ -168,10 +166,93 @@ void CodeGen::checkForOverFlow()
   }
 }
 
+//print the code to output
+void CodeGen::printCode(vector<string> c)
+{
+  //precaution for no code
+  if(c.empty()) //no code, so set code size to 0
+  {
+    codeSize = 0;
+  }
+  else //code, so set size to code vector
+  {
+    codeSize = c.size();
+  }
+  //loop through vector and replace output tokens
+  for(vector<string>::size_type i = 0; i < codeSize; i++)
+  {
+    output[i] = c.at(i);
+  }
+}
+
 //replace temporary variable and jump names with actual memory locations
 void CodeGen::backPatching()
 {
-  
+  //set the actual memory addresses of the rows on the stack
+  allocateMemoryOnStack();
+
+  //find and replace the temporary memory addresses in the code
+  replaceTemporaryMemoryAddresses();
+
+  //handle jumps
+
+}
+
+//calculate stack size and set the staticDataRows actual memory addresses
+void CodeGen::allocateMemoryOnStack()
+{
+  //find end of code and set the head of the stack to that
+  int stackHead = static_cast<int>(codeSize);
+  string stackHeadHex = intToHex(stackHead);
+
+  //calculate size of stack (for use in overflows later)
+    //precaution for no stack being used
+  if(sdTable.data.empty()) //no stack used
+  {
+    stackSize = 0;
+  }
+  else //stack used, set to number of rows in data
+  {
+    stackSize = sdTable.data.size(); //each var takes up one byte of space
+  }
+
+  //loop through every data row to set memory location on the stack
+  for(vector<StaticDataRow>::size_type i = 0; i < sdTable.data.size(); i++)
+  {
+    //set the data row's actual memory location
+    sdTable.data[i].setActualMemoryAddress(stackHeadHex);
+
+    //initialize memory to value of 0
+    output[stackHead] = "00";
+
+    //don't move the stackHead if we're at the last data row
+    if(i != (sdTable.data.size() - 1))
+    {
+      ++stackHead; //move stackHead
+      stackHeadHex = intToHex(stackHead); //new stackHead, new stackHeadHex
+    }
+
+  }
+}
+
+//find and replace temporary memory addresses in the code portion
+void CodeGen::replaceTemporaryMemoryAddresses()
+{
+  unsigned long codeEnd = codeSize - 1;
+  //loop through every address
+  for(int i = 0; i <= codeEnd; i++)
+  {
+    //check for temporary variable
+    if(output[i].at(0) == 'T') //if first character of location is T (temporary)
+    {
+      //if so, replace with actual address
+      string address = sdTable.lookupRow(output[i]); //lookup hex address on stack
+      output[i] = address;
+      ++i; //increment i to put in 00's
+      output[i] = "00";
+    }
+    //just move on to next input if not found
+  }
 }
 
 //convert a string to null terminated hex array

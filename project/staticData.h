@@ -21,7 +21,7 @@ class StaticData {
 
     string addRow(Token* a);
 
-    string lookupRow(string varName, int uniqueScope);
+    string lookupRow(string tempName);
 
   private:
 

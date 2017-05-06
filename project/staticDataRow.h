@@ -22,11 +22,18 @@ class StaticDataRow {
 
     void setTemporary(const string &temporary);
 
+    void setActualMemoryAddress(const string &actualMemoryAddress);
+
+    const string &getActualMemoryAddress() const;
   private:
     string temporary;
     string variableName;
     int variableScope;
     int variableOffset;
+
+    //for use after in back-patching
+    string actualMemoryAddress;
+
 };
 
 
