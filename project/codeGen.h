@@ -15,7 +15,7 @@
 class CodeGen
 {
   public:
-    CodeGen(CST ast, GenSymbolTable* st);
+    CodeGen(CST* ast, GenSymbolTable* st);
 
     ~CodeGen();
 
@@ -40,7 +40,7 @@ class CodeGen
 
   private:
 
-    CST cgAST;
+    CST* cgAST;
 
     SymbolTable* cgSymbolTable;
 

@@ -163,7 +163,14 @@ bool GenSymbolTable::assignST()
       //first child is always variable name
       varName = curToken->children[0]->getData();
       //assign child variable scope (for use in code gen)
+      cout << "assignSt varname: " << varName << endl;
       curToken->children[0]->scope = curSymbolTable->scope;
+
+      cout << "currentST scope: " << curSymbolTable->scope << endl;
+      cout << "We assigned: " << curToken->children[0]->getData() << endl;
+      cout << "outcome: " << curToken->children[0]->scope << endl;
+      cout << "memory location of token: " << (curToken->children[0])<< endl;
+
     }
     //let exprST handle type checking of expression
     string exprType = exprST(curToken->children[1]);

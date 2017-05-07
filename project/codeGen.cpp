@@ -3,7 +3,7 @@
 
 using namespace std;
 
-CodeGen::CodeGen(CST ast, GenSymbolTable* st)
+CodeGen::CodeGen(CST* ast, GenSymbolTable* st)
   : cgAST(ast), cgSymbolTable(st->rootSymbolTable), cgGenSymbolTable(st)
 {
   cout << "CodeGen constructor called" << endl;
@@ -45,12 +45,12 @@ void CodeGen::process()
 {
   cout << "got to process" << endl;
   //ensure we're at the root token
-  cgAST.returnToRoot();
+  cgAST->returnToRoot();
 
   cout << "before code segment return" << endl;
 
   //calculate and store the stack in a string vector
-  code = segment(cgAST.rootToken);
+  code = segment(cgAST->rootToken);
 
   //precaution for no code
   if(code.empty()) //no code, so set code size to 0
@@ -101,7 +101,8 @@ vector<string> CodeGen::segment(Token *a)
         returnSegment.push_back(STA); //8D
 
         //fill with temp memory location
-        string tempVar = sdTable.addRow(a);
+        cout << "`````````WTF are we ADDING" << a->getData() << " " << a->getType() << endl;
+        string tempVar = sdTable.addRow(a->parent->children[1]);
         cout << "tempVar: "<< tempVar << endl;
 
         returnSegment.push_back(tempVar);
@@ -112,7 +113,10 @@ vector<string> CodeGen::segment(Token *a)
         cout << "!!!!!!!! Got to ass statment" << endl;
         cout << "is this valid " << a->parent->children[1]->getData() << endl;
 
+        cout << "memory location of 'a' token: " << a << endl;
+
         //assignment expression segment, pass right side(expr) and current token temp
+        cout << "scope value: " << a->scope << endl;
         string tempMemLocation = sdTable.lookupTempRow(a);
         cout << tempMemLocation << endl;
         returnSegment = assignExpressionSegment(a->parent->children[1], tempMemLocation);

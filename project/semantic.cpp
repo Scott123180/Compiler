@@ -23,7 +23,7 @@ Semantic::Semantic(vector<Token> stream, bool v, unsigned int start)  //v is for
     if(i >= stream.size())
     {
       //yes I know I'm casting long to int
-      i = static_cast<int>(stream.size() - 1);
+      i = static_cast<int>(stream.size()) - 1;
     }
 
     cout << "Successful Semantic Analysis!" << endl;

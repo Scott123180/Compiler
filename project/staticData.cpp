@@ -28,6 +28,11 @@ string StaticData::addRow(Token* a)
 
   int offset = numRows;
 
+  cout << "~~~~~~~~~~~~~~~~~add row" << endl;
+  cout << "temp: " << temp << endl;
+  cout << "var: " << var << endl;
+  cout << "scope: " << scope << endl;
+  cout << "offset: " << offset << endl;
   StaticDataRow newSDRow = StaticDataRow(temp, var, scope, offset);
 
   //push back row to staticData
@@ -44,14 +49,17 @@ string StaticData::lookupTempRow(Token* a)
 
   cout << "VAR LOOKUP" << endl;
   cout << "__Name: " << varName << endl;
-  cout << "_-_Scope: " << scope;
+  cout << "_-_Scope: " << a->scope << endl;
+  cout << "_-_Scope: " << scope << endl;
 
   for(vector<StaticDataRow>::size_type i = 0; i < data.size(); i++)
   {
+    cout << data[i].getVariableName() <<  ":" << data[i].getVariableScope() << endl;
     //match scope and varname
     if(varName == data[i].getVariableName() && scope == data[i].getVariableScope())
     {
       //return temporary memory address (ie 'T0')
+      cout << "----------match" << endl;
       return data[i].getTemporary();
     }
   }
