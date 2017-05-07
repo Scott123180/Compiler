@@ -28,15 +28,15 @@ class CodeGen
 
     string getVariableType(Token* a);
 
-    vector<string> expressionSegment(Token* a);
+    vector<string> assignExpressionSegment(Token* expr, string tempVarName);
 
-    vector<string> intExpressionSegment(Token* a);
-    void intExpressionLoop(Token* a);
-    vector<int> intExpressionTerminals;
+    vector<string> assignIntExpressionSegment(Token* a, string tempVarName);
+    void assignIntExpressionLoop(Token* a);
+    vector<int> assignIntExpressionTerminals;
 
-    vector<string> booleanExpressionSegment(Token* a);
+    vector<string> assignBooleanExpressionSegment(Token* a, string tempVarName);
 
-    vector<string> stringExpressionSegment(Token* a);
+    vector<string> assignStringExpressionSegment(Token* a, string tempVarName);
 
   private:
 
