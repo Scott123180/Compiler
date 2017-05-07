@@ -36,6 +36,23 @@ string StaticData::addRow(Token* a)
   return temp;
 }
 
+//get the temp name (ie 'T0') for a variable
+string StaticData::lookupTempRow(Token* a)
+{
+  int scope = a->scope;
+  string varName = a->getData();
+
+  for(vector<StaticDataRow>::size_type i = 0; i < data.size(); i++)
+  {
+    //match scope and varname
+    if(varName == data[i].getVariableName() && scope == data[i].getVariableScope())
+    {
+      //return temporary memory address (ie 'T0')
+      return data[i].getTemporary();
+    }
+  }
+}
+
 //return the actual memory address on stack of a given variable
 string StaticData::lookupRow(string tempName)
 {

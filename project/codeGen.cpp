@@ -172,19 +172,25 @@ vector<string> CodeGen::segment(Token *a)
   return returnSegment;
 }
 
+//use symbol table to get the variable type of particular variable
+string CodeGen::getVariableType(Token *a)
+{
+  string type;
+  //get type from symbolTable
+  return cgGenSymbolTable->returnType(a);
+}
+
 //process the code for an expression and return it
   //we need to know this to re-parse this section and generate code for it
 vector<string> CodeGen::expressionSegment(Token* a)
 {
   //determine what kind of expression
-  string expressionType;
+  string expressionType = "\0"; //initialize
 
+  //check the type if it's a char
   if(a->getType() == "char")
   {
-    string type;
-    //get type from symbolTable
-    expressionType = cgGenSymbolTable->returnType(a);
-
+    expressionType = getVariableType(a);
   }
 
   string td = a->getData(); //token Data
@@ -214,18 +220,49 @@ vector<string> CodeGen::expressionSegment(Token* a)
 vector<string> CodeGen::intExpressionSegment(Token *a)
 {
   vector<string> returnIntSegment;
+
+
+
+  string tt = a->getType(); //token type
+  if(tt == "+") //addition intexpr
+  {
+    //TODO: loop and get terminals
+  }
+  else //just a digit or variable that is a digit
+  {
+    if(tt == "digit")
+    {
+      
+    }
+    else //character representing variable
+    {
+
+    }
+  }
+
+
+  return  returnIntSegment;
+}
+
+void CodeGen::intExpressionLoop(Token *a)
+{
+
 }
 
 //set up conditionals, don't worry about branches
 vector<string> CodeGen::booleanExpressionSegment(Token *a)
 {
   vector<string> returnBooleanSegment;
+
+  return returnBooleanSegment;
 }
 
 //needs to create temporary variables and also put string in heap automatically
 vector<string> CodeGen::stringExpressionSegment(Token *a)
 {
   vector<string> returnStringSegment;
+
+  return returnStringSegment;
 }
 
 //compare stack head and heap head and make sure there is not an overflow

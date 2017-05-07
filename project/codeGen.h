@@ -26,9 +26,13 @@ class CodeGen
 
     vector<string> segment(Token* a);
 
+    string getVariableType(Token* a);
+
     vector<string> expressionSegment(Token* a);
 
     vector<string> intExpressionSegment(Token* a);
+    void intExpressionLoop(Token* a);
+    vector<int> intExpressionTerminals;
 
     vector<string> booleanExpressionSegment(Token* a);
 
