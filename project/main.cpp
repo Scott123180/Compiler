@@ -36,7 +36,7 @@ int main(int argc, char** argv)
   cout << "-->Before CodeGen" << endl;
   //generate code from AST
   // (scope is stored in tokens of var, boolean hell error detection stored in ST)
-  CodeGen newCodeGen(newSemantic.newAST, newSemantic.newGen->rootSymbolTable);
+  CodeGen newCodeGen(newSemantic.newAST, newSemantic.newGen);
 
   cout << "->After CodeGen" << endl;
   cout << "->Before output" << endl;

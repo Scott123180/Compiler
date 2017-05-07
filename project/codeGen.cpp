@@ -173,6 +173,7 @@ vector<string> CodeGen::segment(Token *a)
 }
 
 //process the code for an expression and return it
+  //we need to know this to re-parse this section and generate code for it
 vector<string> CodeGen::expressionSegment(Token* a)
 {
   //determine what kind of expression
@@ -189,43 +190,43 @@ vector<string> CodeGen::expressionSegment(Token* a)
   string td = a->getData(); //token Data
   string tt = a->getType(); //token Type
 
+  vector<string> returnSegment;
   //check for boolean expression
-  if(tt == "!=" || tt == "==" || td == "true" || td == "false")
+  if(tt == "!=" || tt == "==" || td == "true" || td == "false" || expressionType == "boolean")
   {
-    expressionType = "boolean";
+    returnSegment = booleanExpressionSegment(a);
   }
   //check for int expression
-  else if()
+  else if(tt == "+" || tt == "digit" || expressionType == "int")
   {
-
+    returnSegment = intExpressionSegment(a);
   }
   //check for string expression
-  else if()
+  else if(tt == "string" || expressionType == "string")
   {
+    returnSegment = stringExpressionSegment(a);
+  }
 
-  }
-  //int expression
-  if(expressionType == "int")
-  {
-    intExpressionSegment(a);
-  }
-  //boolean expression
-  else if(expressionType == "boolean")
-  {
-    booleanExpressionSegment(a);
-  }
-  //string expression
-  else if(expressionType == "string")
-  {
-    stringExpressionSegment(a);
-  }
+  return returnSegment;
 }
 
-vector<string> CodeGen::intExpressionSegment(Token *a) {}
+//recurse through leaves and perform operations
+vector<string> CodeGen::intExpressionSegment(Token *a)
+{
+  vector<string> returnIntSegment;
+}
 
-vector<string> CodeGen::booleanExpressionSegment(Token *a) {}
+//set up conditionals, don't worry about branches
+vector<string> CodeGen::booleanExpressionSegment(Token *a)
+{
+  vector<string> returnBooleanSegment;
+}
 
-vector<string> CodeGen::stringExpressionSegment(Token *a) {}
+//needs to create temporary variables and also put string in heap automatically
+vector<string> CodeGen::stringExpressionSegment(Token *a)
+{
+  vector<string> returnStringSegment;
+}
 
 //compare stack head and heap head and make sure there is not an overflow
 void CodeGen::checkForOverFlow()
