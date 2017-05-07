@@ -113,7 +113,9 @@ vector<string> CodeGen::segment(Token *a)
         cout << "is this valid " << a->parent->children[1]->getData() << endl;
 
         //assignment expression segment, pass right side(expr) and current token temp
-        returnSegment = assignExpressionSegment(a->parent->children[1], sdTable.lookupTempRow(a));
+        string tempMemLocation = sdTable.lookupTempRow(a);
+        cout << tempMemLocation << endl;
+        returnSegment = assignExpressionSegment(a->parent->children[1], tempMemLocation);
       }
       else if(parentType == "PrintStatement")
       {
