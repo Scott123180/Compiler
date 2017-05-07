@@ -9,12 +9,13 @@
 #include "jumps.h"
 #include "staticData.h"
 #include "error.h"
+#include "genSymbolTable.h"
 
 
 class CodeGen
 {
   public:
-    CodeGen(CST ast, SymbolTable* st);
+    CodeGen(CST ast, GenSymbolTable* st);
 
     ~CodeGen();
 
@@ -38,6 +39,8 @@ class CodeGen
     CST cgAST;
 
     SymbolTable* cgSymbolTable;
+
+    GenSymbolTable* cgGenSymbolTable;
 
     StaticData sdTable = StaticData();
 

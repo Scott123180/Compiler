@@ -629,3 +629,42 @@ void GenSymbolTable::kickST()
     curSymbolTable = curSymbolTable->parent;
   }
 }
+
+//for use in CodeGen return type of variable
+string GenSymbolTable::returnType(Token *a)
+{
+  //get unique scope
+  int scope = a->scope;
+  char varName = a->getData()[0];
+
+  //get pointer to the symbol table with that scope
+  matchScope(rootSymbolTable, scope);
+
+  //look through StEntry rows and match variable
+  for(vector<StEntry>::size_type i = 0; i < match->rows.size(); i++)
+  {
+    if(match->rows[i].name == varName)
+    {
+      //return the type
+      return match->rows[i].type;
+    }
+  }
+}
+
+void GenSymbolTable::matchScope(SymbolTable *a, int scopeLookup)
+{
+  //check if same scope
+  if(a->scope == scopeLookup) //found match
+  {
+    match = a;
+    return;
+  }
+  else //match not found, recurse
+  {
+    //recurse through children
+    for(vector<SymbolTable*>::size_type i = 0; i < a->children.size(); i++)
+    {
+      matchScope(a->children[i], scopeLookup);
+    }
+  }
+}

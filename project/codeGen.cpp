@@ -3,8 +3,8 @@
 
 using namespace std;
 
-CodeGen::CodeGen(CST ast, SymbolTable* st)
-  : cgAST(ast), cgSymbolTable(st)
+CodeGen::CodeGen(CST ast, GenSymbolTable* st)
+  : cgAST(ast), cgSymbolTable(st->rootSymbolTable), cgGenSymbolTable(st)
 {
   cout << "CodeGen constructor called" << endl;
   //initialize output array to 00's
@@ -14,7 +14,7 @@ CodeGen::CodeGen(CST ast, SymbolTable* st)
   }
 
   //check to see if boolean hell flag is set in the symbol table
-  if(st->booleanHell)
+  if(cgSymbolTable->booleanHell)
   {
     printBoolHell = true;
     vector<string> errorData = {};
@@ -176,14 +176,56 @@ vector<string> CodeGen::segment(Token *a)
 vector<string> CodeGen::expressionSegment(Token* a)
 {
   //determine what kind of expression
+  string expressionType;
 
+  if(a->getType() == "char")
+  {
+    string type;
+    //get type from symbolTable
+    expressionType = cgGenSymbolTable->returnType(a);
+
+  }
+
+  string td = a->getData(); //token Data
+  string tt = a->getType(); //token Type
+
+  //check for boolean expression
+  if(tt == "!=" || tt == "==" || td == "true" || td == "false")
+  {
+    expressionType = "boolean";
+  }
+  //check for int expression
+  else if()
+  {
+
+  }
+  //check for string expression
+  else if()
+  {
+
+  }
   //int expression
-
+  if(expressionType == "int")
+  {
+    intExpressionSegment(a);
+  }
   //boolean expression
-
+  else if(expressionType == "boolean")
+  {
+    booleanExpressionSegment(a);
+  }
   //string expression
-
+  else if(expressionType == "string")
+  {
+    stringExpressionSegment(a);
+  }
 }
+
+vector<string> CodeGen::intExpressionSegment(Token *a) {}
+
+vector<string> CodeGen::booleanExpressionSegment(Token *a) {}
+
+vector<string> CodeGen::stringExpressionSegment(Token *a) {}
 
 //compare stack head and heap head and make sure there is not an overflow
 void CodeGen::checkForOverFlow()

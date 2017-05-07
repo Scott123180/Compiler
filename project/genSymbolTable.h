@@ -72,6 +72,16 @@ class GenSymbolTable
 
     void kickST(); //kick symbol table to parent
 
+    /*
+     * helper functions for CodeGen
+    */
+
+    string returnType(Token* a);
+
+    SymbolTable* match = nullptr;
+
+    void matchScope(SymbolTable* a, int scopeLookup);
+
   private:
 
     vector<Token> tokens;
