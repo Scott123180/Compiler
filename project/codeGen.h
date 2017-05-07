@@ -27,6 +27,12 @@ class CodeGen
 
     vector<string> expressionSegment(Token* a);
 
+    vector<string> intExpressionSegment(Token* a);
+
+    vector<string> booleanExpressionSegment(Token* a);
+
+    vector<string> stringExpressionSegment(Token* a);
+
   private:
 
     CST cgAST;

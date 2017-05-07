@@ -172,8 +172,16 @@ vector<string> CodeGen::segment(Token *a)
   return returnSegment;
 }
 
+//process the code for an expression and return it
 vector<string> CodeGen::expressionSegment(Token* a)
 {
+  //determine what kind of expression
+
+  //int expression
+
+  //boolean expression
+
+  //string expression
 
 }
 
