@@ -113,10 +113,6 @@ vector<string> CodeGen::segment(Token *a)
 
         //code for evaluating expression below
       }
-      else if(parentType == "==" || parentType == "!=")
-      {
-
-      }
       else if(parentType == "PrintStatement")
       {
 
@@ -138,7 +134,7 @@ vector<string> CodeGen::segment(Token *a)
     //if we reach an if statement, then handle a jump and call segment on it's children
     if(a->getType() == "IfStatement")
     {
-      //process conditional
+      //TODO: process conditional
 
       //run segment on ifBlock children
       vector<string> ifBlock = segment(a->children[1]);
@@ -153,6 +149,10 @@ vector<string> CodeGen::segment(Token *a)
       {
         returnSegment.push_back(ifBlock[i]);
       }
+    }
+    else if(a->getType() == "WhileStatement")
+    {
+      //TODO: process while statement
     }
   }
 
@@ -169,8 +169,12 @@ vector<string> CodeGen::segment(Token *a)
   }
 
   //return the segment (works for end of program)
-  cout << "~~~return segment regular" << endl;
   return returnSegment;
+}
+
+vector<string> CodeGen::expressionSegment(Token* a)
+{
+
 }
 
 //compare stack head and heap head and make sure there is not an overflow
@@ -223,9 +227,7 @@ void CodeGen::allocateMemoryOnStack()
 {
   //find end of code and set the head of the stack to that
   int stackHead = static_cast<int>(codeSize);
-  cout << "STACKHEAD: " << endl;
   string stackHeadHex = intToHex(stackHead);
-  cout << "intToHex results: " << endl;
 
   //calculate size of stack (for use in overflows later)
     //precaution for no stack being used
@@ -236,7 +238,6 @@ void CodeGen::allocateMemoryOnStack()
   else //stack used, set to number of rows in data
   {
     stackSize = sdTable.data.size(); //each var takes up one byte of space
-    cout << "------stack size: " << stackSize << endl;
   }
 
   //loop through every data row to set memory location on the stack
@@ -305,7 +306,7 @@ string CodeGen::intToHex(int a)
   stringstream ss;
   ss << std::uppercase << std::hex << a;
   hexValue = ss.str();
-  
+
   //add leading zero if only one size
   if(hexValue.size() == 1)
   {

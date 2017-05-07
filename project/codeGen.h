@@ -23,9 +23,9 @@ class CodeGen
     //for use in printing bool hell warning
     bool printBoolHell = false;
 
-    int curIndex = 0;
-
     vector<string> segment(Token* a);
+
+    vector<string> expressionSegment(Token* a);
 
   private:
 
