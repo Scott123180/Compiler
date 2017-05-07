@@ -32,7 +32,7 @@ class CodeGen
 
     vector<string> assignIntExpressionSegment(Token* a, string tempVarName);
     void assignIntExpressionLoop(Token* a);
-    vector<int> assignIntExpressionTerminals;
+    vector<string> assignIntExpressionTerminals;
 
     vector<string> assignBooleanExpressionSegment(Token* a, string tempVarName);
 

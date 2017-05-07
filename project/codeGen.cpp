@@ -244,6 +244,11 @@ vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
   if(tt == "+") //addition intexpr
   {
     //TODO: loop and get terminals
+    //calculate the output for the integer addition
+    assignIntExpressionLoop(a);
+    vector<string> results = assignIntExpressionTerminals; //store in temp array
+    assignIntExpressionTerminals.clear(); //clear for future operations
+    return results;
   }
   else //just a digit or variable that is a digit
   {
@@ -252,7 +257,7 @@ vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
     {
       //load value to acc
       returnIntSegment.push_back(LDA_C); //A9
-      returnIntSegment.push_back(a->getData()); //digit value
+      returnIntSegment.push_back("0" + a->getData()); //digit value
 
       //store in temporary variable we're assigning to
       returnIntSegment.push_back(STA); //8D
@@ -280,8 +285,27 @@ vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
   return  returnIntSegment;
 }
 
+//loop through and grab everything in int expression side
 void CodeGen::assignIntExpressionLoop(Token *a)
 {
+  //push back number
+  if(a->getType() == "int") //number
+  {
+
+
+    assignIntExpressionTerminals.push_back("0" + a->getData());
+  }
+  else if(a->getType() == "char") //variable
+  {
+    //get temporary memory address of it
+    
+  }
+  //otherwise it's a plus sign, do nothing but recurse
+
+  for(vector<Token*>::size_type i = 0; i < a->children.size(); i++)
+  {
+    assignIntExpressionLoop(a->children[i]);
+  }
 
 }
 
