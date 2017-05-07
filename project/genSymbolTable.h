@@ -5,7 +5,6 @@
 #include <string>
 
 #include "cst.h"
-#include "semantic.h"
 #include "symbolTable.h"
 #include "token.h"
 #include "stEntry.h"

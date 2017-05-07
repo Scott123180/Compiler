@@ -83,7 +83,7 @@ void CodeGen::process()
 vector<string> CodeGen::segment(Token *a)
 {
   //initialize the segment that we'll return
-  vector<string> returnSegment;
+  vector<string> returnSegment = {};
 
   //check for leaf node
   if(!a->getData().empty()) //(not a branch node)
@@ -109,7 +109,8 @@ vector<string> CodeGen::segment(Token *a)
       }
       else if(parentType == "AssignStatement")
       {
-        //retrieve the temp variable information from staticData table
+        cout << "!!!!!!!! Got to ass statment" << endl;
+        cout << "is this valid " << a->parent->children[1]->getData() << endl;
 
         //assignment expression segment, pass right side(expr) and current token temp
         returnSegment = assignExpressionSegment(a->parent->children[1], sdTable.lookupTempRow(a));
@@ -186,6 +187,7 @@ string CodeGen::getVariableType(Token *a)
   //this code is used in assigning variables
 vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
 {
+  cout << "I think we assignin" << endl;
   //determine what kind of expression
   string expressionType = "\0"; //initialize
 
@@ -198,6 +200,11 @@ vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
   string td = a->getData(); //token Data
   string tt = a->getType(); //token Type
 
+  cout << "after the a->getdata and type thign" << endl;
+  cout << "token data" << td << endl;
+  cout << "token type" << tt << endl;
+  cout << "expressionType" << expressionType << endl;
+
   vector<string> returnSegment;
   //check for boolean expression
   if(tt == "!=" || tt == "==" || td == "true" || td == "false" || expressionType == "boolean")
@@ -205,8 +212,10 @@ vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
     returnSegment = assignBooleanExpressionSegment(a, tempVarName);
   }
   //check for int expression
-  else if(tt == "+" || tt == "digit" || expressionType == "int")
+  else if(tt == "+" || tt == "int" || expressionType == "int")
   {
+    cout << "WE checkin for expressin intexpr" << endl;
+    cout << tempVarName << endl;
     returnSegment = assignIntExpressionSegment(a, tempVarName);
   }
   //check for string expression
@@ -219,20 +228,21 @@ vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
 }
 
 //recurse through leaves and perform operations
-vector<string> CodeGen::assignIntExpressionSegment(Token *a, string tempVarName)
+vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
 {
+  cout << "in the assignintexpr segment" << endl;
   vector<string> returnIntSegment;
-
-
-
+  cout << "before get type" << endl;
   string tt = a->getType(); //token type
+  cout << "after get type" << endl;
   if(tt == "+") //addition intexpr
   {
     //TODO: loop and get terminals
   }
   else //just a digit or variable that is a digit
   {
-    if(tt == "digit")
+    cout << "ELSE STMT. Type: " << tt << endl;
+    if(tt == "int")
     {
       //load value to acc
       returnIntSegment.push_back(LDA_C); //A9
@@ -246,10 +256,20 @@ vector<string> CodeGen::assignIntExpressionSegment(Token *a, string tempVarName)
     }
     else //assigning variable to variable
     {
-      //lookup right side of variable
+      //lookup right side temp name of variable
+      string rightSideTempVarName = sdTable.lookupTempRow(a);
+
+      //load right side variable in the accumulator
+      returnIntSegment.push_back(LDA_M); //AD
+      returnIntSegment.push_back(rightSideTempVarName); //load right-side temp var name
+      returnIntSegment.push_back("XX");
+
+      //store the accumulator in the memory location of the left side
+      returnIntSegment.push_back(STA); //8D
+      returnIntSegment.push_back(tempVarName); //left side
+      returnIntSegment.push_back("XX");
     }
   }
-
 
   return  returnIntSegment;
 }
