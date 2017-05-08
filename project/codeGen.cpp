@@ -500,6 +500,37 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       //  jump n bytes---------------------|--|
       //  assign 00 (false) to leftside <--|  |
       //  rest of code <----------------------|
+
+      //branch n bytes if false
+      returnBooleanSegment.push_back(BNE); //D0
+
+      returnBooleanSegment.push_back(); //number of bytes to branch
+
+      //assign 01 (true) to leftside
+      returnBooleanSegment.push_back(LDA_C); //A9
+      returnBooleanSegment.push_back("01"); //true
+      returnBooleanSegment.push_back(STA); //8D
+      returnBooleanSegment.push_back(leftTokTempName); //memory loc, left side
+      returnBooleanSegment.push_back(XX); //XX
+
+      //deal with branching
+        //load X register with 01
+      returnBooleanSegment.push_back(LDX_C); //A2
+      returnBooleanSegment.push_back("01");
+        //compare to last memory location so we can set zflag to false
+      returnBooleanSegment.push_back(CPX); //EC
+        //branch
+      returnBooleanSegment.push_back(BNE); //D0
+      returnBooleanSegment.push_back(); //number of bytes to branch
+
+      //assign 00 (false) to leftside
+      returnBooleanSegment.push_back(LDA_C); //A9
+      returnBooleanSegment.push_back("00"); //false
+      returnBooleanSegment.push_back(STA); //8D
+      returnBooleanSegment.push_back(leftTokTempName); //memory loc, left side
+      returnBooleanSegment.push_back(XX); //XX
+
+      //rest of code - jump here
     }
     else // !=
     {
@@ -508,6 +539,7 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       //  jump n bytes---------------------|--|
       //  assign 01 (true) to leftside <---|  |
       //  rest of code <----------------------|
+
     }
   }
   else //true and false literals

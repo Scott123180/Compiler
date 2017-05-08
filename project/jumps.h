@@ -4,6 +4,8 @@
 #include <vector>
 #include <utility>
 #include <string>
+#include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -14,10 +16,16 @@ class Jumps {
       //temp, distance
     Jumps() {};
 
-    string addRow(unsigned int dist);
+    string addRow();
+
+    void  setDistance(string jump, int start, int end);
+
   private:
     //pair<temp, dist>
-    vector<pair<int, int>> rows;
+    vector<pair<string, string>> rows;
+
+    string intToHex(int a);
+
 };
 
 
