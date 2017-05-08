@@ -424,7 +424,10 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
     
     if(rtData == "true") rtData = "1";
     else if(rtData == "false") rtData == "0";
-    
+
+
+
+
     //make sure not comparing string literals
     if(ltType == "string" || rtType == "string")
     {
@@ -435,7 +438,9 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
     }
 
 
+
     string leftTokTempName; //left side memory location
+
     //store ls into acc, store rs into x reg, compare x reg to memory, z flag is set, deal with branching
 
     //left side
@@ -449,6 +454,9 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       returnBooleanSegment.push_back(leftTokTempName);
       returnBooleanSegment.push_back(XX); //XX
     }
+
+
+
     else //constant
     {
       //get a new memory location for the const
@@ -487,11 +495,19 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
     // TODO: != and == dependencies
     if(tt == "==")
     {
-
+      //branch n bytes if false------------|
+      //  assign 01 (true) to leftside     |
+      //  jump n bytes---------------------|--|
+      //  assign 00 (false) to leftside <--|  |
+      //  rest of code <----------------------|
     }
     else // !=
     {
-
+      //branch n bytes if false------------|
+      //  assign 00 (false) to leftside    |
+      //  jump n bytes---------------------|--|
+      //  assign 01 (true) to leftside <---|  |
+      //  rest of code <----------------------|
     }
   }
   else //true and false literals
