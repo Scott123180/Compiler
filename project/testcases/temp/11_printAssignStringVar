@@ -1,0 +1,7 @@
+{
+  string a
+  a = "alan"
+  string b
+  b = a
+  print(b)
+}$

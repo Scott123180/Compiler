@@ -844,9 +844,8 @@ vector<string> CodeGen::printStringExpressionSegment(Token *a)
     printStringSegment.push_back(P_STR); //02
 
     //load value into the y register
-    printStringSegment.push_back(LDY_M); //AC
+    printStringSegment.push_back(LDY_C); //A0
     printStringSegment.push_back(heapStart); //start of string
-    printStringSegment.push_back(XX); //XX
 
     printStringSegment.push_back(SYS); //FF
 
