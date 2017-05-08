@@ -29,21 +29,20 @@ void Jumps::setDistance(string jump, int start, int end)
   int distance;
 
   //check for wraparound jump
-  if(start <= end) //regular jump
+  if (start <= end) //regular jump
   {
     distance = (end - start);
-  }
-  else //wraparound jump
+  } else //wraparound jump
   {
     distance = 255 - start; //for jumping to end of memory, 255
     ++distance; //for jumping to 0
     distance += ((end - 0) + 1); //for jumping to end from 00
   }
 
-  //look through and try to find jump
-  for(vector<pair<string,int>>::size_type i = 0; i < rows.size(); i++)
+  //look through and find jump
+  for (vector<pair<string, int>>::size_type i = 0; i < rows.size(); i++)
   {
-    if(jump == rows[i].first) //if the same jump id
+    if (jump == rows[i].first) //if the same jump id
     {
       //get the hex value of a jump
       string distanceToHex = intToHex(distance);
@@ -51,26 +50,36 @@ void Jumps::setDistance(string jump, int start, int end)
       rows[i].second = distanceToHex;
     }
   }
+}
 
-  //stolen from CodeGen
-  string Jumps::intToHex(int a)
+string Jumps::lookupDistance(string tempName)
+{
+  //look through and find jump
+  for (vector<pair<string, int>>::size_type i = 0; i < rows.size(); i++)
   {
-    string hexValue;
-    stringstream ss;
-    ss << std::uppercase << std::hex << a;
-    hexValue = ss.str();
-
-    //add leading zero if only one size
-    if(hexValue.size() == 1)
+    if (tempName == rows[i].first) //if the same jump id
     {
-      hexValue.push_back(' ');
-      hexValue[1] = hexValue[0];
-      hexValue[0] = '0';
+      //return the distance
+      return rows[i].second;
     }
-    cout << "HEX VALUE INT TO HEX: " << endl;
-    return hexValue;
   }
+}
 
+//stolen from CodeGen
+string Jumps::intToHex(int a)
+{
+  string hexValue;
+  stringstream ss;
+  ss << std::uppercase << std::hex << a;
+  hexValue = ss.str();
 
-
+  //add leading zero if only one size
+  if(hexValue.size() == 1)
+  {
+    hexValue.push_back(' ');
+    hexValue[1] = hexValue[0];
+    hexValue[0] = '0';
+  }
+  cout << "HEX VALUE INT TO HEX: " << endl;
+  return hexValue;
 }

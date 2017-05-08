@@ -122,18 +122,27 @@ vector<string> CodeGen::segment(Token *a)
         returnSegment.push_back(tempVar);
         returnSegment.push_back("XX");
       }
+      //== and != to catch assigning boolean expressions
       else if(parentType == "AssignStatement")
       {
-        cout << "!!!!!!!! Got to ass statment" << endl;
+        cout << "!!!!!!!! Got to ass statement" << endl;
         cout << "is this valid " << a->parent->children[1]->getData() << endl;
 
         cout << "memory location of 'a' token: " << a << endl;
 
         //assignment expression segment, pass right side(expr) and current token temp
         cout << "scope value: " << a->scope << endl;
+        cout << "type: " << a->getType() << endl;
+        cout << "data: " << a->getData() << endl;
         string tempMemLocation = sdTable.lookupTempRow(a);
         cout << tempMemLocation << endl;
         returnSegment = assignExpressionSegment(a->parent->children[1], tempMemLocation);
+      }
+        ////////////////////////////////////////////
+      else if(parentType == "!=" || parentType == "==")
+      {
+        //do nothing but return
+        return returnSegment;
       }
       else //unreachable unless I forgot something
       {
@@ -160,7 +169,7 @@ vector<string> CodeGen::segment(Token *a)
       //Jump stuff, I don't think I really need it with my method
       unsigned int jumpDistance = static_cast<unsigned int>(ifBlock.size());
       //create new jump
-      jTable.addRow(jumpDistance);
+      jTable.addRow();
 
       //push back segment to return segment
       for(vector<string>::size_type i = 0; i < ifBlock.size(); i++)
@@ -175,6 +184,12 @@ vector<string> CodeGen::segment(Token *a)
     else if(a->getType() == "PrintStatement")
     {
       return printExpressionSegment(a->children[0]);
+    }
+      /////////////////////////////////////////
+    else if(a->getType() == "==" || a->getType() == "!=")
+    {
+      //do nothing with these
+      return returnSegment;
     }
   }
 
@@ -215,6 +230,9 @@ string CodeGen::getVariableType(Token *a)
   //this code is used in assigning variables
 vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
 {
+  cout << "TOOOOOOOOOOOOOKEN" << endl;
+  cout << a->getType() << endl;
+  cout << a->getData() << endl;
   //determine what kind of expression
   string expressionType = "\0"; //initialize
 
@@ -399,6 +417,7 @@ void CodeGen::assignIntExpressionLoop(Token *a)
 //set up conditionals, don't worry about branches
 vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarName)
 {
+  cout << "In assign booleanExpr" << endl;
   vector<string> returnBooleanSegment;
   
   string tt = a->getType(); //token type (== and !=)
@@ -416,7 +435,12 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
     string ltData = leftTok->getData();
     string rtType = rightTok->getType();
     string rtData = rightTok->getData();
-    
+
+    cout << "ltType: " << ltType << endl;
+    cout << "ltData: " << ltData << endl;
+    cout << "rtType: " << rtType << endl;
+    cout << "rtData: " << rtData << endl;
+
     //change true/false to 1 and 0
       // (dont worry about leading 0, we got it covered below)
     if(ltData == "true") ltData = "1";
@@ -492,6 +516,7 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
     returnBooleanSegment.push_back(XX); //XX
     //z flag is set
 
+    cout << "got before the == and != section" << endl;
     // TODO: != and == dependencies
     if(tt == "==")
     {
@@ -503,8 +528,9 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
 
       //branch n bytes if false
       returnBooleanSegment.push_back(BNE); //D0
-
-      returnBooleanSegment.push_back(); //number of bytes to branch
+      int intBranch1 = 11; ///counting by hand
+      string hexBranch1 = intToHex(intBranch1);
+      returnBooleanSegment.push_back(hexBranch1); //number of bytes to branch
 
       //assign 01 (true) to leftside
       returnBooleanSegment.push_back(LDA_C); //A9
@@ -521,7 +547,9 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       returnBooleanSegment.push_back(CPX); //EC
         //branch
       returnBooleanSegment.push_back(BNE); //D0
-      returnBooleanSegment.push_back(); //number of bytes to branch
+      int intBranch2 = 6; ///counting by hand
+      string hexBranch2 = intToHex(intBranch2);
+      returnBooleanSegment.push_back(hexBranch2); //number of bytes to branch
 
       //assign 00 (false) to leftside
       returnBooleanSegment.push_back(LDA_C); //A9
@@ -911,6 +939,7 @@ vector<string> CodeGen::printStringExpressionSegment(Token *a)
 //replace temporary variable and jump names with actual memory locations
 void CodeGen::backPatching()
 {
+  ///stack
   cout << "before allocate memory" << endl;
   //set the actual memory addresses of the rows on the stack
   allocateMemoryOnStack();
@@ -921,8 +950,8 @@ void CodeGen::backPatching()
 
   cout << "after replace memory" << endl;
 
-  //handle jumps
-
+  ///jumps
+  replaceTemporaryJumpAddresses();
 }
 
 
@@ -981,6 +1010,21 @@ void CodeGen::replaceTemporaryMemoryAddresses()
       output[i] = address;
       ++i; //increment i to put in 00's
       output[i] = "00";
+    }
+    //just move on to next input if not found
+  }
+}
+
+void CodeGen::replaceTemporaryJumpAddresses()
+{
+  for(int i = 0; i < 256; i++)
+  {
+    //check for temporary variable
+    if(output[i].front() == 'J') //if first character of location is J (Jump)
+    {
+      //replace with distance of jump
+      string dist = jTable.lookupDistance(output[i]);
+      output[i] = dist;
     }
     //just move on to next input if not found
   }

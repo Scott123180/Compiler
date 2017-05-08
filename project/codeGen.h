@@ -80,6 +80,8 @@ class CodeGen
 
     void replaceTemporaryMemoryAddresses();
 
+    void replaceTemporaryJumpAddresses();
+
     vector<string> stringToHexChars(string a);
 
     string intToHex(int a);

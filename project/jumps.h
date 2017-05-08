@@ -20,6 +20,8 @@ class Jumps {
 
     void  setDistance(string jump, int start, int end);
 
+    string lookupDistance(string tempName);
+
   private:
     //pair<temp, dist>
     vector<pair<string, string>> rows;
