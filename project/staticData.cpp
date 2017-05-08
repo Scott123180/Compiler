@@ -28,16 +28,44 @@ string StaticData::addRow(Token* a)
 
   int offset = numRows;
 
+  /*
   cout << "~~~~~~~~~~~~~~~~~add row" << endl;
   cout << "temp: " << temp << endl;
   cout << "var: " << var << endl;
   cout << "scope: " << scope << endl;
   cout << "offset: " << offset << endl;
+   */
   StaticDataRow newSDRow = StaticDataRow(temp, var, scope, offset);
 
   //push back row to staticData
   data.push_back(newSDRow);
 
+  return temp;
+}
+
+//stores int constant, returns temporary address
+string StaticData::addConstIntRow(string val)
+{
+  int numRows;
+  if(data.empty()) //define empty data vector behavior
+  {
+    numRows = 0;
+  }
+  else
+  {
+    //get the next temp var number
+    numRows = static_cast<int>(data.size());
+  }
+  
+  string temp = "T" + to_string(numRows); //temp var name
+  string var = "\0";
+  int scope = -1;
+  int offset = numRows;
+  
+  StaticDataRow newSDRow = StaticDataRow(temp, var, scope, offset);
+  
+  data.push_back(newSDRow);
+  
   return temp;
 }
 

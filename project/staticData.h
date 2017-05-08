@@ -20,6 +20,8 @@ class StaticData {
     StaticData() {};
 
     string addRow(Token* a);
+    
+    string addConstIntRow(string val);
 
     string lookupTempRow(Token* a);
 

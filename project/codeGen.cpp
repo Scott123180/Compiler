@@ -271,7 +271,7 @@ vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
         returnIntSegment.push_back(LDA_C);
         returnIntSegment.push_back(intTerminal); //already added the 0
         //add row in stack
-        string stackStore; //TODO: add special row in the stack
+        string stackStore = sdTable.addConstIntRow(string val); //TODO: add special row in the stack
         //push back memory address - no XX
         returnIntSegment.push_back(stackStore);
 
