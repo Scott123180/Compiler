@@ -814,11 +814,8 @@ vector<string> CodeGen::printStringExpressionSegment(Token *a)
   }
   else //string literal
   {
-    /*
     //get string
     string thisString = td; //string
-
-    cout << "`````````````````````This is the string: " << thisString << endl;
 
     //convert string into vector of hex values
     vector<string> thisHexString = stringToHexChars(thisString);
@@ -838,20 +835,21 @@ vector<string> CodeGen::printStringExpressionSegment(Token *a)
       output[--heapHead] = thisHexString[i];
     }
 
-
     string heapStart = intToHex(heapHead);
 
     //put in code
 
-    returnStringSegment.push_back(LDA_C); //A9
-    returnStringSegment.push_back(heapStart); //start of string
+    //load print y (02) into x register
+    printStringSegment.push_back(LDX_C); //A2
+    printStringSegment.push_back(P_STR); //02
 
-    //store heapstart in temp variable
-    returnStringSegment.push_back(STA); //8D
-    returnStringSegment.push_back(tempVarName); //string var name
-    returnStringSegment.push_back(XX); //XX
+    //load value into the y register
+    printStringSegment.push_back(LDY_M); //AC
+    printStringSegment.push_back(heapStart); //start of string
+    printStringSegment.push_back(XX); //XX
 
-     */
+    printStringSegment.push_back(SYS); //FF
+
   }
 
   return printStringSegment;
