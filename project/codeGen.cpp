@@ -135,7 +135,7 @@ vector<string> CodeGen::segment(Token *a)
       }
       else if(parentType == "PrintStatement")
       {
-        printExpressionSegment(Token* a);
+        printExpressionSegment(a);
       }
       else //unreachable unless I forgot something
       {
@@ -254,7 +254,7 @@ vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
 
 /*
  * =====================================================================================
- * Assign Int Expression Segment
+ * ASSIGN INT Expression Segment
  * =====================================================================================
  */
 
@@ -390,7 +390,7 @@ void CodeGen::assignIntExpressionLoop(Token *a)
 
 /*
  * =====================================================================================
- * Assign Boolean Expression Segment
+ * ASSIGN BOOLEAN Expression Segment
  * =====================================================================================
  */
 
@@ -518,7 +518,7 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
 
 /*
  * =====================================================================================
- * Assign String Expression Segment
+ * ASSIGN STRING Expression Segment
  * =====================================================================================
  */
 
@@ -590,7 +590,7 @@ vector<string> CodeGen::assignStringExpressionSegment(Token *a, string tempVarNa
 
 /*
  * =====================================================================================
- * Print Expression Segment
+ * PRINT EXPRESSION Segment
  * =====================================================================================
  */
 
@@ -630,19 +630,213 @@ vector<string> CodeGen::printExpressionSegment(Token *a)
   return returnSegment;
 }
 
+/*
+ * =====================================================================================
+ * PRINT INT Expression Segment
+ * =====================================================================================
+ */
+
+//we recycled a bunch of code from intExpressionLoop
 vector<string> CodeGen::printIntExpressionSegment(Token *a)
 {
 
+  vector<string> printIntSegment;
+
+  string tt = a->getType(); //token type
+
+  if(tt == "+") //addition intexpr
+  {
+    //a = 1+1
+    //load constant 01, store constant in new stack, load constant 01, store constant in  new stack,
+    //load constant 00 in acc, add with carry mem1, add with carry, store in new stack, load from last
+    //stack place, store in left side memory location
+
+
+    //calculate the output for the integer addition
+    assignIntExpressionLoop(a);
+    vector<string> results = assignIntExpressionTerminals; //store in temp array
+    assignIntExpressionTerminals.clear(); //clear for future operations
+
+    vector<string> fingernails = {};
+    //store each in memory, which are constants or temp memory addresses
+    for(vector<string>::size_type i = 0; i < results.size(); i++)
+    {
+      string intTerminal = results[i];
+      //determine whether it's a constant or load from memory
+      if(intTerminal[0] == 'T')//variable
+      {
+        //push back references
+        fingernails.push_back(intTerminal);
+      }
+      else //constant
+      {
+        /*
+        //load constant into accumulator
+        returnIntSegment.push_back(LDA_C); //A9
+        returnIntSegment.push_back(intTerminal); //int value - already added the 0
+
+        //add row in stack for constant variable
+        string stackStore = sdTable.addConstRow();
+        fingernails.push_back(stackStore);
+
+        //store in memory address
+        returnIntSegment.push_back(STA); //8D
+        returnIntSegment.push_back(stackStore); //memory location
+        returnIntSegment.push_back("XX");
+        */
+      }
+    }
+    //clear accumulator
+    /*
+    returnIntSegment.push_back(LDA_C); //A9
+    returnIntSegment.push_back("00"); //00
+     */
+
+    //add each to accumulator
+    for(vector<string>::size_type i = 0; i < fingernails.size(); i++)
+    {
+      /*
+      returnIntSegment.push_back(ADC); //6D
+      returnIntSegment.push_back(fingernails[i]); //add temp mem location
+      returnIntSegment.push_back("XX");
+       */
+    }
+    /*
+    //store in memory address
+    returnIntSegment.push_back(STA); //8D
+
+    //assign to left side (tempVarName)
+    returnIntSegment.push_back(tempVarName); //left side temp var name
+    returnIntSegment.push_back("XX");
+     */
+
+
+    return printIntSegment;
+  }
+  else //just a digit or variable that is a digit
+  {
+    cout << "ELSE STMT. Type: " << tt << endl;
+    if(tt == "int")
+    {
+
+      /*
+      //load value to acc
+      returnIntSegment.push_back(LDA_C); //A9
+      returnIntSegment.push_back("0" + a->getData()); //digit value
+
+      //store in temporary variable we're assigning to
+      returnIntSegment.push_back(STA); //8D
+      returnIntSegment.push_back(tempVarName);
+      returnIntSegment.push_back("XX");
+      */
+    }
+    else //assigning variable to variable
+    {
+      /*
+      //lookup right side temp name of variable
+      string rightSideTempVarName = sdTable.lookupTempRow(a);
+
+      //load right side variable in the accumulator
+      returnIntSegment.push_back(LDA_M); //AD
+      returnIntSegment.push_back(rightSideTempVarName); //load right-side temp var name
+      returnIntSegment.push_back("XX");
+
+      //store the accumulator in the memory location of the left side
+      returnIntSegment.push_back(STA); //8D
+      returnIntSegment.push_back(tempVarName); //left side
+      returnIntSegment.push_back("XX");
+       */
+    }
+  }
+
+  return  printIntSegment;
 }
+
+/*
+ * =====================================================================================
+ * PRINT BOOLEAN Expression Segment
+ * =====================================================================================
+ */
 
 vector<string> CodeGen::printBooleanExpressionSegment(Token *a)
 {
 
 }
 
+/*
+ * =====================================================================================
+ * PRINT STRING Expression Segment
+ * =====================================================================================
+ */
+
 vector<string> CodeGen::printStringExpressionSegment(Token *a)
 {
+  vector<string> printStringSegment;
 
+  string tt = a->getType(); //token type
+  string td = a->getData(); //token data
+
+  //determine whether or not we're dealing with a variable
+  if(tt == "char") //variable
+  {
+    /*
+    //lookup the character and get temp memory address
+    string rightSideTempToken = sdTable.lookupTempRow(a);
+
+    //load right side
+    returnStringSegment.push_back(LDA_M); //AD
+    returnStringSegment.push_back(rightSideTempToken); //temp token right side
+    returnStringSegment.push_back(XX); //XX
+
+    //write to left side
+    returnStringSegment.push_back(STA); //8D
+    returnStringSegment.push_back(tempVarName); //temp token left(assign) side
+    returnStringSegment.push_back(XX); //XX
+     */
+  }
+  else //string literal
+  {
+    /*
+    //get string
+    string thisString = td; //string
+
+    cout << "`````````````````````This is the string: " << thisString << endl;
+
+    //convert string into vector of hex values
+    vector<string> thisHexString = stringToHexChars(thisString);
+
+    cout << "Size of hex vector: " << thisHexString.size() << endl;
+    for (vector<string>::size_type i = 0; i < thisHexString.size(); i++) {
+      cout << "HEX " << i << " :" << thisHexString[i] << endl;
+    }
+
+    cout << "after  print" << endl;
+    //write null terminator
+    output[--heapHead] = "00";
+
+    //loop through back to front and WRITE to heap
+    for (int i = (static_cast<int>(thisHexString.size()) - 1); i >= 0; i--) {
+      ///write to one before current heapHead
+      output[--heapHead] = thisHexString[i];
+    }
+
+
+    string heapStart = intToHex(heapHead);
+
+    //put in code
+
+    returnStringSegment.push_back(LDA_C); //A9
+    returnStringSegment.push_back(heapStart); //start of string
+
+    //store heapstart in temp variable
+    returnStringSegment.push_back(STA); //8D
+    returnStringSegment.push_back(tempVarName); //string var name
+    returnStringSegment.push_back(XX); //XX
+
+     */
+  }
+
+  return printStringSegment;
 }
 
 /*
