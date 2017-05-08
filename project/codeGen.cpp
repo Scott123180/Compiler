@@ -395,6 +395,13 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
     string rtType = rightTok->getType();
     string rtData = rightTok->getData();
     
+    //change true/false to 1 and 0 (dont worry about leading 0, we got it covered below)
+    if(ltData == "true") ltData = "1";
+    else if(ltData == "false") ltData == "0";
+    
+    if(rtData == "true") rtData = "1";
+    else if(rtData == "false") rtData == "0";
+    
     //make sure not comparing string literals
     if(ltType == "string" || rtType == "string")
     {
@@ -412,10 +419,16 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       //lookup tempVarName
       string leftTokTempName = sdTable.lookupTempRow(leftTok);
       
+      //load left side to accumulator
+      returnBooleanSegment.push_back(LDA_M); //AD
+      returnBooleanSegment.push_back(leftTokTempName);
+      returnBooleanSegment.push_back(XX); //XX
     }
     else //constant
     {
-    
+      //load left side to accumulator
+      returnBooleanSegment.push_back(LDA_C); //A9
+      returnBooleanSegment.push_back("0" + ltData); //data
     }
     //right side
     if(rtType == "char") //variable
@@ -423,10 +436,16 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       //lookup right tok name
       string rightTokTempName = sdTable.lookupTempRow(rightTok);
       
+      //load right side into x reg
+      returnBooleanSegment.push_back(LDX_M); //AE
+      returnBooleanSegment.push_back(rightTokTempName); //memory address
+      returnBooleanSegment.push_back(XX); //XX
     }
     else
     {
-    
+      //load right side into x reg
+      returnBooleanSegment.push_back(LDX_C); //A2
+      returnBooleanSegment.push_back("0" + rtData); //data
     }
     
     
