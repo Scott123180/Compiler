@@ -386,6 +386,51 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
   if(tt == "==" || tt == "!=")
   {
     //TODO: compare right and left values
+    Token* leftTok = a->children[0];
+    Token* rightTok = a->children[1];
+    
+    //get token information
+    string ltType = leftTok->getType();
+    string ltData = leftTok->getData();
+    string rtType = rightTok->getType();
+    string rtData = rightTok->getData();
+    
+    //make sure not comparing string literals
+    if(ltType == "string" || rtType == "string")
+    {
+      cout << "ERROR! Comparisons of string literals are not supported for code generation. " << endl;
+      cout << "Please don't do this sir/madame. Line: " << a->getLine() << endl;
+      cout << "Aborting compilation" << endl;
+      exit(0);
+    }
+    
+    //store ls into acc, store rs into x reg, compare x reg to memory, z flag is set, deal with branching
+    
+    //left side
+    if(ltType == "char") //variable
+    {
+      //lookup tempVarName
+      string leftTokTempName = sdTable.lookupTempRow(leftTok);
+      
+    }
+    else //constant
+    {
+    
+    }
+    //right side
+    if(rtType == "char") //variable
+    {
+      //lookup right tok name
+      string rightTokTempName = sdTable.lookupTempRow(rightTok);
+      
+    }
+    else
+    {
+    
+    }
+    
+    
+    
     //different methods for comparing strings, ints, and booleans?
   }
   else //true and false literals
@@ -426,7 +471,8 @@ vector<string> CodeGen::assignStringExpressionSegment(Token *a, string tempVarNa
   string tt = a->getType(); //token type
   string td = a->getData(); //token data
   
-  if(tt == "char")
+  //determine whether or not we're dealing with a variable
+  if(tt == "char") //variable
   {
     //lookup the character and get temp memory address
     string rightSideTempToken = sdTable.lookupTempRow(a);
@@ -441,7 +487,7 @@ vector<string> CodeGen::assignStringExpressionSegment(Token *a, string tempVarNa
     returnStringSegment.push_back(tempVarName); //temp token left(assign) side
     returnStringSegment.push_back(XX); //XX
   }
-  else
+  else //string literal
   {
     //get string
     string thisString = td; //string
