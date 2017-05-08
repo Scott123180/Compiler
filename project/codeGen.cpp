@@ -643,6 +643,7 @@ vector<string> CodeGen::printIntExpressionSegment(Token *a)
   vector<string> printIntSegment;
 
   string tt = a->getType(); //token type
+  string td = a->getData(); //token data
 
   if(tt == "+") //addition intexpr
   {
@@ -718,34 +719,33 @@ vector<string> CodeGen::printIntExpressionSegment(Token *a)
     cout << "ELSE STMT. Type: " << tt << endl;
     if(tt == "int")
     {
+      //load 01 to x register
+      printIntSegment.push_back(LDX_C); //A2
+      printIntSegment.push_back(P_INT); //01
 
-      /*
-      //load value to acc
-      returnIntSegment.push_back(LDA_C); //A9
-      returnIntSegment.push_back("0" + a->getData()); //digit value
+      //load constant to y register
+      printIntSegment.push_back(LDY_C); //A0
+      printIntSegment.push_back("0" + td);
 
-      //store in temporary variable we're assigning to
-      returnIntSegment.push_back(STA); //8D
-      returnIntSegment.push_back(tempVarName);
-      returnIntSegment.push_back("XX");
-      */
+      //system call to print y register
+      printIntSegment.push_back(SYS);
+
     }
-    else //assigning variable to variable
+    else //printing variable that is a digit
     {
-      /*
+
       //lookup right side temp name of variable
       string rightSideTempVarName = sdTable.lookupTempRow(a);
 
-      //load right side variable in the accumulator
-      returnIntSegment.push_back(LDA_M); //AD
-      returnIntSegment.push_back(rightSideTempVarName); //load right-side temp var name
-      returnIntSegment.push_back("XX");
+      //load 01 to x register
+      printIntSegment.push_back(LDX_C); //A2
+      printIntSegment.push_back(P_INT); //01
 
-      //store the accumulator in the memory location of the left side
-      returnIntSegment.push_back(STA); //8D
-      returnIntSegment.push_back(tempVarName); //left side
-      returnIntSegment.push_back("XX");
-       */
+      //load right side variable in to y register
+      printIntSegment.push_back(LDX_M); //AE
+      printIntSegment.push_back(rightSideTempVarName); //load right-side temp var name
+      printIntSegment.push_back("XX");
+      
     }
   }
 
