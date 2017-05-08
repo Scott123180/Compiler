@@ -265,20 +265,28 @@ vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
       {
 
       }
-      //constant
-      else
+
+      else //constant
       {
+        returnIntSegment.push_back(LDA_C);
+        returnIntSegment.push_back(intTerminal); //already added the 0
+        //add row in stack
+        string stackStore; //TODO: add special row in the stack
+        //push back memory address - no XX
+        returnIntSegment.push_back(stackStore);
 
       }
     }
     //clear accumulator
+    returnIntSegment.push_back(LDA_C); //A9
+    returnIntSegment.push_back("00"); //00
 
     //add each to accumulator
 
     //store in memory address
 
     //assign to left side (tempVarName)
-    
+
 
     return returnIntSegment;
   }
