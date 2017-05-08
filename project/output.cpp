@@ -258,18 +258,18 @@ void Output::printCodeGen()
   //total times printing in the loop
   int n = 0;
   //rows
+  outputHTML << "<p style=\"font-family:Courier;\">" << endl;
   for(int i = 0; i < 8; i++)
   {
     //columns
-    outputHTML << "<p style=\"font-family:Courier;\">\n";
     for(int j = 0; j < 32; j++, n++)
     {
       outputHTML << cgOutput[n] << " ";
     }
-    outputHTML << "</p>\n";
+    outputHTML << "\n" << endl;
   }
 
-  outputHTML << "</div>\n"
+  outputHTML << "</p>\n</div>\n"
     "</div>";
 
   outputHTML.close();

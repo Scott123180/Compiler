@@ -59,6 +59,9 @@ void CodeGen::process()
   //calculate and store the stack in a string vector
   code = segment(cgAST->rootToken);
 
+  //push back BRK
+  code.push_back(BRK); //00
+
   //precaution for no code
   if(code.empty()) //no code, so set code size to 0
   {
@@ -102,7 +105,6 @@ vector<string> CodeGen::segment(Token *a)
   {
     //check parent
     string parentType = a->parent->getType();
-
     //if the token we're looking at is the first child
     if(a->parent->children[0] == a)
     {
@@ -132,10 +134,6 @@ vector<string> CodeGen::segment(Token *a)
         string tempMemLocation = sdTable.lookupTempRow(a);
         cout << tempMemLocation << endl;
         returnSegment = assignExpressionSegment(a->parent->children[1], tempMemLocation);
-      }
-      else if(parentType == "PrintStatement")
-      {
-        printExpressionSegment(a);
       }
       else //unreachable unless I forgot something
       {
@@ -173,6 +171,10 @@ vector<string> CodeGen::segment(Token *a)
     else if(a->getType() == "WhileStatement")
     {
       //TODO: process while statement
+    }
+    else if(a->getType() == "PrintStatement")
+    {
+      return printExpressionSegment(a->children[0]);
     }
   }
 
@@ -717,7 +719,7 @@ vector<string> CodeGen::printIntExpressionSegment(Token *a)
     printIntSegment.push_back(P_INT); //01
 
     //load right side variable in to y register
-    printIntSegment.push_back(LDX_M); //AE
+    printIntSegment.push_back(LDY_M); //AE
     printIntSegment.push_back(tempStore); //load right-side temp var name
     printIntSegment.push_back(XX); //XX
 
@@ -754,7 +756,7 @@ vector<string> CodeGen::printIntExpressionSegment(Token *a)
       printIntSegment.push_back(P_INT); //01
 
       //load right side variable in to y register
-      printIntSegment.push_back(LDX_M); //AE
+      printIntSegment.push_back(LDY_M); //AE
       printIntSegment.push_back(rightSideTempVarName); //load right-side temp var name
       printIntSegment.push_back(XX); //XX
 
