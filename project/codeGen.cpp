@@ -233,6 +233,8 @@ vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
   return returnSegment;
 }
 
+
+
 //recurse through leaves and perform operations
 vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
 {
@@ -243,12 +245,42 @@ vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
   cout << "after get type" << endl;
   if(tt == "+") //addition intexpr
   {
-    //TODO: loop and get terminals
+    //a = 1+1
+    //load constant 01, store constant in new stack, load constant 01, store constant in  new stack,
+    //load constant 00 in acc, add with carry mem1, add with carry, store in new stack, load from last
+    //stack place, store in left side memory location
+
+
     //calculate the output for the integer addition
     assignIntExpressionLoop(a);
     vector<string> results = assignIntExpressionTerminals; //store in temp array
     assignIntExpressionTerminals.clear(); //clear for future operations
-    return results;
+
+    //store each in memory, which are constants or temp memory addresses
+    for(vector<string>::size_type i = 0; i < results.size(); i++)
+    {
+      string intTerminal = results[i];
+      //determine whether it's a constant or load from memory
+      if(intTerminal[0] == 'T')//variable
+      {
+
+      }
+      //constant
+      else
+      {
+
+      }
+    }
+    //clear accumulator
+
+    //add each to accumulator
+
+    //store in memory address
+
+    //assign to left side (tempVarName)
+    
+
+    return returnIntSegment;
   }
   else //just a digit or variable that is a digit
   {
@@ -285,23 +317,25 @@ vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
   return  returnIntSegment;
 }
 
-//loop through and grab everything in int expression side
+//loop through and grab all terminals on the right side
 void CodeGen::assignIntExpressionLoop(Token *a)
 {
+
   //push back number
   if(a->getType() == "int") //number
   {
-
-
     assignIntExpressionTerminals.push_back("0" + a->getData());
   }
+  //push back the variable T0 location
   else if(a->getType() == "char") //variable
   {
-    //get temporary memory address of it
-    
+    //get temporary memory address of variable in question
+    string tempAddress = sdTable.lookupTempRow(a);
+    assignIntExpressionTerminals.push_back(tempAddress);
   }
   //otherwise it's a plus sign, do nothing but recurse
 
+  //recurse through function
   for(vector<Token*>::size_type i = 0; i < a->children.size(); i++)
   {
     assignIntExpressionLoop(a->children[i]);
