@@ -74,11 +74,7 @@ string StaticData::lookupTempRow(Token* a)
 {
   int scope = a->scope;
   string varName = a->getData();
-
-  cout << "VAR LOOKUP" << endl;
-  cout << "__Name: " << varName << endl;
-  cout << "_-_Scope: " << a->scope << endl;
-  cout << "_-_Scope: " << scope << endl;
+  
 
   for(vector<StaticDataRow>::size_type i = 0; i < data.size(); i++)
   {
@@ -87,7 +83,6 @@ string StaticData::lookupTempRow(Token* a)
     if(varName == data[i].getVariableName() && scope == data[i].getVariableScope())
     {
       //return temporary memory address (ie 'T0')
-      cout << "----------match" << endl;
       return data[i].getTemporary();
     }
   }

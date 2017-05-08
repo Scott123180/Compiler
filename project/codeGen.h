@@ -61,11 +61,9 @@ class CodeGen
     //keep track of program exceeding 256 bytes
     bool overFlow = false;
 
-    void checkForOverFlow();
-
     //heap will always at least be size of one because it's easier to implement
       //heaphead keeps index of the last character written to heap
-    int heapHead = 255;
+    int heapHead = 256;
 
     void printCode();
 
@@ -80,6 +78,8 @@ class CodeGen
     string intToHex(int a);
 
     int hexToInt(string hexValue);
+    
+    void checkForOverFlow();
 
     void process();
 
@@ -118,6 +118,8 @@ class CodeGen
       const string P_INT = "01";
       //02 in x reg = print the 00-terminated string stored at the address in the y register
       const string P_STR = "02";
+    
+    const string XX = "XX"; //used in temporary addresses, replaced later
 };
 
 #endif //COMPILER_CODEGEN_H

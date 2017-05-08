@@ -101,7 +101,7 @@ vector<string> CodeGen::segment(Token *a)
         returnSegment.push_back(STA); //8D
 
         //fill with temp memory location
-        cout << "`````````WTF are we ADDING" << a->getData() << " " << a->getType() << endl;
+        cout << "WTF are we assigning" << a->getData() << " " << a->getType() << endl;
         string tempVar = sdTable.addRow(a->parent->children[1]);
         cout << "tempVar: "<< tempVar << endl;
 
@@ -193,7 +193,6 @@ string CodeGen::getVariableType(Token *a)
   //this code is used in assigning variables
 vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
 {
-  cout << "I think we assignin" << endl;
   //determine what kind of expression
   string expressionType = "\0"; //initialize
 
@@ -206,10 +205,10 @@ vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
   string td = a->getData(); //token Data
   string tt = a->getType(); //token Type
 
-  cout << "after the a->getdata and type thign" << endl;
-  cout << "token data" << td << endl;
-  cout << "token type" << tt << endl;
-  cout << "expressionType" << expressionType << endl;
+  cout << "after the a->getdata and type thign: " << endl;
+  cout << "token data: " << td << endl;
+  cout << "token type: " << tt << endl;
+  cout << "expressionType: " << expressionType << endl;
 
   vector<string> returnSegment;
   //check for boolean expression
@@ -233,7 +232,11 @@ vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
   return returnSegment;
 }
 
-
+/*
+ * =====================================================================================
+ * Assign Int Expression Segment
+ * =====================================================================================
+ */
 
 //recurse through leaves and perform operations
 vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
@@ -365,35 +368,108 @@ void CodeGen::assignIntExpressionLoop(Token *a)
 
 }
 
+/*
+ * =====================================================================================
+ * Assign Boolean Expression Segment
+ * =====================================================================================
+ */
+
 //set up conditionals, don't worry about branches
 vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarName)
 {
   vector<string> returnBooleanSegment;
+  
+  string tt = a->getType(); //token type (== and !=)
+  string td = a->getData(); //token data (true and false)
+  
+  //differentiate between comparisons and boolean values
+  if(tt == "==" || tt == "!=")
+  {
+    //TODO: compare right and left values
+    //different methods for comparing strings, ints, and booleans?
+  }
+  else //true and false literals
+  {
+    string booleanValue;
+    //determine numerical value of true and false
+    if(td == "true") //true
+    {
+      booleanValue = "01";
+    }
+    else //false
+    {
+      booleanValue = "00";
+    }
+    //store t/f value in variable location
+    returnBooleanSegment.push_back(LDA_C); //A9
+    returnBooleanSegment.push_back(booleanValue); //actual value
+    returnBooleanSegment.push_back(STA); //8D
+    returnBooleanSegment.push_back(tempVarName);//store in left-side
+    returnBooleanSegment.push_back(XX); //XX
+    
+  }
 
   return returnBooleanSegment;
 }
+
+/*
+ * =====================================================================================
+ * Assign String Expression Segment
+ * =====================================================================================
+ */
 
 //needs to create temporary variables and also put string in heap automatically
 vector<string> CodeGen::assignStringExpressionSegment(Token *a, string tempVarName)
 {
   vector<string> returnStringSegment;
-
+ 
+  //get string
+  string thisString = a->getData(); //string
+  
+  cout << "`````````````````````This is the string: " << thisString << endl;
+  
+  //convert string into vector of hex values
+  vector<string> thisHexString = stringToHexChars(thisString);
+  
+  cout << "Size of hex vector: " << thisHexString.size() << endl;
+  for(vector<string>::size_type i = 0; i < thisHexString.size(); i++)
+  {
+    cout << "HEX " << i << " :" << thisHexString[i] << endl;
+  }
+  
+  cout << "after  print" << endl;
+  //write null terminator
+  output[--heapHead] = "00";
+  
+  //loop through back to front and WRITE to heap
+  for(int i = (static_cast<int>(thisHexString.size()) - 1); i >= 0; i--)
+  {
+    ///write to one before current heapHead
+    output[--heapHead] = thisHexString[i];
+  }
+  
+  
+  
+  string heapStart = intToHex(heapHead);
+  
+  //put in code
+  
+  returnStringSegment.push_back(LDA_C); //A9
+  returnStringSegment.push_back(heapStart); //start of string
+  
+  //store heapstart in temp variable
+  returnStringSegment.push_back(STA); //8D
+  returnStringSegment.push_back(tempVarName); //string var name
+  returnStringSegment.push_back(XX); //XX
+  
   return returnStringSegment;
 }
 
-//compare stack head and heap head and make sure there is not an overflow
-void CodeGen::checkForOverFlow()
-{
-  if((stackSize + codeSize) > (heapHead)) //heapHead is an index and will always be at least 1
-  {
-    //stack overflow - throw error
-    vector<string> errorData = {};
-    Error stackOverflow = Error(true,Error::codeGen, 0, 0, errorData,
-                                "Error In code generation. Stack overflow detected.");
-  }
-}
-
-
+/*
+ * =====================================================================================
+ * Print Expression Segment
+ * =====================================================================================
+ */
 
 //print the code to output
 void CodeGen::printCode()
@@ -405,7 +481,11 @@ void CodeGen::printCode()
   }
 }
 
-
+/*
+ * =====================================================================================
+ * Back-Patching
+ * =====================================================================================
+ */
 
 //replace temporary variable and jump names with actual memory locations
 void CodeGen::backPatching()
@@ -485,7 +565,13 @@ void CodeGen::replaceTemporaryMemoryAddresses()
   }
 }
 
-//convert a string to null terminated hex array
+/*
+ * =====================================================================================
+ * Helper Functions
+ * =====================================================================================
+ */
+
+//convert a string to corresponding hex values
 vector<string> CodeGen::stringToHexChars(string a)
 {
   vector<string> hexVals = {};
@@ -497,9 +583,7 @@ vector<string> CodeGen::stringToHexChars(string a)
     ss << std::hex << (int)a[i];
     hexVals.push_back(ss.str());
   }
-
-  //null terminator
-  hexVals.push_back("00");
+  
   return hexVals;
 }
 
@@ -527,4 +611,16 @@ int CodeGen::hexToInt(string hexValue)
   int n;
   istringstream(hexValue) >> std::hex >> n; //convert
   return n;
+}
+
+//compare stack head and heap head and make sure there is not an overflow
+void CodeGen::checkForOverFlow()
+{
+  if((stackSize + codeSize) > (heapHead)) //heapHead is an index and will always be at least 1
+  {
+    //stack overflow - throw error
+    vector<string> errorData = {};
+    Error stackOverflow = Error(true,Error::codeGen, 0, 0, errorData,
+                                "Error In code generation. Stack overflow detected.");
+  }
 }
