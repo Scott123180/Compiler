@@ -658,7 +658,7 @@ vector<string> CodeGen::printIntExpressionSegment(Token *a)
     vector<string> results = assignIntExpressionTerminals; //store in temp array
     assignIntExpressionTerminals.clear(); //clear for future operations
 
-    vector<string> fingernails = {};
+    vector<string> fingernails = {}; //keeps track of non-terminals
     //store each in memory, which are constants or temp memory addresses
     for(vector<string>::size_type i = 0; i < results.size(); i++)
     {
@@ -671,46 +671,58 @@ vector<string> CodeGen::printIntExpressionSegment(Token *a)
       }
       else //constant
       {
-        /*
+
         //load constant into accumulator
-        returnIntSegment.push_back(LDA_C); //A9
-        returnIntSegment.push_back(intTerminal); //int value - already added the 0
+        printIntSegment.push_back(LDA_C); //A9
+        printIntSegment.push_back(intTerminal); //int value - already added the 0
 
         //add row in stack for constant variable
         string stackStore = sdTable.addConstRow();
         fingernails.push_back(stackStore);
 
         //store in memory address
-        returnIntSegment.push_back(STA); //8D
-        returnIntSegment.push_back(stackStore); //memory location
-        returnIntSegment.push_back("XX");
-        */
+        printIntSegment.push_back(STA); //8D
+        printIntSegment.push_back(stackStore); //memory location
+        printIntSegment.push_back(XX); //XX
+
       }
     }
     //clear accumulator
-    /*
-    returnIntSegment.push_back(LDA_C); //A9
-    returnIntSegment.push_back("00"); //00
-     */
+
+    printIntSegment.push_back(LDA_C); //A9
+    printIntSegment.push_back("00"); //00
+
 
     //add each to accumulator
     for(vector<string>::size_type i = 0; i < fingernails.size(); i++)
     {
-      /*
-      returnIntSegment.push_back(ADC); //6D
-      returnIntSegment.push_back(fingernails[i]); //add temp mem location
-      returnIntSegment.push_back("XX");
-       */
+
+      printIntSegment.push_back(ADC); //6D
+      printIntSegment.push_back(fingernails[i]); //add temp mem location
+      printIntSegment.push_back(XX); //XX
     }
-    /*
+    //accumulator is at value
+
+    //create temp row to store value at
+    string tempStore = sdTable.addConstRow();
     //store in memory address
-    returnIntSegment.push_back(STA); //8D
+    printIntSegment.push_back(STA); //8D
 
     //assign to left side (tempVarName)
-    returnIntSegment.push_back(tempVarName); //left side temp var name
-    returnIntSegment.push_back("XX");
-     */
+    printIntSegment.push_back(tempStore); //left side temp var name
+    printIntSegment.push_back(XX); //XX
 
+    //load 01 to x register
+    printIntSegment.push_back(LDX_C); //A2
+    printIntSegment.push_back(P_INT); //01
+
+    //load right side variable in to y register
+    printIntSegment.push_back(LDX_M); //AE
+    printIntSegment.push_back(tempStore); //load right-side temp var name
+    printIntSegment.push_back(XX); //XX
+
+    //system call to print y register
+    printIntSegment.push_back(SYS);
 
     return printIntSegment;
   }
@@ -744,8 +756,10 @@ vector<string> CodeGen::printIntExpressionSegment(Token *a)
       //load right side variable in to y register
       printIntSegment.push_back(LDX_M); //AE
       printIntSegment.push_back(rightSideTempVarName); //load right-side temp var name
-      printIntSegment.push_back("XX");
-      
+      printIntSegment.push_back(XX); //XX
+
+      //system call to print y register
+      printIntSegment.push_back(SYS);
     }
   }
 
