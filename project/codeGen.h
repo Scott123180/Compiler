@@ -38,6 +38,15 @@ class CodeGen
 
     vector<string> assignStringExpressionSegment(Token* a, string tempVarName);
 
+    vector<string> printExpressionSegment(Token* a);
+
+    vector<string> printIntExpressionSegment(Token* a);
+
+    vector<string> printBooleanExpressionSegment(Token* a);
+
+    vector<string> printStringExpressionSegment(Token* a);
+
+
   private:
 
     CST* cgAST;
@@ -65,8 +74,6 @@ class CodeGen
       //heaphead keeps index of the last character written to heap
     int heapHead = 256;
 
-    void printCode();
-
     void backPatching();
 
     void allocateMemoryOnStack();
@@ -80,6 +87,8 @@ class CodeGen
     int hexToInt(string hexValue);
     
     void checkForOverFlow();
+
+    void printCode();
 
     void process();
 

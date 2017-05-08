@@ -40,6 +40,13 @@ CodeGen::~CodeGen()
   cout << "CodeGen Destructor Called" << endl;
 }
 
+/*
+ * =====================================================================================
+ * Process
+ * =====================================================================================
+ */
+
+
 //start processing tokens
 void CodeGen::process()
 {
@@ -75,6 +82,11 @@ void CodeGen::process()
   cout << "after backpatching" << endl;
 }
 
+/*
+ * =====================================================================================
+ * Handle all segments
+ * =====================================================================================
+ */
 
 
 //returns a segment of code and appends it to the segment that called it
@@ -123,7 +135,7 @@ vector<string> CodeGen::segment(Token *a)
       }
       else if(parentType == "PrintStatement")
       {
-      
+        printExpressionSegment(Token* a);
       }
       else //unreachable unless I forgot something
       {
@@ -187,6 +199,14 @@ string CodeGen::getVariableType(Token *a)
   //get type from symbolTable
   return cgGenSymbolTable->returnType(a);
 }
+
+
+/*
+ * =====================================================================================
+ * Regular Assign Expression Segment
+ * =====================================================================================
+ */
+
 
 //process the code for an expression and return it
   //we need to know this to re-parse this section and generate code for it
@@ -395,7 +415,8 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
     string rtType = rightTok->getType();
     string rtData = rightTok->getData();
     
-    //change true/false to 1 and 0 (dont worry about leading 0, we got it covered below)
+    //change true/false to 1 and 0
+      // (dont worry about leading 0, we got it covered below)
     if(ltData == "true") ltData = "1";
     else if(ltData == "false") ltData == "0";
     
@@ -410,14 +431,16 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       cout << "Aborting compilation" << endl;
       exit(0);
     }
-    
+
+
+    string leftTokTempName; //left side memory location
     //store ls into acc, store rs into x reg, compare x reg to memory, z flag is set, deal with branching
-    
+
     //left side
     if(ltType == "char") //variable
     {
       //lookup tempVarName
-      string leftTokTempName = sdTable.lookupTempRow(leftTok);
+      leftTokTempName = sdTable.lookupTempRow(leftTok);
       
       //load left side to accumulator
       returnBooleanSegment.push_back(LDA_M); //AD
@@ -426,9 +449,14 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
     }
     else //constant
     {
-      //load left side to accumulator
+      //get a new memory location for the const
+      leftTokTempName = sdTable.addConstRow();
+      //load left side to memory location
       returnBooleanSegment.push_back(LDA_C); //A9
       returnBooleanSegment.push_back("0" + ltData); //data
+      returnBooleanSegment.push_back(STA); //8D
+      returnBooleanSegment.push_back(leftTokTempName); //store
+      returnBooleanSegment.push_back(XX); //XX
     }
     //right side
     if(rtType == "char") //variable
@@ -448,9 +476,21 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       returnBooleanSegment.push_back("0" + rtData); //data
     }
     
-    
-    
-    //different methods for comparing strings, ints, and booleans?
+    //compare x reg and memory location
+    returnBooleanSegment.push_back(CPX); //EC
+    returnBooleanSegment.push_back(leftTokTempName); //mem loc
+    returnBooleanSegment.push_back(XX); //XX
+    //z flag is set
+
+    // TODO: != and == dependencies
+    if(tt == "==")
+    {
+
+    }
+    else // !=
+    {
+
+    }
   }
   else //true and false literals
   {
@@ -554,14 +594,55 @@ vector<string> CodeGen::assignStringExpressionSegment(Token *a, string tempVarNa
  * =====================================================================================
  */
 
-//print the code to output
-void CodeGen::printCode()
+vector<string> CodeGen::printExpressionSegment(Token *a)
 {
-  //loop through vector and replace output tokens
-  for(vector<string>::size_type i = 0; i < codeSize; i++)
+  //determine what kind of expression
+  string expressionType = "\0"; //initialize
+
+  //check the type if it's a char
+  if(a->getType() == "char")
   {
-    output[i] = code.at(i);
+    expressionType = getVariableType(a);
   }
+
+  string td = a->getData(); //token Data
+  string tt = a->getType(); //token Type
+
+  vector<string> returnSegment;
+  //check for boolean expression
+  if(tt == "!=" || tt == "==" || td == "true" || td == "false" || expressionType == "boolean")
+  {
+    returnSegment = printBooleanExpressionSegment(a);
+  }
+    //check for int expression
+  else if(tt == "+" || tt == "int" || expressionType == "int")
+  {
+    cout << "WE checkin for expressin intexpr" << endl;
+
+    returnSegment = printIntExpressionSegment(a);
+  }
+    //check for string expression
+  else if(tt == "string" || expressionType == "string")
+  {
+    returnSegment = printStringExpressionSegment(a);
+  }
+
+  return returnSegment;
+}
+
+vector<string> CodeGen::printIntExpressionSegment(Token *a)
+{
+
+}
+
+vector<string> CodeGen::printBooleanExpressionSegment(Token *a)
+{
+
+}
+
+vector<string> CodeGen::printStringExpressionSegment(Token *a)
+{
+
 }
 
 /*
@@ -705,5 +786,15 @@ void CodeGen::checkForOverFlow()
     vector<string> errorData = {};
     Error stackOverflow = Error(true,Error::codeGen, 0, 0, errorData,
                                 "Error In code generation. Stack overflow detected.");
+  }
+}
+
+//print the code to output
+void CodeGen::printCode()
+{
+  //loop through vector and replace output tokens
+  for(vector<string>::size_type i = 0; i < codeSize; i++)
+  {
+    output[i] = code.at(i);
   }
 }
