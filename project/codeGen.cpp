@@ -795,20 +795,22 @@ vector<string> CodeGen::printStringExpressionSegment(Token *a)
   //determine whether or not we're dealing with a variable
   if(tt == "char") //variable
   {
-    /*
+
     //lookup the character and get temp memory address
     string rightSideTempToken = sdTable.lookupTempRow(a);
 
-    //load right side
-    returnStringSegment.push_back(LDA_M); //AD
-    returnStringSegment.push_back(rightSideTempToken); //temp token right side
-    returnStringSegment.push_back(XX); //XX
+    //load print string (02) in the x register
+    printStringSegment.push_back(LDX_C); //A2
+    printStringSegment.push_back(P_STR); //02
+
+    //load right side to Y register
+    printStringSegment.push_back(LDY_M); //AC
+    printStringSegment.push_back(rightSideTempToken); //temp token right side
+    printStringSegment.push_back(XX); //XX
 
     //write to left side
-    returnStringSegment.push_back(STA); //8D
-    returnStringSegment.push_back(tempVarName); //temp token left(assign) side
-    returnStringSegment.push_back(XX); //XX
-     */
+    printStringSegment.push_back(SYS); //00
+
   }
   else //string literal
   {
