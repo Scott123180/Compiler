@@ -43,8 +43,8 @@ string StaticData::addRow(Token* a)
   return temp;
 }
 
-//stores int constant, returns temporary address
-string StaticData::addConstIntRow(string val)
+//adds a row in stack for constant use, returns temporary value
+string StaticData::addConstRow()
 {
   int numRows;
   if(data.empty()) //define empty data vector behavior

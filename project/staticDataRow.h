@@ -11,7 +11,7 @@ class StaticDataRow {
 
   public:
     StaticDataRow(string temp, string var, int scope, int offset);
-
+    
     const string &getTemporary() const;
 
     const string &getVariableName() const;

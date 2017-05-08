@@ -256,6 +256,7 @@ vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
     vector<string> results = assignIntExpressionTerminals; //store in temp array
     assignIntExpressionTerminals.clear(); //clear for future operations
 
+    vector<string> fingernails = {};
     //store each in memory, which are constants or temp memory addresses
     for(vector<string>::size_type i = 0; i < results.size(); i++)
     {
@@ -263,17 +264,23 @@ vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
       //determine whether it's a constant or load from memory
       if(intTerminal[0] == 'T')//variable
       {
-
+        //push back references
+        fingernails.push_back(intTerminal);
       }
-
       else //constant
       {
-        returnIntSegment.push_back(LDA_C);
-        returnIntSegment.push_back(intTerminal); //already added the 0
-        //add row in stack
-        string stackStore = sdTable.addConstIntRow(string val); //TODO: add special row in the stack
-        //push back memory address - no XX
-        returnIntSegment.push_back(stackStore);
+        //load constant into accumulator
+        returnIntSegment.push_back(LDA_C); //A9
+        returnIntSegment.push_back(intTerminal); //int value - already added the 0
+        
+        //add row in stack for constant variable
+        string stackStore = sdTable.addConstRow();
+        fingernails.push_back(stackStore);
+
+        //store in memory address
+        returnIntSegment.push_back(STA); //8D
+        returnIntSegment.push_back(stackStore); //memory location
+        returnIntSegment.push_back("XX");
 
       }
     }
@@ -282,11 +289,18 @@ vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
     returnIntSegment.push_back("00"); //00
 
     //add each to accumulator
-
+    for(vector<string>::size_type i = 0; i < fingernails.size(); i++)
+    {
+      returnIntSegment.push_back(ADC); //6D
+      returnIntSegment.push_back(fingernails[i]); //add temp mem location
+      returnIntSegment.push_back("XX");
+    }
     //store in memory address
+    returnIntSegment.push_back(STA); //8D
 
     //assign to left side (tempVarName)
-
+    returnIntSegment.push_back(tempVarName); //left side temp var name
+    returnIntSegment.push_back("XX");
 
     return returnIntSegment;
   }
