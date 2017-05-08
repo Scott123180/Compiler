@@ -17,7 +17,7 @@ CodeGen::CodeGen(CST* ast, GenSymbolTable* st)
   if(cgSymbolTable->booleanHell)
   {
     printBoolHell = true;
-    vector<string> errorData = {};
+    vector<string> errorData;
     Error booleanHell = Error(false, Error::codeGen,0,0,errorData, "Nested bool detected. WHY?!");
   }
   else
@@ -28,7 +28,7 @@ CodeGen::CodeGen(CST* ast, GenSymbolTable* st)
     //check for overflow after execution
     if(overFlow)
     {
-      vector<string> errorData = {};
+      vector<string> errorData;
       Error booleanHell = Error(true, Error::codeGen,0,0,errorData,
       "Overflow error: program output code longer than 256 bytes.");
     }
@@ -98,7 +98,7 @@ void CodeGen::process()
 vector<string> CodeGen::segment(Token *a)
 {
   //initialize the segment that we'll return
-  vector<string> returnSegment = {};
+  vector<string> returnSegment;
 
   //check for leaf node
   if(!a->getData().empty()) //(not a branch node)
@@ -136,13 +136,12 @@ vector<string> CodeGen::segment(Token *a)
         cout << "data: " << a->getData() << endl;
         string tempMemLocation = sdTable.lookupTempRow(a);
         cout << tempMemLocation << endl;
+
+        cout << "one over ->>>>>>" << endl;
+        Token* r = a->parent->children[1];
+        cout << r->getType() << endl;
+        cout << r->getData() << endl;
         returnSegment = assignExpressionSegment(a->parent->children[1], tempMemLocation);
-      }
-        ////////////////////////////////////////////
-      else if(parentType == "!=" || parentType == "==")
-      {
-        //do nothing but return
-        return returnSegment;
       }
       else //unreachable unless I forgot something
       {
@@ -183,19 +182,24 @@ vector<string> CodeGen::segment(Token *a)
     }
     else if(a->getType() == "PrintStatement")
     {
+      cout << "%%%%Start to print" << endl;
+      cout << "fed token" << endl;
+      cout << a->getType() << endl;
+      cout << a->getData() << endl;
+
+      cout << "child token" << endl;
+      cout << a->children[0]->getType() << endl;
+      cout << a->children[0]->getData() << endl;
       return printExpressionSegment(a->children[0]);
     }
-      /////////////////////////////////////////
-    else if(a->getType() == "==" || a->getType() == "!=")
-    {
-      //do nothing with these
-      return returnSegment;
-    }
   }
+
 
   //recursion
   for(vector<Token*>::size_type i = 0; i < a->children.size(); i++)
   {
+    cout << "---THIS IS A " << a->getType() << endl;
+    cout << "--RECURSION " << a->children[i]->getType() << endl << endl;
     //store recursion results in string vector
     vector<string> recursionSegment = segment(a->children[i]);
     //push each string to the back of the vector, in order
@@ -204,6 +208,7 @@ vector<string> CodeGen::segment(Token *a)
       returnSegment.push_back(recursionSegment[j]);
     }
   }
+
 
   //return the segment (works for end of program)
   return returnSegment;
@@ -254,6 +259,7 @@ vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
   //check for boolean expression
   if(tt == "!=" || tt == "==" || td == "true" || td == "false" || expressionType == "boolean")
   {
+    cout << "ENTERIIIIIIIING ASSIGN BOOL EXPRESSION" << endl;
     returnSegment = assignBooleanExpressionSegment(a, tempVarName);
   }
   //check for int expression
@@ -299,7 +305,7 @@ vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
     vector<string> results = assignIntExpressionTerminals; //store in temp array
     assignIntExpressionTerminals.clear(); //clear for future operations
 
-    vector<string> fingernails = {};
+    vector<string> fingernails;
     //store each in memory, which are constants or temp memory addresses
     for(vector<string>::size_type i = 0; i < results.size(); i++)
     {
@@ -591,6 +597,7 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
     
   }
 
+  cout << "EEEEEEEEEEEEEEEEEEEEEEEEEEND of bool segment" << endl;
   return returnBooleanSegment;
 }
 
@@ -675,7 +682,7 @@ vector<string> CodeGen::assignStringExpressionSegment(Token *a, string tempVarNa
 vector<string> CodeGen::printExpressionSegment(Token *a)
 {
   //determine what kind of expression
-  string expressionType = "\0"; //initialize
+  string expressionType = ""; //initialize
 
   //check the type if it's a char
   if(a->getType() == "char")
@@ -690,12 +697,14 @@ vector<string> CodeGen::printExpressionSegment(Token *a)
   //check for boolean expression
   if(tt == "!=" || tt == "==" || td == "true" || td == "false" || expressionType == "boolean")
   {
+    cout << "got to inner part of this" << endl;
     returnSegment = printBooleanExpressionSegment(a);
+    cout << returnSegment.size() <<endl;
   }
     //check for int expression
   else if(tt == "+" || tt == "int" || expressionType == "int")
   {
-    cout << "WE checkin for expressin intexpr" << endl;
+    cout << "WE checkin for printing intexpr" << endl;
 
     returnSegment = printIntExpressionSegment(a);
   }
@@ -736,7 +745,7 @@ vector<string> CodeGen::printIntExpressionSegment(Token *a)
     vector<string> results = assignIntExpressionTerminals; //store in temp array
     assignIntExpressionTerminals.clear(); //clear for future operations
 
-    vector<string> fingernails = {}; //keeps track of non-terminals
+    vector<string> fingernails; //keeps track of non-terminals
     //store each in memory, which are constants or temp memory addresses
     for(vector<string>::size_type i = 0; i < results.size(); i++)
     {
@@ -852,7 +861,10 @@ vector<string> CodeGen::printIntExpressionSegment(Token *a)
 
 vector<string> CodeGen::printBooleanExpressionSegment(Token *a)
 {
+  vector<string> printBooleanSegment;
+  
 
+  return printBooleanSegment;
 }
 
 /*
@@ -1039,7 +1051,7 @@ void CodeGen::replaceTemporaryJumpAddresses()
 //convert a string to corresponding hex values
 vector<string> CodeGen::stringToHexChars(string a)
 {
-  vector<string> hexVals = {};
+  vector<string> hexVals;
 
   //convert each character to hex value
   for(string::size_type i = 0; i < a.size(); i++)
@@ -1054,7 +1066,7 @@ vector<string> CodeGen::stringToHexChars(string a)
 
 string CodeGen::intToHex(int a)
 {
-  cout << "INT A: " << endl;
+  cout << "INT A: " << a << endl;
   string hexValue;
   stringstream ss;
   ss << std::uppercase << std::hex << a;
@@ -1067,7 +1079,7 @@ string CodeGen::intToHex(int a)
     hexValue[1] = hexValue[0];
     hexValue[0] = '0';
   }
-  cout << "HEX VALUE INT TO HEX: " << endl;
+  cout << "HEX VALUE INT TO HEX: " << hexValue << endl;
   return hexValue;
 }
 
@@ -1084,7 +1096,7 @@ void CodeGen::checkForOverFlow()
   if((stackSize + codeSize) > (heapHead)) //heapHead is an index and will always be at least 1
   {
     //stack overflow - throw error
-    vector<string> errorData = {};
+    vector<string> errorData;
     Error stackOverflow = Error(true,Error::codeGen, 0, 0, errorData,
                                 "Error In code generation. Stack overflow detected.");
   }
