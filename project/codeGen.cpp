@@ -123,7 +123,7 @@ vector<string> CodeGen::segment(Token *a)
       }
       else if(parentType == "PrintStatement")
       {
-
+      
       }
       else //unreachable unless I forgot something
       {
@@ -422,45 +422,63 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
 vector<string> CodeGen::assignStringExpressionSegment(Token *a, string tempVarName)
 {
   vector<string> returnStringSegment;
- 
-  //get string
-  string thisString = a->getData(); //string
   
-  cout << "`````````````````````This is the string: " << thisString << endl;
+  string tt = a->getType(); //token type
+  string td = a->getData(); //token data
   
-  //convert string into vector of hex values
-  vector<string> thisHexString = stringToHexChars(thisString);
-  
-  cout << "Size of hex vector: " << thisHexString.size() << endl;
-  for(vector<string>::size_type i = 0; i < thisHexString.size(); i++)
+  if(tt == "char")
   {
-    cout << "HEX " << i << " :" << thisHexString[i] << endl;
+    //lookup the character and get temp memory address
+    string rightSideTempToken = sdTable.lookupTempRow(a);
+    
+    //load right side
+    returnStringSegment.push_back(LDA_M); //AD
+    returnStringSegment.push_back(rightSideTempToken); //temp token right side
+    returnStringSegment.push_back(XX); //XX
+    
+    //write to left side
+    returnStringSegment.push_back(STA); //8D
+    returnStringSegment.push_back(tempVarName); //temp token left(assign) side
+    returnStringSegment.push_back(XX); //XX
   }
-  
-  cout << "after  print" << endl;
-  //write null terminator
-  output[--heapHead] = "00";
-  
-  //loop through back to front and WRITE to heap
-  for(int i = (static_cast<int>(thisHexString.size()) - 1); i >= 0; i--)
+  else
   {
-    ///write to one before current heapHead
-    output[--heapHead] = thisHexString[i];
+    //get string
+    string thisString = td; //string
+  
+    cout << "`````````````````````This is the string: " << thisString << endl;
+  
+    //convert string into vector of hex values
+    vector<string> thisHexString = stringToHexChars(thisString);
+  
+    cout << "Size of hex vector: " << thisHexString.size() << endl;
+    for (vector<string>::size_type i = 0; i < thisHexString.size(); i++) {
+      cout << "HEX " << i << " :" << thisHexString[i] << endl;
+    }
+  
+    cout << "after  print" << endl;
+    //write null terminator
+    output[--heapHead] = "00";
+  
+    //loop through back to front and WRITE to heap
+    for (int i = (static_cast<int>(thisHexString.size()) - 1); i >= 0; i--) {
+      ///write to one before current heapHead
+      output[--heapHead] = thisHexString[i];
+    }
+  
+  
+    string heapStart = intToHex(heapHead);
+  
+    //put in code
+  
+    returnStringSegment.push_back(LDA_C); //A9
+    returnStringSegment.push_back(heapStart); //start of string
+  
+    //store heapstart in temp variable
+    returnStringSegment.push_back(STA); //8D
+    returnStringSegment.push_back(tempVarName); //string var name
+    returnStringSegment.push_back(XX); //XX
   }
-  
-  
-  
-  string heapStart = intToHex(heapHead);
-  
-  //put in code
-  
-  returnStringSegment.push_back(LDA_C); //A9
-  returnStringSegment.push_back(heapStart); //start of string
-  
-  //store heapstart in temp variable
-  returnStringSegment.push_back(STA); //8D
-  returnStringSegment.push_back(tempVarName); //string var name
-  returnStringSegment.push_back(XX); //XX
   
   return returnStringSegment;
 }
@@ -580,7 +598,7 @@ vector<string> CodeGen::stringToHexChars(string a)
   for(string::size_type i = 0; i < a.size(); i++)
   {
     stringstream ss;
-    ss << std::hex << (int)a[i];
+    ss << std::uppercase << std::hex << (int)a[i];
     hexVals.push_back(ss.str());
   }
   
