@@ -2,7 +2,7 @@
 
 using namespace std;
 
-//returns id of jump
+//keep track of while jumps
 string Jumps::addRow()
 {
   string dist = "00"; //initialize distance to 00

@@ -30,8 +30,6 @@ class CodeGen
 
     vector<string> whileStatement(Token* conditional, Token* Block);
 
-    vector<string> ifAndWhileStatementConditional(Token* c);
-
     string getVariableType(Token* a);
 
     vector<string> assignExpressionSegment(Token* expr, string tempVarName);

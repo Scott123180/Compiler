@@ -216,64 +216,9 @@ vector<string> CodeGen::ifStatement(Token *conditional, Token *Block)
   //Jump stuff, I don't think I really need it with my method
   int jumpDistance = static_cast<int>(ifBlock.size());
 
-  /*
-  //push back segment to return segment
-  for(vector<string>::size_type i = 0; i < ifBlock.size(); i++)
-  {
-    ifStatementReturn.push_back(ifBlock[i]);
-  }
-  */
-
-  //get conditional operations
-  ifStatementReturn = ifAndWhileStatementConditional(conditional);
-
-  //branch based on z flag
-
-
-  //z flag jump
-
-
-  //other code start
-
-  return ifStatementReturn;
-}
-
-
-
-/*
- * =====================================================================================
- * WHILE Segment
- * =====================================================================================
- */
-
-vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
-{
-  vector<string> whileStatementReturn;
-
-  //get conditional operations
-  whileStatementReturn = ifAndWhileStatementConditional(conditional);
-
-  //branch if z flag false
-    //body of while
-
-  //z flag jump around the whole of memory locations back to conditional
-
-  //other code start
-
-  return whileStatementReturn;
-}
-
-/*
- * =====================================================================================
- * IF/WHILE conditional Segment
- * =====================================================================================
- */
-
-//set up the z flag for the if and while statements
-vector<string> CodeGen::ifAndWhileStatementConditional(Token *c)
-{
-  vector<string> operations;
-  
+  ///================================================================
+  ///CONDITIONALS
+  ///================================================================
   //handle variables now
   string tt = a->getType(); //token type
   string td = a->getData(); //token data
@@ -532,9 +477,295 @@ vector<string> CodeGen::ifAndWhileStatementConditional(Token *c)
     }
   }
 
-  return operations;
+
+
+
+  return ifStatementReturn;
 }
 
+
+
+/*
+ * =====================================================================================
+ * WHILE Segment
+ * =====================================================================================
+ */
+
+vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
+{
+  vector<string> whileStatementReturn;
+
+  ///================================================================
+  ///CONDITIONALS
+  ///================================================================
+
+  //branch if z flag false
+    //body of while
+
+  //z flag jump around the whole of memory locations back to conditional
+
+  //other code start
+
+  //handle variables now
+  string tt = a->getType(); //token type
+  string td = a->getData(); //token data
+
+  //determine what type of expression segment
+  if(tt == "==" || tt == "!=")
+  {
+    Token* leftTok = a->children[0];
+    Token* rightTok = a->children[1];
+
+    //get token information
+    string ltType = leftTok->getType();
+    string ltData = leftTok->getData();
+    string rtType = rightTok->getType();
+    string rtData = rightTok->getData();
+
+    cout << "ltType: " << ltType << endl;
+    cout << "ltData: " << ltData << endl;
+    cout << "rtType: " << rtType << endl;
+    cout << "rtData: " << rtData << endl;
+
+    //change true/false to 1 and 0
+    // (dont worry about leading 0, we got it covered below)
+    if(ltData == "true") ltData = "1";
+    else if(ltData == "false") ltData = "0";
+
+    if(rtData == "true") rtData = "1";
+    else if(rtData == "false") rtData = "0";
+
+
+
+
+    //make sure not comparing string literals
+    if(ltType == "string" || rtType == "string")
+    {
+      cout << "ERROR! Comparisons of string literals are not supported for code generation. " << endl;
+      cout << "Please don't do this sir/madame. Line: " << a->getLine() << endl;
+      cout << "Aborting compilation" << endl;
+      exit(0);
+    }
+
+
+
+    string leftTokTempName; //left side memory location
+
+    //store ls into acc, store rs into x reg, compare x reg to memory, z flag is set, deal with branching
+
+    //left side
+    if(ltType == "char") //variable
+    {
+      //lookup tempVarName
+      leftTokTempName = sdTable.lookupTempRow(leftTok);
+
+      //todo: see if I need this
+      //load left side to accumulator
+      printBooleanSegment.push_back(LDA_M); //AD
+      printBooleanSegment.push_back(leftTokTempName);
+      printBooleanSegment.push_back(XX); //XX
+    }
+    else //constant
+    {
+      //get a new memory location for the const
+      leftTokTempName = sdTable.addConstRow();
+      //load left side to memory location
+      printBooleanSegment.push_back(LDA_C); //A9
+      printBooleanSegment.push_back("0" + ltData); //data
+      printBooleanSegment.push_back(STA); //8D
+      printBooleanSegment.push_back(leftTokTempName); //store
+      printBooleanSegment.push_back(XX); //XX
+    }
+
+
+    //right side
+    if(rtType == "char") //variable
+    {
+      //lookup right tok name
+      string rightTokTempName = sdTable.lookupTempRow(rightTok);
+
+      //load right side into x reg
+      printBooleanSegment.push_back(LDX_M); //AE
+      printBooleanSegment.push_back(rightTokTempName); //memory address
+      printBooleanSegment.push_back(XX); //XX
+    }
+    else //constant
+    {
+      //load right side into x reg
+      printBooleanSegment.push_back(LDX_C); //A2
+      printBooleanSegment.push_back("0" + rtData); //data
+    }
+
+    //compare x reg and memory location
+    printBooleanSegment.push_back(CPX); //EC
+    printBooleanSegment.push_back(leftTokTempName); //mem loc
+    printBooleanSegment.push_back(XX); //XX
+    //z flag is set
+
+    string result = sdTable.addConstRow();
+
+    cout << "got before the == and != section" << endl;
+    if(tt == "==")
+    {
+      //branch n bytes if false------------|
+      //  assign 01 (true) to leftside     |
+      //  jump n bytes---------------------|--|
+      //  assign 00 (false) to leftside <--|  |
+      //  rest of code <----------------------|
+
+      //branch n bytes if false
+      printBooleanSegment.push_back(BNE); //D0
+      int intBranch1 = 12 ; ///counting by hand
+      string hexBranch1 = intToHex(intBranch1);
+      printBooleanSegment.push_back(hexBranch1); //number of bytes to branch
+
+      //assign 01 (true) to leftside
+      printBooleanSegment.push_back(LDA_C); //A9
+      printBooleanSegment.push_back("01"); //true
+      printBooleanSegment.push_back(STA); //8D
+      printBooleanSegment.push_back(result); //memory loc of result
+      printBooleanSegment.push_back(XX); //XX
+
+      //deal with branching
+      //load X register with 01
+      printBooleanSegment.push_back(LDX_C); //A2
+      printBooleanSegment.push_back("01");
+      //compare to last memory location so we can set zflag to false
+      printBooleanSegment.push_back(CPX); //EC
+      printBooleanSegment.push_back("FF"); //last byte in memory
+      printBooleanSegment.push_back("00"); //00
+      //branch
+      printBooleanSegment.push_back(BNE); //D0
+      int intBranch2 = 7; ///counting by hand
+      string hexBranch2 = intToHex(intBranch2);
+      printBooleanSegment.push_back(hexBranch2); //number of bytes to branch
+
+      //assign 00 (false) to leftside
+      printBooleanSegment.push_back(LDA_C); //A9
+      printBooleanSegment.push_back("00"); //false
+      printBooleanSegment.push_back(STA); //8D
+      printBooleanSegment.push_back(result); //memory loc of result
+      printBooleanSegment.push_back(XX); //XX
+
+      //rest of code - jump here
+    }
+    else // !=
+    {
+      //branch n bytes if false------------|
+      //  assign 00 (false) to leftside    |
+      //  jump n bytes---------------------|--|
+      //  assign 01 (true) to leftside <---|  |
+      //  rest of code <----------------------|
+
+      //branch n bytes if false
+      printBooleanSegment.push_back(BNE); //D0
+      int intBranch1 = 12; ///counting by hand
+      string hexBranch1 = intToHex(intBranch1);
+      printBooleanSegment.push_back(hexBranch1); //number of bytes to branch
+
+      //assign 01 (true) to leftside
+      printBooleanSegment.push_back(LDA_C); //A9
+      printBooleanSegment.push_back("00"); //false
+      printBooleanSegment.push_back(STA); //8D
+      printBooleanSegment.push_back(result); //memory loc, left side
+      printBooleanSegment.push_back(XX); //XX
+
+      //deal with branching
+      //load X register with 01
+      printBooleanSegment.push_back(LDX_C); //A2
+      printBooleanSegment.push_back("01");
+      //compare to last memory location so we can set zflag to false
+      printBooleanSegment.push_back(CPX); //EC
+      printBooleanSegment.push_back("FF"); //last byte in memory
+      printBooleanSegment.push_back("00"); //00
+      //branch
+      printBooleanSegment.push_back(BNE); //D0
+      int intBranch2 = 7; ///counting by hand
+      string hexBranch2 = intToHex(intBranch2);
+      printBooleanSegment.push_back(hexBranch2); //number of bytes to branch
+
+      //assign 00 (false) to leftside
+      printBooleanSegment.push_back(LDA_C); //A9
+      printBooleanSegment.push_back("01"); //true
+      printBooleanSegment.push_back(STA); //8D
+      printBooleanSegment.push_back(result); //memory loc, left side
+      printBooleanSegment.push_back(XX); //XX
+    }
+
+    //print the result
+    //load print string (02) in the x register
+    printBooleanSegment.push_back(LDX_C); //A2
+    printBooleanSegment.push_back(P_INT); //01
+
+    //load right side to Y register
+    printBooleanSegment.push_back(LDY_M); //AC
+    printBooleanSegment.push_back(result); //temp token right side
+    printBooleanSegment.push_back(XX); //XX
+
+    //System call
+    printBooleanSegment.push_back(SYS);
+
+  }
+  else //just a true/false value or variable
+  {
+    //lookup and see if char
+    if(tt == "char") //variable
+    {
+      //lookup right side temp name of variable
+      string tempVarName = sdTable.lookupTempRow(a);
+      cout << "tempVarName for print a" << endl;
+
+      //load print string (02) in the x register
+      printBooleanSegment.push_back(LDX_C); //A2
+      printBooleanSegment.push_back(P_INT); //01
+
+      //load right side to Y register
+      printBooleanSegment.push_back(LDY_M); //AC
+      printBooleanSegment.push_back(tempVarName); //temp token right side
+      printBooleanSegment.push_back(XX); //XX
+
+      //System call
+      printBooleanSegment.push_back(SYS);
+    }
+    else //literal true or false
+    {
+      string booleanValue;
+
+      //create new temp memory location on the stack
+      string result = sdTable.addConstRow();
+      //determine numerical value of true and false
+      if(td == "true") //true
+      {
+        booleanValue = "01";
+      }
+      else //false
+      {
+        booleanValue = "00";
+      }
+      //store t/f value in temp variable location
+      printBooleanSegment.push_back(LDA_C); //A9
+      printBooleanSegment.push_back(booleanValue); //actual value
+      printBooleanSegment.push_back(STA); //8D
+      printBooleanSegment.push_back(result);//store in left-side
+      printBooleanSegment.push_back(XX); //XX
+
+      //print it out
+      //load print string (02) in the x register
+      printBooleanSegment.push_back(LDX_C); //A2
+      printBooleanSegment.push_back(P_INT); //01
+
+      //load right side to Y register
+      printBooleanSegment.push_back(LDY_M); //AC
+      printBooleanSegment.push_back(result); //temp token right side
+      printBooleanSegment.push_back(XX); //XX
+
+      //System call
+      printBooleanSegment.push_back(SYS);
+    }
+  }
+
+  return whileStatementReturn;
+}
 
 /*
  * =====================================================================================
