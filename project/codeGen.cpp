@@ -160,36 +160,14 @@ vector<string> CodeGen::segment(Token *a)
     //if we reach an if statement, then handle a jump and call segment on it's children
     if(a->getType() == "IfStatement")
     {
-      //TODO: process conditional
-
-      //run segment on ifBlock children
-      vector<string> ifBlock = segment(a->children[1]);
-
-      //Jump stuff, I don't think I really need it with my method
-      unsigned int jumpDistance = static_cast<unsigned int>(ifBlock.size());
-      //create new jump
-      jTable.addRow();
-
-      //push back segment to return segment
-      for(vector<string>::size_type i = 0; i < ifBlock.size(); i++)
-      {
-        returnSegment.push_back(ifBlock[i]);
-      }
+      return ifStatement(a->children[0], a->children[1]);
     }
     else if(a->getType() == "WhileStatement")
     {
-      //TODO: process while statement
+      return whileStatement(a->children[0], a->children[1]);
     }
     else if(a->getType() == "PrintStatement")
     {
-      cout << "%%%%Start to print" << endl;
-      cout << "fed token" << endl;
-      cout << a->getType() << endl;
-      cout << a->getData() << endl;
-
-      cout << "child token" << endl;
-      cout << a->children[0]->getType() << endl;
-      cout << a->children[0]->getData() << endl;
       return printExpressionSegment(a->children[0]);
     }
   }
@@ -220,6 +198,84 @@ string CodeGen::getVariableType(Token *a)
   string type;
   //get type from symbolTable
   return cgGenSymbolTable->returnType(a);
+}
+
+/*
+ * =====================================================================================
+ * IF Segment
+ * =====================================================================================
+ */
+
+vector<string> CodeGen::ifStatement(Token *conditional, Token *Block)
+{
+  vector<string> ifStatementReturn;
+
+  //run segment on ifBlock children
+  vector<string> ifBlock = segment(Block->children[1]);
+
+  //Jump stuff, I don't think I really need it with my method
+  int jumpDistance = static_cast<int>(ifBlock.size());
+
+  /*
+  //push back segment to return segment
+  for(vector<string>::size_type i = 0; i < ifBlock.size(); i++)
+  {
+    ifStatementReturn.push_back(ifBlock[i]);
+  }
+  */
+
+  //get conditional operations
+  ifStatementReturn = ifAndWhileStatementConditional(conditional);
+
+  //branch based on z flag
+
+
+  //z flag jump
+
+
+  //other code start
+
+  return ifStatementReturn;
+}
+
+
+
+/*
+ * =====================================================================================
+ * WHILE Segment
+ * =====================================================================================
+ */
+
+vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
+{
+  vector<string> whileStatementReturn;
+
+  //get conditional operations
+  whileStatementReturn = ifAndWhileStatementConditional(conditional);
+
+  //branch if z flag false
+    //body of while
+
+  //z flag jump around the whole of memory locations back to conditional
+
+  //other code start
+
+  return whileStatementReturn;
+}
+
+/*
+ * =====================================================================================
+ * IF/WHILE conditional Segment
+ * =====================================================================================
+ */
+
+//set up the z flag for the if and while statements
+vector<string> CodeGen::ifAndWhileStatementConditional(Token *c)
+{
+  vector<string> operations;
+
+
+  return operations;
 }
 
 
