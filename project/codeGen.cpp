@@ -533,7 +533,7 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
 
       //branch n bytes if false
       returnBooleanSegment.push_back(BNE); //D0
-      int intBranch1 = 14; ///counting by hand
+      int intBranch1 = 12 ; ///counting by hand
       string hexBranch1 = intToHex(intBranch1);
       returnBooleanSegment.push_back(hexBranch1); //number of bytes to branch
 
@@ -577,7 +577,7 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
 
       //branch n bytes if false
       returnBooleanSegment.push_back(BNE); //D0
-      int intBranch1 = 14; ///counting by hand
+      int intBranch1 = 12; ///counting by hand
       string hexBranch1 = intToHex(intBranch1);
       returnBooleanSegment.push_back(hexBranch1); //number of bytes to branch
 
