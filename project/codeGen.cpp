@@ -948,21 +948,22 @@ vector<string> CodeGen::printBooleanExpressionSegment(Token *a)
       //lookup tempVarName
       leftTokTempName = sdTable.lookupTempRow(leftTok);
 
+      //todo: see if I need this
       //load left side to accumulator
-      returnBooleanSegment.push_back(LDA_M); //AD
-      returnBooleanSegment.push_back(leftTokTempName);
-      returnBooleanSegment.push_back(XX); //XX
+      printBooleanSegment.push_back(LDA_M); //AD
+      printBooleanSegment.push_back(leftTokTempName);
+      printBooleanSegment.push_back(XX); //XX
     }
     else //constant
     {
       //get a new memory location for the const
       leftTokTempName = sdTable.addConstRow();
       //load left side to memory location
-      returnBooleanSegment.push_back(LDA_C); //A9
-      returnBooleanSegment.push_back("0" + ltData); //data
-      returnBooleanSegment.push_back(STA); //8D
-      returnBooleanSegment.push_back(leftTokTempName); //store
-      returnBooleanSegment.push_back(XX); //XX
+      printBooleanSegment.push_back(LDA_C); //A9
+      printBooleanSegment.push_back("0" + ltData); //data
+      printBooleanSegment.push_back(STA); //8D
+      printBooleanSegment.push_back(leftTokTempName); //store
+      printBooleanSegment.push_back(XX); //XX
     }
 
 
@@ -973,22 +974,24 @@ vector<string> CodeGen::printBooleanExpressionSegment(Token *a)
       string rightTokTempName = sdTable.lookupTempRow(rightTok);
 
       //load right side into x reg
-      returnBooleanSegment.push_back(LDX_M); //AE
-      returnBooleanSegment.push_back(rightTokTempName); //memory address
-      returnBooleanSegment.push_back(XX); //XX
+      printBooleanSegment.push_back(LDX_M); //AE
+      printBooleanSegment.push_back(rightTokTempName); //memory address
+      printBooleanSegment.push_back(XX); //XX
     }
-    else
+    else //constant
     {
       //load right side into x reg
-      returnBooleanSegment.push_back(LDX_C); //A2
-      returnBooleanSegment.push_back("0" + rtData); //data
+      printBooleanSegment.push_back(LDX_C); //A2
+      printBooleanSegment.push_back("0" + rtData); //data
     }
 
     //compare x reg and memory location
-    returnBooleanSegment.push_back(CPX); //EC
-    returnBooleanSegment.push_back(leftTokTempName); //mem loc
-    returnBooleanSegment.push_back(XX); //XX
+    printBooleanSegment.push_back(CPX); //EC
+    printBooleanSegment.push_back(leftTokTempName); //mem loc
+    printBooleanSegment.push_back(XX); //XX
     //z flag is set
+
+    string result = sdTable.addConstRow();
 
     cout << "got before the == and != section" << endl;
     if(tt == "==")
@@ -1000,38 +1003,38 @@ vector<string> CodeGen::printBooleanExpressionSegment(Token *a)
       //  rest of code <----------------------|
 
       //branch n bytes if false
-      returnBooleanSegment.push_back(BNE); //D0
+      printBooleanSegment.push_back(BNE); //D0
       int intBranch1 = 12 ; ///counting by hand
       string hexBranch1 = intToHex(intBranch1);
-      returnBooleanSegment.push_back(hexBranch1); //number of bytes to branch
+      printBooleanSegment.push_back(hexBranch1); //number of bytes to branch
 
       //assign 01 (true) to leftside
-      returnBooleanSegment.push_back(LDA_C); //A9
-      returnBooleanSegment.push_back("01"); //true
-      returnBooleanSegment.push_back(STA); //8D
-      returnBooleanSegment.push_back(tempVarName); //memory loc, left side
-      returnBooleanSegment.push_back(XX); //XX
+      printBooleanSegment.push_back(LDA_C); //A9
+      printBooleanSegment.push_back("01"); //true
+      printBooleanSegment.push_back(STA); //8D
+      printBooleanSegment.push_back(result); //memory loc of result
+      printBooleanSegment.push_back(XX); //XX
 
       //deal with branching
       //load X register with 01
-      returnBooleanSegment.push_back(LDX_C); //A2
-      returnBooleanSegment.push_back("01");
+      printBooleanSegment.push_back(LDX_C); //A2
+      printBooleanSegment.push_back("01");
       //compare to last memory location so we can set zflag to false
-      returnBooleanSegment.push_back(CPX); //EC
-      returnBooleanSegment.push_back("FF"); //last byte in memory
-      returnBooleanSegment.push_back("00"); //00
+      printBooleanSegment.push_back(CPX); //EC
+      printBooleanSegment.push_back("FF"); //last byte in memory
+      printBooleanSegment.push_back("00"); //00
       //branch
-      returnBooleanSegment.push_back(BNE); //D0
+      printBooleanSegment.push_back(BNE); //D0
       int intBranch2 = 7; ///counting by hand
       string hexBranch2 = intToHex(intBranch2);
-      returnBooleanSegment.push_back(hexBranch2); //number of bytes to branch
+      printBooleanSegment.push_back(hexBranch2); //number of bytes to branch
 
       //assign 00 (false) to leftside
-      returnBooleanSegment.push_back(LDA_C); //A9
-      returnBooleanSegment.push_back("00"); //false
-      returnBooleanSegment.push_back(STA); //8D
-      returnBooleanSegment.push_back(tempVarName); //memory loc, left side
-      returnBooleanSegment.push_back(XX); //XX
+      printBooleanSegment.push_back(LDA_C); //A9
+      printBooleanSegment.push_back("00"); //false
+      printBooleanSegment.push_back(STA); //8D
+      printBooleanSegment.push_back(result); //memory loc of result
+      printBooleanSegment.push_back(XX); //XX
 
       //rest of code - jump here
     }
@@ -1044,39 +1047,53 @@ vector<string> CodeGen::printBooleanExpressionSegment(Token *a)
       //  rest of code <----------------------|
 
       //branch n bytes if false
-      returnBooleanSegment.push_back(BNE); //D0
+      printBooleanSegment.push_back(BNE); //D0
       int intBranch1 = 12; ///counting by hand
       string hexBranch1 = intToHex(intBranch1);
-      returnBooleanSegment.push_back(hexBranch1); //number of bytes to branch
+      printBooleanSegment.push_back(hexBranch1); //number of bytes to branch
 
       //assign 01 (true) to leftside
-      returnBooleanSegment.push_back(LDA_C); //A9
-      returnBooleanSegment.push_back("00"); //false
-      returnBooleanSegment.push_back(STA); //8D
-      returnBooleanSegment.push_back(tempVarName); //memory loc, left side
-      returnBooleanSegment.push_back(XX); //XX
+      printBooleanSegment.push_back(LDA_C); //A9
+      printBooleanSegment.push_back("00"); //false
+      printBooleanSegment.push_back(STA); //8D
+      printBooleanSegment.push_back(result); //memory loc, left side
+      printBooleanSegment.push_back(XX); //XX
 
       //deal with branching
       //load X register with 01
-      returnBooleanSegment.push_back(LDX_C); //A2
-      returnBooleanSegment.push_back("01");
+      printBooleanSegment.push_back(LDX_C); //A2
+      printBooleanSegment.push_back("01");
       //compare to last memory location so we can set zflag to false
-      returnBooleanSegment.push_back(CPX); //EC
-      returnBooleanSegment.push_back("FF"); //last byte in memory
-      returnBooleanSegment.push_back("00"); //00
+      printBooleanSegment.push_back(CPX); //EC
+      printBooleanSegment.push_back("FF"); //last byte in memory
+      printBooleanSegment.push_back("00"); //00
       //branch
-      returnBooleanSegment.push_back(BNE); //D0
+      printBooleanSegment.push_back(BNE); //D0
       int intBranch2 = 7; ///counting by hand
       string hexBranch2 = intToHex(intBranch2);
-      returnBooleanSegment.push_back(hexBranch2); //number of bytes to branch
+      printBooleanSegment.push_back(hexBranch2); //number of bytes to branch
 
       //assign 00 (false) to leftside
-      returnBooleanSegment.push_back(LDA_C); //A9
-      returnBooleanSegment.push_back("01"); //true
-      returnBooleanSegment.push_back(STA); //8D
-      returnBooleanSegment.push_back(tempVarName); //memory loc, left side
-      returnBooleanSegment.push_back(XX); //XX
+      printBooleanSegment.push_back(LDA_C); //A9
+      printBooleanSegment.push_back("01"); //true
+      printBooleanSegment.push_back(STA); //8D
+      printBooleanSegment.push_back(result); //memory loc, left side
+      printBooleanSegment.push_back(XX); //XX
     }
+
+    //print the result
+    //load print string (02) in the x register
+    printBooleanSegment.push_back(LDX_C); //A2
+    printBooleanSegment.push_back(P_INT); //01
+
+    //load right side to Y register
+    printBooleanSegment.push_back(LDY_M); //AC
+    printBooleanSegment.push_back(result); //temp token right side
+    printBooleanSegment.push_back(XX); //XX
+
+    //System call
+    printBooleanSegment.push_back(SYS);
+    
   }
   else //just a true/false value or variable
   {
