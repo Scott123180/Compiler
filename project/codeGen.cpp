@@ -50,11 +50,8 @@ CodeGen::~CodeGen()
 //start processing tokens
 void CodeGen::process()
 {
-  cout << "got to process" << endl;
   //ensure we're at the root token
   cgAST->returnToRoot();
-
-  cout << "before code segment return" << endl;
 
   //calculate and store the stack in a string vector
   code = segment(cgAST->rootToken);
@@ -70,19 +67,19 @@ void CodeGen::process()
   else //code, so set size to code vector
   {
     codeSize = code.size();
-    cout << "<><><>code size: " << codeSize << endl;
   }
-  cout << "before print code" << endl;
   //print code to output
   printCode();
 
-  cout << "before overflow" << endl;
   checkForOverFlow();
 
-  cout << "before backpatching" << endl;
   //implement back-patching
   backPatching();
-  cout << "after backpatching" << endl;
+
+  cout << "Code Gen Success. Thanks Obama." << endl;
+  cout << "Code size: " << codeSize << endl;
+  cout << "Stack size: " << stackSize << endl;
+  cout << "Heap size: " << (256-heapHead) << endl;
 }
 
 /*
@@ -115,9 +112,7 @@ vector<string> CodeGen::segment(Token *a)
         returnSegment.push_back(STA); //8D
 
         //fill with temp memory location
-        cout << "WTF are we assigning" << a->getData() << " " << a->getType() << endl;
         string tempVar = sdTable.addRow(a->parent->children[1]);
-        cout << "tempVar: "<< tempVar << endl;
 
         returnSegment.push_back(tempVar);
         returnSegment.push_back("XX");
@@ -125,22 +120,13 @@ vector<string> CodeGen::segment(Token *a)
       //== and != to catch assigning boolean expressions
       else if(parentType == "AssignStatement")
       {
-        cout << "!!!!!!!! Got to ass statement" << endl;
-        cout << "is this valid " << a->parent->children[1]->getData() << endl;
-
-        cout << "memory location of 'a' token: " << a << endl;
 
         //assignment expression segment, pass right side(expr) and current token temp
-        cout << "scope value: " << a->scope << endl;
-        cout << "type: " << a->getType() << endl;
-        cout << "data: " << a->getData() << endl;
         string tempMemLocation = sdTable.lookupTempRow(a);
         cout << tempMemLocation << endl;
 
-        cout << "one over ->>>>>>" << endl;
         Token* r = a->parent->children[1];
-        cout << r->getType() << endl;
-        cout << r->getData() << endl;
+
         returnSegment = assignExpressionSegment(a->parent->children[1], tempMemLocation);
       }
       else //unreachable unless I forgot something
@@ -176,8 +162,6 @@ vector<string> CodeGen::segment(Token *a)
   //recursion
   for(vector<Token*>::size_type i = 0; i < a->children.size(); i++)
   {
-    cout << "---THIS IS A " << a->getType() << endl;
-    cout << "--RECURSION " << a->children[i]->getType() << endl << endl;
     //store recursion results in string vector
     vector<string> recursionSegment = segment(a->children[i]);
     //push each string to the back of the vector, in order
@@ -236,10 +220,6 @@ vector<string> CodeGen::ifStatement(Token *conditional, Token *Block)
     string rtType = rightTok->getType();
     string rtData = rightTok->getData();
 
-    cout << "ltType: " << ltType << endl;
-    cout << "ltData: " << ltData << endl;
-    cout << "rtType: " << rtType << endl;
-    cout << "rtData: " << rtData << endl;
 
     //change true/false to 1 and 0
     // (dont worry about leading 0, we got it covered below)
@@ -440,7 +420,7 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
 {
   vector<string> whileStatementReturn;
 
-  cout << "************************ IN WHILE" << endl;
+
   /*
    * 1. conditional check -- jump to here
    * 2. false? -> jump end of while loop
@@ -455,7 +435,6 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
 
   //need the jump table later
   int jumpDistance = static_cast<int>(whileBlock.size());
-  cout << "&&&&&&&& While block size: "<< jumpDistance << endl;
 
   ///================================================================
   ///CONDITIONALS
@@ -484,10 +463,6 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
     string rtType = rightTok->getType();
     string rtData = rightTok->getData();
 
-    cout << "ltType: " << ltType << endl;
-    cout << "ltData: " << ltData << endl;
-    cout << "rtType: " << rtType << endl;
-    cout << "rtData: " << rtData << endl;
 
     //change true/false to 1 and 0
     // (dont worry about leading 0, we got it covered below)
@@ -565,7 +540,6 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
 
     string result = sdTable.addConstRow();
 
-    cout << "got before the == and != section" << endl;
     if(tt == "==")
     {
       //branch n bytes if false------------|
@@ -724,9 +698,7 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
   //this code is used in assigning variables
 vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
 {
-  cout << "TOOOOOOOOOOOOOKEN" << endl;
-  cout << a->getType() << endl;
-  cout << a->getData() << endl;
+
   //determine what kind of expression
   string expressionType = "\0"; //initialize
 
@@ -739,22 +711,16 @@ vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
   string td = a->getData(); //token Data
   string tt = a->getType(); //token Type
 
-  cout << "after the a->getdata and type thign: " << endl;
-  cout << "token data: " << td << endl;
-  cout << "token type: " << tt << endl;
-  cout << "expressionType: " << expressionType << endl;
 
   vector<string> returnSegment;
   //check for boolean expression
   if(tt == "!=" || tt == "==" || td == "true" || td == "false" || expressionType == "boolean")
   {
-    cout << "ENTERIIIIIIIING ASSIGN BOOL EXPRESSION" << endl;
     returnSegment = assignBooleanExpressionSegment(a, tempVarName);
   }
   //check for int expression
   else if(tt == "+" || tt == "int" || expressionType == "int")
   {
-    cout << "WE checkin for expressin intexpr" << endl;
     cout << tempVarName << endl;
     returnSegment = assignIntExpressionSegment(a, tempVarName);
   }
@@ -776,11 +742,8 @@ vector<string> CodeGen::assignExpressionSegment(Token* a, string tempVarName)
 //recurse through leaves and perform operations
 vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
 {
-  cout << "in the assignintexpr segment" << endl;
   vector<string> returnIntSegment;
-  cout << "before get type" << endl;
   string tt = a->getType(); //token type
-  cout << "after get type" << endl;
   if(tt == "+") //addition intexpr
   {
     //a = 1+1
@@ -844,7 +807,6 @@ vector<string> CodeGen::assignIntExpressionSegment(Token* a, string tempVarName)
   }
   else //just a digit or variable that is a digit
   {
-    cout << "ELSE STMT. Type: " << tt << endl;
     if(tt == "int")
     {
       //load value to acc
@@ -912,7 +874,6 @@ void CodeGen::assignIntExpressionLoop(Token *a)
 //set up conditionals, don't worry about branches
 vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarName)
 {
-  cout << "In assign booleanExpr" << endl;
   vector<string> returnBooleanSegment;
   
   string tt = a->getType(); //token type (== and !=)
@@ -929,11 +890,6 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
     string ltData = leftTok->getData();
     string rtType = rightTok->getType();
     string rtData = rightTok->getData();
-
-    cout << "ltType: " << ltType << endl;
-    cout << "ltData: " << ltData << endl;
-    cout << "rtType: " << rtType << endl;
-    cout << "rtData: " << rtData << endl;
 
     //change true/false to 1 and 0
       // (dont worry about leading 0, we got it covered below)
@@ -1157,17 +1113,11 @@ vector<string> CodeGen::assignStringExpressionSegment(Token *a, string tempVarNa
     //get string
     string thisString = td; //string
   
-    cout << "`````````````````````This is the string: " << thisString << endl;
-  
+
     //convert string into vector of hex values
     vector<string> thisHexString = stringToHexChars(thisString);
+
   
-    cout << "Size of hex vector: " << thisHexString.size() << endl;
-    for (vector<string>::size_type i = 0; i < thisHexString.size(); i++) {
-      cout << "HEX " << i << " :" << thisHexString[i] << endl;
-    }
-  
-    cout << "after  print" << endl;
     //write null terminator
     output[--heapHead] = "00";
   
@@ -1218,14 +1168,11 @@ vector<string> CodeGen::printExpressionSegment(Token *a)
   //check for boolean expression
   if(tt == "!=" || tt == "==" || td == "true" || td == "false" || expressionType == "boolean")
   {
-    cout << "got to inner part of this" << endl;
     returnSegment = printBooleanExpressionSegment(a);
-    cout << returnSegment.size() <<endl;
   }
     //check for int expression
   else if(tt == "+" || tt == "int" || expressionType == "int")
   {
-    cout << "WE checkin for printing intexpr" << endl;
 
     returnSegment = printIntExpressionSegment(a);
   }
@@ -1336,7 +1283,6 @@ vector<string> CodeGen::printIntExpressionSegment(Token *a)
   }
   else //just a digit or variable that is a digit
   {
-    cout << "ELSE STMT. Type: " << tt << endl;
     if(tt == "int")
     {
       //load 01 to x register
@@ -1400,10 +1346,6 @@ vector<string> CodeGen::printBooleanExpressionSegment(Token *a)
     string rtType = rightTok->getType();
     string rtData = rightTok->getData();
 
-    cout << "ltType: " << ltType << endl;
-    cout << "ltData: " << ltData << endl;
-    cout << "rtType: " << rtType << endl;
-    cout << "rtData: " << rtData << endl;
 
     //change true/false to 1 and 0
     // (dont worry about leading 0, we got it covered below)
@@ -1482,7 +1424,6 @@ vector<string> CodeGen::printBooleanExpressionSegment(Token *a)
 
     string result = sdTable.addConstRow();
 
-    cout << "got before the == and != section" << endl;
     if(tt == "==")
     {
       //branch n bytes if false------------|
@@ -1689,12 +1630,7 @@ vector<string> CodeGen::printStringExpressionSegment(Token *a)
     //convert string into vector of hex values
     vector<string> thisHexString = stringToHexChars(thisString);
 
-    cout << "Size of hex vector: " << thisHexString.size() << endl;
-    for (vector<string>::size_type i = 0; i < thisHexString.size(); i++) {
-      cout << "HEX " << i << " :" << thisHexString[i] << endl;
-    }
 
-    cout << "after  print" << endl;
     //write null terminator
     output[--heapHead] = "00";
 
@@ -1733,15 +1669,12 @@ vector<string> CodeGen::printStringExpressionSegment(Token *a)
 void CodeGen::backPatching()
 {
   ///stack
-  cout << "before allocate memory" << endl;
   //set the actual memory addresses of the rows on the stack
   allocateMemoryOnStack();
 
-  cout << "before replace memory" << endl;
   //find and replace the temporary memory addresses in the code
   replaceTemporaryMemoryAddresses();
 
-  cout << "after replace memory" << endl;
 
   ///jumps
   replaceTemporaryJumpAddresses();
@@ -1835,11 +1768,8 @@ void CodeGen::replaceTemporaryJumpAddresses()
 
     //get value to loop around everything
     int secondJumpValue = jTable.calculateDistance(firstJumpIndex, secondJumpIndex);
-    cout << "***First Value INT: " << firstJumpIndex << endl;
-    cout << "***Second Value INT: " << secondJumpIndex << endl;
-    cout << "***Calculated Jump INT: " << secondJumpValue << endl;
+
     string secondJumpValueHex = intToHex(secondJumpValue);
-    cout << "***Calculated Jump HEX: " << secondJumpValueHex << endl;
 
     //set the values of first and second jump
     output[firstJumpIndex] = NOP; //EA no value
@@ -1872,7 +1802,6 @@ vector<string> CodeGen::stringToHexChars(string a)
 
 string CodeGen::intToHex(int a)
 {
-  cout << "INT A: " << a << endl;
   string hexValue;
   stringstream ss;
   ss << std::uppercase << std::hex << a;
@@ -1885,7 +1814,6 @@ string CodeGen::intToHex(int a)
     hexValue[1] = hexValue[0];
     hexValue[0] = '0';
   }
-  cout << "HEX VALUE INT TO HEX: " << hexValue << endl;
   return hexValue;
 }
 
