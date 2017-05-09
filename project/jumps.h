@@ -18,15 +18,12 @@ class Jumps {
 
     string addRow();
 
-    void  setDistance(string jump, int start, int end);
+    int calculateDistance(int start, int end);
 
-    string lookupDistance(string tempName);
-
-  private:
     //pair<temp, dist>
-    vector<pair<string, string>> rows;
+    vector<string> rows;
+  private:
 
-    string intToHex(int a);
 
 };
 

@@ -1,0 +1,6 @@
+{
+  while(true == true)
+  {
+  print(1)
+  }
+}$

@@ -497,6 +497,7 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
 {
   vector<string> whileStatementReturn;
 
+  cout << "************************ IN WHILE" << endl;
   /*
    * 1. conditional check -- jump to here
    * 2. false? -> jump end of while loop
@@ -570,7 +571,7 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
 
     //jump to mark the beginning of the conditional, will replace later with EA (no operation)
     string jumpToConditional = jTable.addRow();
-    whileStatementReturn.push_back(NOP); //EA
+    whileStatementReturn.push_back(jumpToConditional); //temp jump address
 
     //store ls into acc, store rs into x reg, compare x reg to memory, z flag is set, deal with branching
 
@@ -580,11 +581,6 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
       //lookup tempVarName
       leftTokTempName = sdTable.lookupTempRow(leftTok);
 
-      //todo: see if I need this
-      //load left side to accumulator
-      whileStatementReturn.push_back(LDA_M); //AD
-      whileStatementReturn.push_back(leftTokTempName);
-      whileStatementReturn.push_back(XX); //XX
     }
     else //constant
     {
@@ -1864,18 +1860,43 @@ void CodeGen::replaceTemporaryMemoryAddresses()
   }
 }
 
+//find pairs of temporary addresses for while
 void CodeGen::replaceTemporaryJumpAddresses()
 {
-  for(int i = 0; i < 256; i++)
+  //loop through jump vector
+  for(vector<string>::size_type j = 0; j < jTable.rows.size(); j++)
   {
-    //check for temporary variable
-    if(output[i].front() == 'J') //if first character of location is J (Jump)
+    int firstJumpIndex = -1;
+    int secondJumpIndex = -1;
+
+    for(int i = 0; i < 256; i++)
     {
-      //replace with distance of jump
-      string dist = jTable.lookupDistance(output[i]);
-      output[i] = dist;
+      //check for temporary variable
+      if(output[i] == jTable.rows[j]) //if jumps have same name
+      {
+        if(firstJumpIndex == -1)
+        {
+          firstJumpIndex = i;
+        }
+        else //on second
+        {
+          secondJumpIndex = i;
+        }
+      }
     }
-    //just move on to next input if not found
+
+    //get value to loop around everything
+    int secondJumpValue = jTable.calculateDistance(firstJumpIndex, secondJumpIndex);
+    cout << "***First Value INT: " << firstJumpIndex << endl;
+    cout << "***Second Value INT: " << secondJumpIndex << endl;
+    cout << "***Calculated Jump INT: " << secondJumpValue << endl;
+    string secondJumpValueHex = intToHex(secondJumpValue);
+    cout << "***Calculated Jump HEX: " << secondJumpValueHex << endl;
+
+    //set the values of first and second jump
+    output[firstJumpIndex] = NOP; //EA no value
+    output[secondJumpIndex] = secondJumpValueHex; //replace with hex jump
+
   }
 }
 
