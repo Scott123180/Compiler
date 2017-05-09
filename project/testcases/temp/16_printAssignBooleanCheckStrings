@@ -1,0 +1,15 @@
+{
+  string a
+  string b
+  a = "alan"
+  b = a
+  string e
+  e = "farts"
+  boolean c
+  c = (a == b)
+  boolean d
+  d = (e == b) 
+  print(c)
+  print(d)
+
+}$
