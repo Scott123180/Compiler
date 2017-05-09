@@ -6,7 +6,7 @@ using namespace std;
 CodeGen::CodeGen(CST* ast, GenSymbolTable* st)
   : cgAST(ast), cgSymbolTable(st->rootSymbolTable), cgGenSymbolTable(st)
 {
-  cout << "CodeGen constructor called" << endl;
+  //cout << "CodeGen constructor called" << endl;
   //initialize output array to 00's
   for(int i = 0; i < 256; i++)
   {
@@ -37,7 +37,7 @@ CodeGen::CodeGen(CST* ast, GenSymbolTable* st)
 
 CodeGen::~CodeGen()
 {
-  cout << "CodeGen Destructor Called" << endl;
+  //cout << "CodeGen Destructor Called" << endl;
 }
 
 /*

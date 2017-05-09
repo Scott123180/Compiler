@@ -11,7 +11,7 @@ using namespace std;
 
 CST::CST()
 {
-  cout << "CST Constructor Called" << endl;
+ // cout << "CST Constructor Called" << endl;
   //new root node
   Token* root = new Token("Program");
   root->parent = nullptr;
@@ -22,7 +22,7 @@ CST::CST()
 
 CST::~CST()
 {
-  cout << "CST Destructor Called" << endl;
+  //cout << "CST Destructor Called" << endl;
   //delete all children of
   //deleteTreeChildren(rootToken);
   //delete(rootToken);
