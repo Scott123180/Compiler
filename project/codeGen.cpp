@@ -692,67 +692,55 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
     }
 
   }
-  else //just a true/false value or variable
+  else //just a true/false value (can't be variable)
   {
-    /*
-        //lookup and see if char
-    if(tt == "char") //variable
+    //literal true or false
+    bool booleanValue;
+
+
+    //determine numerical value of true and false
+    if(td == "true") //true
     {
-      //lookup right side temp name of variable
-      string tempVarName = sdTable.lookupTempRow(a);
-      cout << "tempVarName for print a" << endl;
-
-      //load print string (02) in the x register
-      printBooleanSegment.push_back(LDX_C); //A2
-      printBooleanSegment.push_back(P_INT); //01
-
-      //load right side to Y register
-      printBooleanSegment.push_back(LDY_M); //AC
-      printBooleanSegment.push_back(tempVarName); //temp token right side
-      printBooleanSegment.push_back(XX); //XX
-
-      //System call
-      printBooleanSegment.push_back(SYS);
+      booleanValue = true;
     }
-    else //literal true or false
+    else //false
     {
-      string booleanValue;
-
-      //create new temp memory location on the stack
-      string result = sdTable.addConstRow();
-      //determine numerical value of true and false
-      if(td == "true") //true
-      {
-        booleanValue = "01";
-      }
-      else //false
-      {
-        booleanValue = "00";
-      }
-      //store t/f value in temp variable location
-      printBooleanSegment.push_back(LDA_C); //A9
-      printBooleanSegment.push_back(booleanValue); //actual value
-      printBooleanSegment.push_back(STA); //8D
-      printBooleanSegment.push_back(result);//store in left-side
-      printBooleanSegment.push_back(XX); //XX
-
-      //print it out
-      //load print string (02) in the x register
-      printBooleanSegment.push_back(LDX_C); //A2
-      printBooleanSegment.push_back(P_INT); //01
-
-      //load right side to Y register
-      printBooleanSegment.push_back(LDY_M); //AC
-      printBooleanSegment.push_back(result); //temp token right side
-      printBooleanSegment.push_back(XX); //XX
-
-      //System call
-      printBooleanSegment.push_back(SYS);
+      booleanValue = false;
     }
+    if(booleanValue) //true
+    {
+      //jump to mark the beginning of the conditional, will replace later with EA (no operation)
+      string jumpToConditional = jTable.addRow();
+      whileStatementReturn.push_back(jumpToConditional); //temp jump address
 
+      //push back all while block operations
+      for(vector<string>::size_type i = 0; i < whileBlock.size(); i++)
+      {
+        whileStatementReturn.push_back(whileBlock[i]);
+      }
 
-     */
+      //deal with branching
+      //load X register with 01
+      whileStatementReturn.push_back(LDX_C); //A2
+      whileStatementReturn.push_back("01");
+      //compare to last memory location so we can set zflag to false
+      whileStatementReturn.push_back(CPX); //EC
+      whileStatementReturn.push_back("FF"); //last byte in memory
+      whileStatementReturn.push_back("00"); //00
+
+      //branch back to conditional
+      whileStatementReturn.push_back(BNE); //D0
+      whileStatementReturn.push_back(jumpToConditional); //number of bytes to branch
+    }
+    else //false
+    {
+      //don't do any operations
+    }
   }
+
+
+
+
   return whileStatementReturn;
 }
 
