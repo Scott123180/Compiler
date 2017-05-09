@@ -1,0 +1,14 @@
+{
+  boolean a
+  a = (true == false)
+  boolean b
+  b = (true == true)
+  boolean c
+  c = (true != false)
+  boolean d
+  d = (true != true)
+  print(a)
+  print(b)
+  print(c)
+  print(d)
+}

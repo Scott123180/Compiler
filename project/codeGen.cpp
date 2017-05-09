@@ -450,10 +450,10 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
     //change true/false to 1 and 0
       // (dont worry about leading 0, we got it covered below)
     if(ltData == "true") ltData = "1";
-    else if(ltData == "false") ltData == "0";
+    else if(ltData == "false") ltData = "0";
     
     if(rtData == "true") rtData = "1";
-    else if(rtData == "false") rtData == "0";
+    else if(rtData == "false") rtData = "0";
 
 
 
@@ -484,9 +484,6 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       returnBooleanSegment.push_back(leftTokTempName);
       returnBooleanSegment.push_back(XX); //XX
     }
-
-
-
     else //constant
     {
       //get a new memory location for the const
@@ -498,6 +495,8 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       returnBooleanSegment.push_back(leftTokTempName); //store
       returnBooleanSegment.push_back(XX); //XX
     }
+
+
     //right side
     if(rtType == "char") //variable
     {
@@ -534,7 +533,7 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
 
       //branch n bytes if false
       returnBooleanSegment.push_back(BNE); //D0
-      int intBranch1 = 11; ///counting by hand
+      int intBranch1 = 14; ///counting by hand
       string hexBranch1 = intToHex(intBranch1);
       returnBooleanSegment.push_back(hexBranch1); //number of bytes to branch
 
@@ -542,7 +541,7 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       returnBooleanSegment.push_back(LDA_C); //A9
       returnBooleanSegment.push_back("01"); //true
       returnBooleanSegment.push_back(STA); //8D
-      returnBooleanSegment.push_back(leftTokTempName); //memory loc, left side
+      returnBooleanSegment.push_back(tempVarName); //memory loc, left side
       returnBooleanSegment.push_back(XX); //XX
 
       //deal with branching
@@ -551,9 +550,11 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       returnBooleanSegment.push_back("01");
         //compare to last memory location so we can set zflag to false
       returnBooleanSegment.push_back(CPX); //EC
+      returnBooleanSegment.push_back("FF"); //last byte in memory
+      returnBooleanSegment.push_back("00"); //00
         //branch
       returnBooleanSegment.push_back(BNE); //D0
-      int intBranch2 = 6; ///counting by hand
+      int intBranch2 = 7; ///counting by hand
       string hexBranch2 = intToHex(intBranch2);
       returnBooleanSegment.push_back(hexBranch2); //number of bytes to branch
 
@@ -561,7 +562,7 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       returnBooleanSegment.push_back(LDA_C); //A9
       returnBooleanSegment.push_back("00"); //false
       returnBooleanSegment.push_back(STA); //8D
-      returnBooleanSegment.push_back(leftTokTempName); //memory loc, left side
+      returnBooleanSegment.push_back(tempVarName); //memory loc, left side
       returnBooleanSegment.push_back(XX); //XX
 
       //rest of code - jump here
@@ -574,6 +575,39 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
       //  assign 01 (true) to leftside <---|  |
       //  rest of code <----------------------|
 
+      //branch n bytes if false
+      returnBooleanSegment.push_back(BNE); //D0
+      int intBranch1 = 14; ///counting by hand
+      string hexBranch1 = intToHex(intBranch1);
+      returnBooleanSegment.push_back(hexBranch1); //number of bytes to branch
+
+      //assign 01 (true) to leftside
+      returnBooleanSegment.push_back(LDA_C); //A9
+      returnBooleanSegment.push_back("00"); //false
+      returnBooleanSegment.push_back(STA); //8D
+      returnBooleanSegment.push_back(tempVarName); //memory loc, left side
+      returnBooleanSegment.push_back(XX); //XX
+
+      //deal with branching
+      //load X register with 01
+      returnBooleanSegment.push_back(LDX_C); //A2
+      returnBooleanSegment.push_back("01");
+      //compare to last memory location so we can set zflag to false
+      returnBooleanSegment.push_back(CPX); //EC
+      returnBooleanSegment.push_back("FF"); //last byte in memory
+      returnBooleanSegment.push_back("00"); //00
+      //branch
+      returnBooleanSegment.push_back(BNE); //D0
+      int intBranch2 = 7; ///counting by hand
+      string hexBranch2 = intToHex(intBranch2);
+      returnBooleanSegment.push_back(hexBranch2); //number of bytes to branch
+
+      //assign 00 (false) to leftside
+      returnBooleanSegment.push_back(LDA_C); //A9
+      returnBooleanSegment.push_back("01"); //true
+      returnBooleanSegment.push_back(STA); //8D
+      returnBooleanSegment.push_back(tempVarName); //memory loc, left side
+      returnBooleanSegment.push_back(XX); //XX
     }
   }
   else //true and false literals
@@ -862,7 +896,45 @@ vector<string> CodeGen::printIntExpressionSegment(Token *a)
 vector<string> CodeGen::printBooleanExpressionSegment(Token *a)
 {
   vector<string> printBooleanSegment;
-  
+
+  //handle variables now
+  string tt = a->getType(); //token type
+  string td = a->getData(); //token data
+
+  //determine what type of expression segment
+  if(tt == "==" || tt == "!=")
+  {
+    //TODO: this
+  }
+  else //just a true/false value or variable
+  {
+    //lookup and see if char
+    if(tt == "char") //variable
+    {
+      //lookup right side temp name of variable
+      string tempVarName = sdTable.lookupTempRow(a);
+      cout << "tempVarName for print a" << endl;
+
+      //load print string (02) in the x register
+      printBooleanSegment.push_back(LDX_C); //A2
+      printBooleanSegment.push_back(P_INT); //01
+
+      //load right side to Y register
+      printBooleanSegment.push_back(LDY_M); //AC
+      printBooleanSegment.push_back(tempVarName); //temp token right side
+      printBooleanSegment.push_back(XX); //XX
+
+      //System call
+      printBooleanSegment.push_back(SYS);
+    }
+    else //literal true or false
+    {
+      //TODO: this
+    }
+  }
+
+
+
 
   return printBooleanSegment;
 }

@@ -32,7 +32,8 @@ void Jumps::setDistance(string jump, int start, int end)
   if (start <= end) //regular jump
   {
     distance = (end - start);
-  } else //wraparound jump
+  }
+  else //wraparound jump
   {
     distance = 255 - start; //for jumping to end of memory, 255
     ++distance; //for jumping to 0
