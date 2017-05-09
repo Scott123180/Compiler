@@ -508,10 +508,11 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
    */
 
   //run segment on ifBlock children
-  vector<string> whileBlock = segment(Block->children[1]);
+  vector<string> whileBlock = segment(Block);
 
   //need the jump table later
   int jumpDistance = static_cast<int>(whileBlock.size());
+  cout << "&&&&&&&& While block size: "<< jumpDistance << endl;
 
   ///================================================================
   ///CONDITIONALS
@@ -633,7 +634,7 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
       //branch n bytes if false
       whileStatementReturn.push_back(BNE); //D0
       //todo: validate distance
-      int whileBranch1 = (jumpDistance); //jump size of block
+      int whileBranch1 = jumpDistance; //jump size of block
       string hexBranch1 = intToHex(whileBranch1);
       whileStatementReturn.push_back(hexBranch1); //number of bytes to branch
 
