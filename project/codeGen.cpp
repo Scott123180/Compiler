@@ -211,7 +211,7 @@ vector<string> CodeGen::ifStatement(Token *conditional, Token *Block)
   vector<string> ifStatementReturn;
 
   //run segment on ifBlock children
-  vector<string> ifBlock = segment(Block->children[1]);
+  vector<string> ifBlock = segment(Block);
 
   //Jump stuff, I don't think I really need it with my method
   int jumpDistance = static_cast<int>(ifBlock.size());

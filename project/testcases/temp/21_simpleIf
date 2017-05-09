@@ -1,7 +1,8 @@
 {
   boolean a
   a = true
-  if (a == true) {
+  if (a != true) {
     print(1)
   }
+  print(2)
 }$
