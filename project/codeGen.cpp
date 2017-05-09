@@ -432,7 +432,6 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
   //differentiate between comparisons and boolean values
   if(tt == "==" || tt == "!=")
   {
-    //TODO: compare right and left values
     Token* leftTok = a->children[0];
     Token* rightTok = a->children[1];
     
@@ -522,7 +521,6 @@ vector<string> CodeGen::assignBooleanExpressionSegment(Token *a, string tempVarN
     //z flag is set
 
     cout << "got before the == and != section" << endl;
-    // TODO: != and == dependencies
     if(tt == "==")
     {
       //branch n bytes if false------------|
@@ -904,7 +902,181 @@ vector<string> CodeGen::printBooleanExpressionSegment(Token *a)
   //determine what type of expression segment
   if(tt == "==" || tt == "!=")
   {
-    //TODO: this
+    Token* leftTok = a->children[0];
+    Token* rightTok = a->children[1];
+
+    //get token information
+    string ltType = leftTok->getType();
+    string ltData = leftTok->getData();
+    string rtType = rightTok->getType();
+    string rtData = rightTok->getData();
+
+    cout << "ltType: " << ltType << endl;
+    cout << "ltData: " << ltData << endl;
+    cout << "rtType: " << rtType << endl;
+    cout << "rtData: " << rtData << endl;
+
+    //change true/false to 1 and 0
+    // (dont worry about leading 0, we got it covered below)
+    if(ltData == "true") ltData = "1";
+    else if(ltData == "false") ltData = "0";
+
+    if(rtData == "true") rtData = "1";
+    else if(rtData == "false") rtData = "0";
+
+
+
+
+    //make sure not comparing string literals
+    if(ltType == "string" || rtType == "string")
+    {
+      cout << "ERROR! Comparisons of string literals are not supported for code generation. " << endl;
+      cout << "Please don't do this sir/madame. Line: " << a->getLine() << endl;
+      cout << "Aborting compilation" << endl;
+      exit(0);
+    }
+
+
+
+    string leftTokTempName; //left side memory location
+
+    //store ls into acc, store rs into x reg, compare x reg to memory, z flag is set, deal with branching
+
+    //left side
+    if(ltType == "char") //variable
+    {
+      //lookup tempVarName
+      leftTokTempName = sdTable.lookupTempRow(leftTok);
+
+      //load left side to accumulator
+      returnBooleanSegment.push_back(LDA_M); //AD
+      returnBooleanSegment.push_back(leftTokTempName);
+      returnBooleanSegment.push_back(XX); //XX
+    }
+    else //constant
+    {
+      //get a new memory location for the const
+      leftTokTempName = sdTable.addConstRow();
+      //load left side to memory location
+      returnBooleanSegment.push_back(LDA_C); //A9
+      returnBooleanSegment.push_back("0" + ltData); //data
+      returnBooleanSegment.push_back(STA); //8D
+      returnBooleanSegment.push_back(leftTokTempName); //store
+      returnBooleanSegment.push_back(XX); //XX
+    }
+
+
+    //right side
+    if(rtType == "char") //variable
+    {
+      //lookup right tok name
+      string rightTokTempName = sdTable.lookupTempRow(rightTok);
+
+      //load right side into x reg
+      returnBooleanSegment.push_back(LDX_M); //AE
+      returnBooleanSegment.push_back(rightTokTempName); //memory address
+      returnBooleanSegment.push_back(XX); //XX
+    }
+    else
+    {
+      //load right side into x reg
+      returnBooleanSegment.push_back(LDX_C); //A2
+      returnBooleanSegment.push_back("0" + rtData); //data
+    }
+
+    //compare x reg and memory location
+    returnBooleanSegment.push_back(CPX); //EC
+    returnBooleanSegment.push_back(leftTokTempName); //mem loc
+    returnBooleanSegment.push_back(XX); //XX
+    //z flag is set
+
+    cout << "got before the == and != section" << endl;
+    if(tt == "==")
+    {
+      //branch n bytes if false------------|
+      //  assign 01 (true) to leftside     |
+      //  jump n bytes---------------------|--|
+      //  assign 00 (false) to leftside <--|  |
+      //  rest of code <----------------------|
+
+      //branch n bytes if false
+      returnBooleanSegment.push_back(BNE); //D0
+      int intBranch1 = 12 ; ///counting by hand
+      string hexBranch1 = intToHex(intBranch1);
+      returnBooleanSegment.push_back(hexBranch1); //number of bytes to branch
+
+      //assign 01 (true) to leftside
+      returnBooleanSegment.push_back(LDA_C); //A9
+      returnBooleanSegment.push_back("01"); //true
+      returnBooleanSegment.push_back(STA); //8D
+      returnBooleanSegment.push_back(tempVarName); //memory loc, left side
+      returnBooleanSegment.push_back(XX); //XX
+
+      //deal with branching
+      //load X register with 01
+      returnBooleanSegment.push_back(LDX_C); //A2
+      returnBooleanSegment.push_back("01");
+      //compare to last memory location so we can set zflag to false
+      returnBooleanSegment.push_back(CPX); //EC
+      returnBooleanSegment.push_back("FF"); //last byte in memory
+      returnBooleanSegment.push_back("00"); //00
+      //branch
+      returnBooleanSegment.push_back(BNE); //D0
+      int intBranch2 = 7; ///counting by hand
+      string hexBranch2 = intToHex(intBranch2);
+      returnBooleanSegment.push_back(hexBranch2); //number of bytes to branch
+
+      //assign 00 (false) to leftside
+      returnBooleanSegment.push_back(LDA_C); //A9
+      returnBooleanSegment.push_back("00"); //false
+      returnBooleanSegment.push_back(STA); //8D
+      returnBooleanSegment.push_back(tempVarName); //memory loc, left side
+      returnBooleanSegment.push_back(XX); //XX
+
+      //rest of code - jump here
+    }
+    else // !=
+    {
+      //branch n bytes if false------------|
+      //  assign 00 (false) to leftside    |
+      //  jump n bytes---------------------|--|
+      //  assign 01 (true) to leftside <---|  |
+      //  rest of code <----------------------|
+
+      //branch n bytes if false
+      returnBooleanSegment.push_back(BNE); //D0
+      int intBranch1 = 12; ///counting by hand
+      string hexBranch1 = intToHex(intBranch1);
+      returnBooleanSegment.push_back(hexBranch1); //number of bytes to branch
+
+      //assign 01 (true) to leftside
+      returnBooleanSegment.push_back(LDA_C); //A9
+      returnBooleanSegment.push_back("00"); //false
+      returnBooleanSegment.push_back(STA); //8D
+      returnBooleanSegment.push_back(tempVarName); //memory loc, left side
+      returnBooleanSegment.push_back(XX); //XX
+
+      //deal with branching
+      //load X register with 01
+      returnBooleanSegment.push_back(LDX_C); //A2
+      returnBooleanSegment.push_back("01");
+      //compare to last memory location so we can set zflag to false
+      returnBooleanSegment.push_back(CPX); //EC
+      returnBooleanSegment.push_back("FF"); //last byte in memory
+      returnBooleanSegment.push_back("00"); //00
+      //branch
+      returnBooleanSegment.push_back(BNE); //D0
+      int intBranch2 = 7; ///counting by hand
+      string hexBranch2 = intToHex(intBranch2);
+      returnBooleanSegment.push_back(hexBranch2); //number of bytes to branch
+
+      //assign 00 (false) to leftside
+      returnBooleanSegment.push_back(LDA_C); //A9
+      returnBooleanSegment.push_back("01"); //true
+      returnBooleanSegment.push_back(STA); //8D
+      returnBooleanSegment.push_back(tempVarName); //memory loc, left side
+      returnBooleanSegment.push_back(XX); //XX
+    }
   }
   else //just a true/false value or variable
   {
