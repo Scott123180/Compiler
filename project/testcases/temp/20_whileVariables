@@ -1,0 +1,10 @@
+{
+  boolean b
+  b = true
+  boolean c
+  c = true
+  while (b == c)
+  {
+    print(1)
+  }
+}$

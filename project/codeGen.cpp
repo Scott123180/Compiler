@@ -633,7 +633,6 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
 
       //branch n bytes if false
       whileStatementReturn.push_back(BNE); //D0
-      //todo: validate distance
       int whileBranch1 = jumpDistance + 7; //jump size of block plus extra codes
       string hexBranch1 = intToHex(whileBranch1);
       whileStatementReturn.push_back(hexBranch1); //number of bytes to branch
@@ -718,62 +717,9 @@ vector<string> CodeGen::whileStatement(Token *conditional, Token *Block)
     }
 
   }
-  else //just a true/false value or variable
+  else
   {
-    //lookup and see if char
-    if(tt == "char") //variable
-    {
-      //lookup right side temp name of variable
-      string tempVarName = sdTable.lookupTempRow(conditional);
-      cout << "tempVarName for print a" << endl;
-
-      //load print string (02) in the x register
-      whileStatementReturn.push_back(LDX_C); //A2
-      printBooleanSegment.push_back(P_INT); //01
-
-      //load right side to Y register
-      printBooleanSegment.push_back(LDY_M); //AC
-      printBooleanSegment.push_back(tempVarName); //temp token right side
-      printBooleanSegment.push_back(XX); //XX
-
-      //System call
-      printBooleanSegment.push_back(SYS);
-    }
-    else //literal true or false
-    {
-      string booleanValue;
-
-      //create new temp memory location on the stack
-      string result = sdTable.addConstRow();
-      //determine numerical value of true and false
-      if(td == "true") //true
-      {
-        booleanValue = "01";
-      }
-      else //false
-      {
-        booleanValue = "00";
-      }
-      //store t/f value in temp variable location
-      printBooleanSegment.push_back(LDA_C); //A9
-      printBooleanSegment.push_back(booleanValue); //actual value
-      printBooleanSegment.push_back(STA); //8D
-      printBooleanSegment.push_back(result);//store in left-side
-      printBooleanSegment.push_back(XX); //XX
-
-      //print it out
-      //load print string (02) in the x register
-      printBooleanSegment.push_back(LDX_C); //A2
-      printBooleanSegment.push_back(P_INT); //01
-
-      //load right side to Y register
-      printBooleanSegment.push_back(LDY_M); //AC
-      printBooleanSegment.push_back(result); //temp token right side
-      printBooleanSegment.push_back(XX); //XX
-
-      //System call
-      printBooleanSegment.push_back(SYS);
-    }
+    //just a true/false value or variable doesn't parse so we don't have to do it!
   }
   return whileStatementReturn;
 }
